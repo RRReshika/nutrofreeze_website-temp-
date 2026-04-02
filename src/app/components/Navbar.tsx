@@ -1,8 +1,10 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, Menu, X, ArrowRight, ChevronDown } from "lucide-react";
-import { Link } from "react-router";
+import { Search, Menu, X, ArrowRight, ChevronDown, ShoppingCart, Minus, Plus, Trash2, ChevronUp } from "lucide-react";
+import { Link, useNavigate } from "react-router";
 import logoImage from "figma:asset/03e425ef142c13c416fab01ab43d6bd3c5981222.png";
+import { useCart } from "../lib/cart";
+import { useAuth } from "../lib/auth-context";
 
 const productCategories = [
   { label: "Fruits", emoji: "🍓", img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=80&q=80" },
@@ -27,11 +29,15 @@ const navLinks = [
 ];
 
 export function Navbar() {
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [activeLink, setActiveLink] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { cart, isOpen, toggleCart, closeCart, updateQuantity, removeItem, clearCart, isReady } = useCart();
+  const { user, isLoading, signOut } = useAuth();
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleMouseEnter = (label: string) => {
@@ -153,7 +159,7 @@ export function Navbar() {
         {/* Right CTAs */}
         <div className="hidden lg:flex items-center gap-3">
           <motion.a
-            href="#products"
+            href="/#products"
             className="flex items-center gap-2 border border-white/20 text-white px-5 py-2.5 rounded-full hover:border-[#5eead4] hover:text-[#5eead4] transition-all"
             style={{ fontSize: "13px", fontWeight: 600 }}
             whileHover={{ scale: 1.03 }}
@@ -162,15 +168,92 @@ export function Navbar() {
             Find Product
             <span className="w-5 h-5 rounded-full bg-[#0d9488] flex items-center justify-center text-white" style={{ fontSize: "9px" }}>▶</span>
           </motion.a>
-          <motion.a
-            href="#"
-            className="flex items-center gap-2 bg-[#7c3aed] text-white px-5 py-2.5 rounded-full hover:bg-[#6d28d9] transition-all"
-            style={{ fontSize: "13px", fontWeight: 700 }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            Shopping Cart
-          </motion.a>
+          {!isLoading && !user && (
+            <>
+              <Link
+                to="/signin"
+                className="flex items-center gap-2 bg-[#7c3aed] text-white px-5 py-2.5 rounded-full hover:bg-[#6d28d9] transition-all"
+                style={{ fontSize: "13px", fontWeight: 700, textDecoration: "none" }}
+              >
+                Sign In
+              </Link>
+            </>
+          )}
+
+          {isLoading && (
+            <div className="flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-[13px] font-semibold text-white/70">
+              Checking sign in...
+            </div>
+          )}
+
+          {!isLoading && user && (
+            <div className="relative">
+              <div className="flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-[13px] font-semibold text-white transition-all hover:border-[#5eead4] hover:text-[#5eead4]">
+                <Link to="/account" className="px-2.5 py-1 text-white no-underline hover:text-[#5eead4]">
+                  {user.email}
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setAccountMenuOpen((current) => !current)}
+                  className="rounded-full p-1 text-white/80 hover:bg-white/10 hover:text-white"
+                  aria-label="Open account menu"
+                >
+                  {accountMenuOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                </button>
+              </div>
+
+              <AnimatePresence>
+                {accountMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 8 }}
+                    className="absolute right-0 top-full mt-3 w-56 overflow-hidden rounded-3xl border border-white/10 bg-[#0f172a] p-2 shadow-2xl"
+                  >
+                    <Link
+                      to="/account"
+                      onClick={() => setAccountMenuOpen(false)}
+                      className="block rounded-2xl px-4 py-3 text-sm text-white/80 hover:bg-white/10 hover:text-white no-underline"
+                    >
+                      Profile
+                    </Link>
+                    <Link
+                      to="/account"
+                      onClick={() => setAccountMenuOpen(false)}
+                      className="block rounded-2xl px-4 py-3 text-sm text-white/80 hover:bg-white/10 hover:text-white no-underline"
+                    >
+                      Orders
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        setAccountMenuOpen(false);
+                        await signOut();
+                        navigate("/", { replace: true });
+                      }}
+                      className="block w-full rounded-2xl px-4 py-3 text-left text-sm text-rose-300 hover:bg-white/10 hover:text-rose-200"
+                    >
+                      Sign Out
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+          {!isLoading && user && (
+            <button
+              type="button"
+              onClick={toggleCart}
+              className="relative flex items-center gap-2 border border-white/20 text-white px-4 py-2.5 rounded-full hover:border-[#5eead4] hover:text-[#5eead4] transition-all"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif", fontStyle: "italic", fontSize: "13px", fontWeight: 700, background: "transparent" }}
+            >
+              <ShoppingCart size={16} />
+              Cart
+              <span className="ml-1 inline-flex min-w-6 items-center justify-center rounded-full bg-[#0d9488] px-1.5 py-0.5 text-[11px] font-bold text-white">
+                {cart.itemCount}
+              </span>
+            </button>
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -441,15 +524,124 @@ export function Navbar() {
                 )
               ))}
               <div className="flex flex-col gap-3 pt-4">
-                <a href="#products" className="w-full text-center border border-white/20 text-white py-3 rounded-full" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "14px" }}>
+                <a href="/#products" className="w-full text-center border border-white/20 text-white py-3 rounded-full" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "14px" }}>
                   Find Product
                 </a>
-                <a href="#" className="w-full text-center bg-[#7c3aed] text-white py-3 rounded-full" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "14px" }}>
-                  Shopping Cart
-                </a>
+                {!isLoading && !user && (
+                  <>
+                    <Link to="/signin" className="w-full text-center bg-[#7c3aed] text-white py-3 rounded-full" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "14px", textDecoration: "none" }}>
+                      Sign In
+                    </Link>
+                  </>
+                )}
+                {!isLoading && user && (
+                  <Link to="/account" className="w-full text-center bg-[#7c3aed] text-white py-3 rounded-full" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "14px", textDecoration: "none" }}>
+                    {user.email}
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={() => { setMobileOpen(false); toggleCart(); }}
+                  className="w-full text-center border border-white/20 text-white py-3 rounded-full"
+                  style={{ fontFamily: "'Barlow Condensed', sans-serif", fontStyle: "italic", fontWeight: 700, fontSize: "14px", background: "transparent" }}
+                >
+                  Cart ({cart.itemCount})
+                </button>
               </div>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <motion.div
+              className="fixed inset-0 z-[60] bg-black/50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeCart}
+            />
+            <motion.aside
+              className="fixed right-0 top-0 z-[61] h-full w-full max-w-md overflow-hidden bg-[#0f172a] text-white shadow-2xl"
+              initial={{ x: 420 }}
+              animate={{ x: 0 }}
+              exit={{ x: 420 }}
+              transition={{ type: "spring", stiffness: 260, damping: 30 }}
+              style={{ fontFamily: "'Barlow Condensed', sans-serif", fontStyle: "italic" }}
+            >
+              <div className="flex h-full flex-col">
+                <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-teal-200">Shopping Cart</p>
+                    <h3 className="mt-2 text-2xl font-black">Your items</h3>
+                  </div>
+                  <button type="button" onClick={closeCart} className="rounded-full border border-white/15 p-2 text-white hover:bg-white/10">
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto px-4 py-4">
+                  {!isReady && (
+                    <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">Loading cart...</div>
+                  )}
+
+                  {isReady && cart.items.length === 0 && (
+                    <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">
+                      Your cart is empty. Add any product from the products carousel.
+                    </div>
+                  )}
+
+                  <div className="space-y-3">
+                    {cart.items.map((item) => (
+                      <div key={item.id} className="rounded-3xl border border-white/10 bg-white/5 p-4">
+                        <div className="flex gap-3">
+                          <img src={item.product.image} alt={item.product.title} className="h-20 w-20 rounded-2xl object-cover" />
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-semibold uppercase tracking-[0.12em] text-white">{item.product.title}</p>
+                            <p className="mt-1 text-xs text-white/60">{item.variant.title} {item.variant.weightGrams ? `· ${item.variant.weightGrams}g` : ""}</p>
+                            <p className="mt-2 text-sm text-teal-200">${item.unitPrice.toFixed(2)}</p>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-2 py-1">
+                            <button type="button" onClick={() => updateQuantity(item.variantId, item.quantity - 1)} className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/10">
+                              <Minus size={14} />
+                            </button>
+                            <span className="min-w-6 text-center text-sm font-semibold">{item.quantity}</span>
+                            <button type="button" onClick={() => updateQuantity(item.variantId, item.quantity + 1)} className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/10">
+                              <Plus size={14} />
+                            </button>
+                          </div>
+
+                          <button type="button" onClick={() => removeItem(item.variantId)} className="inline-flex items-center gap-2 text-sm text-rose-300 hover:text-rose-200">
+                            <Trash2 size={14} /> Remove
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="border-t border-white/10 px-6 py-5">
+                  <div className="flex items-center justify-between text-sm text-white/70">
+                    <span>Subtotal</span>
+                    <span className="text-base font-semibold text-white">${cart.subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="mt-4 flex gap-3">
+                    <button type="button" onClick={clearCart} className="flex-1 rounded-full border border-white/15 px-4 py-3 text-sm font-semibold text-white hover:bg-white/10">
+                      Clear cart
+                    </button>
+                    <Link to={user ? "/account" : "/signin"} onClick={closeCart} className="flex-1 rounded-full bg-[#0d9488] px-4 py-3 text-center text-sm font-semibold text-white no-underline hover:bg-[#0f766e]">
+                      Checkout
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </motion.aside>
+          </>
         )}
       </AnimatePresence>
     </nav>

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "motion/react";
 import { ChevronRight, ArrowLeft, Search, X } from "lucide-react";
 import { Link } from "react-router";
@@ -21,101 +21,24 @@ const CARD_COLORS = [
   "#0d9488","#6d28d9","#0369a1","#be185d",
 ];
 
-const recipes = [
-  {
-    id: 1,
-    name: "MIXED BERRY SMOOTHIE BOWL",
-    category: "Smoothies",
-    time: "10 min", serves: 2,
-    dietary: ["Vegetarian", "Vegan"], protein: false,
-    img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=400&q=80",
-    desc: "Thick frozen berry blend topped with granola and fresh fruit.",
-    rating: 4.9, popular: true,
-  },
-  {
-    id: 2,
-    name: "MANGO LASSI SMOOTHIE",
-    category: "Smoothies",
-    time: "5 min", serves: 2,
-    dietary: ["Vegetarian"], protein: false,
-    img: "https://images.unsplash.com/photo-1667889244854-364252b3c14a?w=400&q=80",
-    desc: "Frozen mango blended with yogurt and cardamom.",
-    rating: 4.8, popular: false,
-  },
-  {
-    id: 3,
-    name: "PROTEIN QUINOA POWER BOWL",
-    category: "Meal Prep",
-    time: "20 min", serves: 4,
-    dietary: ["Vegan", "Vegetarian"], protein: true,
-    img: "https://images.unsplash.com/photo-1679279726937-122c49626802?w=400&q=80",
-    desc: "Quinoa with roasted broccoli, avocado and tahini.",
-    rating: 4.9, popular: true,
-  },
-  {
-    id: 4,
-    name: "SWEET POTATO BABY PURÉE",
-    category: "Snacks",
-    time: "15 min", serves: 6,
-    dietary: ["Vegan", "Vegetarian"], protein: false,
-    img: "https://images.unsplash.com/photo-1711205229065-89353695a869?w=400&q=80",
-    desc: "Naturally sweet purée perfect for baby's first food.",
-    rating: 5.0, popular: true,
-  },
-  {
-    id: 5,
-    name: "BROCCOLI & VEG STIR FRY",
-    category: "Snacks",
-    time: "12 min", serves: 3,
-    dietary: ["Vegan", "Vegetarian"], protein: false,
-    img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=400&q=80",
-    desc: "Broccoli and spinach wok-tossed in garlic and ginger.",
-    rating: 4.7, popular: false,
-  },
-  {
-    id: 6,
-    name: "BERRY PARFAIT LAYERS",
-    category: "Desserts",
-    time: "8 min", serves: 2,
-    dietary: ["Vegetarian"], protein: false,
-    img: "https://images.unsplash.com/photo-1769434129307-33ecda53c1ed?w=400&q=80",
-    desc: "Mixed berry blend layered with yogurt and granola.",
-    rating: 4.8, popular: false,
-  },
-  {
-    id: 7,
-    name: "GYM MEAL PREP SUNDAY",
-    category: "Meal Prep",
-    time: "35 min", serves: 5,
-    dietary: ["Vegan"], protein: true,
-    img: "https://images.unsplash.com/photo-1687041568037-dab13851ea14?w=400&q=80",
-    desc: "Five days of high-protein meals using our Quinoa Bowl.",
-    rating: 4.9, popular: true,
-  },
-  {
-    id: 8,
-    name: "ACAI SMOOTHIE BOWL",
-    category: "Smoothies",
-    time: "10 min", serves: 1,
-    dietary: ["Vegan", "Vegetarian"], protein: false,
-    img: "https://images.unsplash.com/photo-1621470626764-0e8c9303800a?w=400&q=80",
-    desc: "Thick acai base topped with berries and coconut flakes.",
-    rating: 4.9, popular: true,
-  },
-  {
-    id: 9,
-    name: "GULAB JAMUN DESSERT BITES",
-    category: "Desserts",
-    time: "25 min", serves: 8,
-    dietary: ["Vegetarian"], protein: false,
-    img: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&q=80",
-    desc: "Soft golden dumplings soaked in cardamom rose syrup.",
-    rating: 4.9, popular: true,
-  },
-];
+type Recipe = {
+  id: number;
+  name: string;
+  category: string;
+  time: string;
+  serves: number;
+  dietary: string[];
+  protein: boolean;
+  img: string;
+  desc: string;
+  rating: number;
+  popular: boolean;
+};
+
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "/api").replace(/\/$/, "");
 
 /* ─── Recipe Card ─────────────────────────────── */
-function RecipeCard({ recipe, index, color }: { recipe: typeof recipes[0]; index: number; color: string }) {
+function RecipeCard({ recipe, index, color }: { recipe: Recipe; index: number; color: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
 
@@ -535,11 +458,47 @@ export function RecipesPage() {
   const [dietary, setDietary] = useState<string[]>([]);
   const [heroIdx, setHeroIdx] = useState(0);
   const [activeCategory, setActiveCategory] = useState("All recipes");
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [isLoadingRecipes, setIsLoadingRecipes] = useState(true);
+  const [recipesError, setRecipesError] = useState<string | null>(null);
 
-  useState(() => {
+  useEffect(() => {
+    let isActive = true;
+
+    const loadRecipes = async () => {
+      try {
+        setIsLoadingRecipes(true);
+        setRecipesError(null);
+        const response = await fetch(`${API_BASE_URL}/content/recipes`);
+        if (!response.ok) {
+          throw new Error(`Unable to load recipes (${response.status})`);
+        }
+        const data: Recipe[] = await response.json();
+        if (isActive) {
+          setRecipes(data);
+        }
+      } catch (error) {
+        if (isActive) {
+          setRecipesError(error instanceof Error ? error.message : "Unable to load recipes");
+        }
+      } finally {
+        if (isActive) {
+          setIsLoadingRecipes(false);
+        }
+      }
+    };
+
+    loadRecipes();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  useEffect(() => {
     const t = setInterval(() => setHeroIdx(i => (i + 1) % heroRecipes.length), 5000);
     return () => clearInterval(t);
-  });
+  }, []);
 
   const toggleDiet = (d: string) =>
     setDietary(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]);
@@ -734,6 +693,19 @@ export function RecipesPage() {
           <CategoryFilterBar active={activeCategory} setActive={setActiveCategory} />
 
           {/* Recipe grid */}
+          {isLoadingRecipes && (
+            <div className="py-24 text-center" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#374151" }}>
+              Loading recipes...
+            </div>
+          )}
+
+          {!isLoadingRecipes && recipesError && (
+            <div className="py-24 text-center" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#991b1b" }}>
+              {recipesError}
+            </div>
+          )}
+
+          {!isLoadingRecipes && !recipesError && (
           <AnimatePresence mode="wait">
             {filtered.length > 0 ? (
               <motion.div key={activeSort + searchQuery + dietary.join() + activeCategory}
@@ -760,6 +732,7 @@ export function RecipesPage() {
               </motion.div>
             )}
           </AnimatePresence>
+          )}
 
           {/* Spice Up Your Inbox */}
           <SpiceUpInbox />

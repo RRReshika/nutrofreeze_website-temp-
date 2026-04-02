@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "motion/react";
 import { ChevronRight, ArrowLeft, Send } from "lucide-react";
 import { Link } from "react-router";
@@ -11,99 +11,25 @@ import logoPurple from "figma:asset/aafaf68bfaf5334abed5fe55a7f7a8843cbf3197.png
 const TABS = ["Latest Reviews", "Customer Reviews", "Press Reviews"];
 const SORT_OPTIONS = ["Default", "Most Recent"];
 
-const HERO_SLIDES = [
-  {
-    id: 1,
-    tag: "FEATURED REVIEW",
-    title: "NUTROFREEZE\n× CHEF ARJUN",
-    desc: "Renowned chef Arjun Sharma partners with NutroFreeze to show how our frozen South Asian snacks bring authentic flavour with zero compromise.",
-    img1: "https://images.unsplash.com/photo-1716801564904-5605f562b664?w=480&q=90",
-    img2: "https://images.unsplash.com/photo-1730635572578-8d51c382d4c2?w=200&q=80",
-  },
-  {
-    id: 2,
-    tag: "FEATURED REVIEW",
-    title: "4.9 STARS —\nOUR CUSTOMERS SPEAK",
-    desc: "Thousands of families across Canada rate NutroFreeze as their go-to frozen food brand. Here's what they love most about us.",
-    img1: "https://images.unsplash.com/photo-1640542509430-f529fdfce835?w=480&q=90",
-    img2: "https://images.unsplash.com/photo-1588505617603-f80b72bf8f24?w=200&q=80",
-  },
-  {
-    id: 3,
-    tag: "FEATURED REVIEW",
-    title: "GROCERY BUSINESS\nMAGAZINE PICK",
-    desc: "Canada's leading trade magazine celebrated NutroFreeze's mission to bring authentic South Asian frozen flavours to mainstream grocery shelves.",
-    img1: "https://images.unsplash.com/photo-1727041423608-c15f1a145cc2?w=480&q=90",
-    img2: "https://images.unsplash.com/photo-1647553756926-21a62021b9d2?w=200&q=80",
-  },
-];
+type HeroSlide = {
+  id: number;
+  tag: string;
+  title: string;
+  desc: string;
+  img1: string;
+  img2: string;
+};
 
-const REVIEW_CARDS = [
-  {
-    id: 1,
-    tab: "Press Reviews",
-    color: "#0891b2",
-    img: "https://images.unsplash.com/photo-1716801564904-5605f562b664?w=400&q=80",
-    title: "5 STARS FROM FOOD INSIDER CANADA",
-    desc: "Food Insider Canada names NutroFreeze the best frozen South Asian brand for 2025, praising its authentic spice profiles…",
-  },
-  {
-    id: 2,
-    tab: "Customer Reviews",
-    color: "#ca8a04",
-    img: "https://images.unsplash.com/photo-1765360024320-b2ab819c6f75?w=400&q=80",
-    title: "A GAME CHANGER FOR BUSY FAMILIES",
-    desc: "\"I used to spend hours in the kitchen. NutroFreeze changed everything. The samosas taste exactly like my mum's.\" – Priya K., Toronto…",
-  },
-  {
-    id: 3,
-    tab: "Press Reviews",
-    color: "#0d9488",
-    img: "https://images.unsplash.com/photo-1647553756926-21a62021b9d2?w=400&q=80",
-    title: "FEATURED IN TORONTO LIFE MAGAZINE",
-    desc: "Toronto Life spotlights NutroFreeze as a pioneer bringing nutritious, halal-certified South Asian frozen food to Canadian grocery…",
-  },
-  {
-    id: 4,
-    tab: "Press Reviews",
-    color: "#7c3aed",
-    img: "https://images.unsplash.com/photo-1525790428446-ad5140bdd234?w=400&q=80",
-    title: "HEALTH DIGEST TOP PICK 2025",
-    desc: "NutroFreeze's Protein Quinoa Bowl earns Health Digest's top pick for best ready-to-eat, high-protein frozen meal of the year…",
-  },
-  {
-    id: 5,
-    tab: "Customer Reviews",
-    color: "#9f1239",
-    img: "https://images.unsplash.com/photo-1730635572578-8d51c382d4c2?w=400&q=80",
-    title: "\"MY KIDS ASK FOR IT EVERY WEEK\"",
-    desc: "\"The Mini Punjabi Samosas have become a weekly staple in our house. Kids absolutely love them and I love how clean the ingredients are.\" – Tariq M…",
-  },
-  {
-    id: 6,
-    tab: "Customer Reviews",
-    color: "#0369a1",
-    img: "https://images.unsplash.com/photo-1646343589384-9d4147eed5fd?w=400&q=80",
-    title: "SMOOTHIE BOWL SENSATION",
-    desc: "NutroFreeze's frozen berry blends are the go-to for smoothie bowl lovers everywhere — rich, vibrant and completely natural…",
-  },
-  {
-    id: 7,
-    tab: "Press Reviews",
-    color: "#0891b2",
-    img: "https://images.unsplash.com/photo-1640542509430-f529fdfce835?w=400&q=80",
-    title: "CURRY LOVERS REJOICE",
-    desc: "Chef Arjun Sharma joins NutroFreeze to spotlight how traditional South Asian freezing techniques preserve authentic flavour and nutrition…",
-  },
-  {
-    id: 8,
-    tab: "Customer Reviews",
-    color: "#be185d",
-    img: "https://images.unsplash.com/photo-1758221617316-1fa0fab44324?w=400&q=80",
-    title: "FAMILY TASTE TEST — WE'RE CONVINCED",
-    desc: "\"We did a blind taste test between fresh naan and NutroFreeze. Our family literally couldn't tell the difference. This is now a pantry staple.\" – Sunita R…",
-  },
-];
+type ReviewCardData = {
+  id: number;
+  tab: "Customer Reviews" | "Press Reviews";
+  color: string;
+  img: string;
+  title: string;
+  desc: string;
+};
+
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "/api").replace(/\/$/, "");
 
 const WIDE_CARD = {
   tag: "Customer Review",
@@ -153,9 +79,22 @@ function Stars({ n = 5 }: { n?: number }) {
 }
 
 /* ─── Hero Slider ───────────────────────────────── */
-function HeroSlider() {
+function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   const [idx, setIdx] = useState(0);
-  const slide = HERO_SLIDES[idx];
+  const safeIndex = slides.length ? idx % slides.length : 0;
+  const slide = slides[safeIndex];
+
+  useEffect(() => {
+    setIdx(0);
+  }, [slides]);
+
+  if (!slide) {
+    return (
+      <div className="relative overflow-hidden" style={{ backgroundColor: "#c4b5fd", minHeight: "clamp(380px,52vw,540px)", display: "grid", placeItems: "center" }}>
+        <span style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#1c1c1e" }}>Loading featured reviews...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="relative overflow-hidden" style={{ backgroundColor: "#c4b5fd", minHeight: "clamp(380px,52vw,540px)" }}>
@@ -276,13 +215,13 @@ function HeroSlider() {
 
       {/* Slider dots */}
       <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-20">
-        {HERO_SLIDES.map((_, i) => (
+        {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setIdx(i)}
             style={{
-              width: i === idx ? "28px" : "8px", height: "8px", borderRadius: "100px",
-              backgroundColor: i === idx ? "#1c1c1e" : "rgba(28,28,30,0.3)",
+              width: i === safeIndex ? "28px" : "8px", height: "8px", borderRadius: "100px",
+              backgroundColor: i === safeIndex ? "#1c1c1e" : "rgba(28,28,30,0.3)",
               border: "none", cursor: "pointer", transition: "all 0.3s",
             }}
           />
@@ -331,7 +270,7 @@ function TabBar({ active, setActive }: { active: string; setActive: (t: string) 
 }
 
 /* ─── Review Card (4-column grid) ───────────────── */
-function ReviewCard({ card, index }: { card: typeof REVIEW_CARDS[0]; index: number }) {
+function ReviewCard({ card, index }: { card: ReviewCardData; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
 
@@ -907,8 +846,56 @@ function ReviewsFooter() {
 export function ReviewsPage() {
   const [activeTab, setActiveTab] = useState("Latest Reviews");
   const [activeSort, setActiveSort] = useState("Default");
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
+  const [reviewCards, setReviewCards] = useState<ReviewCardData[]>([]);
+  const [isLoadingReviews, setIsLoadingReviews] = useState(true);
+  const [reviewsError, setReviewsError] = useState<string | null>(null);
 
-  const filtered = REVIEW_CARDS
+  useEffect(() => {
+    let isActive = true;
+
+    const loadReviewContent = async () => {
+      try {
+        setIsLoadingReviews(true);
+        setReviewsError(null);
+
+        const [heroResponse, cardsResponse] = await Promise.all([
+          fetch(`${API_BASE_URL}/content/reviews/hero`),
+          fetch(`${API_BASE_URL}/content/reviews/cards`),
+        ]);
+
+        if (!heroResponse.ok || !cardsResponse.ok) {
+          throw new Error(`Unable to load reviews (${heroResponse.status}/${cardsResponse.status})`);
+        }
+
+        const [heroData, cardsData]: [HeroSlide[], ReviewCardData[]] = await Promise.all([
+          heroResponse.json(),
+          cardsResponse.json(),
+        ]);
+
+        if (isActive) {
+          setHeroSlides(heroData);
+          setReviewCards(cardsData);
+        }
+      } catch (error) {
+        if (isActive) {
+          setReviewsError(error instanceof Error ? error.message : "Unable to load review content");
+        }
+      } finally {
+        if (isActive) {
+          setIsLoadingReviews(false);
+        }
+      }
+    };
+
+    loadReviewContent();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const filtered = reviewCards
     .filter(c => activeTab === "Latest Reviews" || c.tab === activeTab)
     .sort((a, b) => {
       if (activeSort === "Most Recent") return b.id - a.id;
@@ -920,7 +907,7 @@ export function ReviewsPage() {
       <Navbar />
 
       {/* ── Hero Slider ── */}
-      <HeroSlider />
+      <HeroSlider slides={heroSlides} />
 
       {/* ── Tab Bar (floats below hero just like Brars screenshot) ── */}
       <div className="flex flex-col items-center py-8 gap-6 px-4" style={{ backgroundColor: "#f5f0e8" }}>
@@ -951,6 +938,19 @@ export function ReviewsPage() {
         </div>
 
         {/* 4-column card grid */}
+        {isLoadingReviews && (
+          <div className="py-20 text-center" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#374151" }}>
+            Loading reviews...
+          </div>
+        )}
+
+        {!isLoadingReviews && reviewsError && (
+          <div className="py-20 text-center" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#991b1b" }}>
+            {reviewsError}
+          </div>
+        )}
+
+        {!isLoadingReviews && !reviewsError && (
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab + activeSort}
@@ -963,6 +963,7 @@ export function ReviewsPage() {
             ))}
           </motion.div>
         </AnimatePresence>
+        )}
 
         {/* ── Wide + 2 side cards (screenshot 3 layout) ── */}
         <FeaturedSection />

@@ -1,24 +1,90 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
+import { useCart } from "../lib/cart";
+import { useAuth } from "../lib/auth-context";
+import { useNavigate } from "react-router";
 
-const CATEGORIES = [
-  { label: "Most Popular", color: "#6D28D9" },
-  { label: "Fruits",       color: "#d97706" },
-  { label: "Vegetables",   color: "#16a34a" },
-  { label: "Baby Food",    color: "#db2777" },
-  { label: "Gym Food",     color: "#2563eb" },
+const FALLBACK_COLORS = [
+  "#6D28D9",
+  "#d97706",
+  "#16a34a",
+  "#db2777",
+  "#2563eb",
+  "#0ea5e9",
+  "#ca8a04",
+  "#dc2626",
 ];
 
-const products = [
-  { id: 1, name: "MIXED BERRY BLEND",   category: "Fruits",     weight: "600g", dietary: ["Vegan", "Vegetarian", "Gelatin Free"], img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=700&q=90" },
-  { id: 2, name: "MANGO CHUNKS",        category: "Fruits",     weight: "500g", dietary: ["Vegan", "Halal", "Gluten Free"],       img: "https://images.unsplash.com/photo-1667889244854-364252b3c14a?w=700&q=90" },
-  { id: 3, name: "BROCCOLI FLORETS",    category: "Vegetables", weight: "750g", dietary: ["Vegan", "Vegetarian", "Gluten Free"], img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=700&q=90" },
-  { id: 4, name: "SPINACH & GREENS",    category: "Vegetables", weight: "400g", dietary: ["Vegan", "Vegetarian", "Halal"],       img: "https://images.unsplash.com/photo-1595265185654-f7b3c41c9a57?w=700&q=90" },
-  { id: 5, name: "SWEET POTATO PURÉE",  category: "Baby Food",  weight: "300g", dietary: ["Vegan", "Vegetarian", "Gelatin Free"],img: "https://images.unsplash.com/photo-1711205229065-89353695a869?w=700&q=90" },
-  { id: 6, name: "MIXED VEG PURÉE",     category: "Baby Food",  weight: "300g", dietary: ["Vegan", "Vegetarian", "Halal"],       img: "https://images.unsplash.com/photo-1473340186413-a68ba9c2564e?w=700&q=90" },
-  { id: 7, name: "PROTEIN QUINOA BOWL", category: "Gym Food",   weight: "500g", dietary: ["Vegan", "Vegetarian", "Gluten Free"], img: "https://images.unsplash.com/photo-1679279726937-122c49626802?w=700&q=90" },
-  { id: 8, name: "LEAN POWER PACK",     category: "Gym Food",   weight: "600g", dietary: ["Vegan", "Halal", "Gelatin Free"],     img: "https://images.unsplash.com/photo-1687041568037-dab13851ea14?w=700&q=90" },
-];
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=700&q=90";
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "/api").replace(/\/$/, "");
+
+type ApiCategory = {
+  id: string;
+  name: string;
+  slug: string;
+  sortOrder: number;
+};
+
+type ApiProduct = {
+  id: string;
+  title: string;
+  slug?: string;
+  category?: ApiCategory | null;
+  variants?: Array<{ id: string; title?: string; packSizeG?: number | null; price?: string | number | null; currency?: string | null; sku?: string }>;
+  images?: Array<{ url: string }>;
+};
+
+type ProductCard = {
+  id: string;
+  slug?: string;
+  name: string;
+  category: string;
+  weight: string;
+  dietary: string[];
+  img: string;
+  variantId?: string;
+  variantTitle?: string;
+  price?: number;
+  currency?: string;
+};
+
+type CategoryPill = {
+  label: string;
+  color: string;
+};
+
+const getWeightLabel = (variants: ApiProduct["variants"]) => {
+  const weight = variants?.find(v => typeof v.packSizeG === "number")?.packSizeG;
+  return weight ? `${weight}g` : "-";
+};
+
+const getPrimaryVariant = (variants: ApiProduct["variants"]) => variants?.[0];
+
+const formatCategoryLabel = (raw: string | undefined) => {
+  if (!raw) return "Uncategorized";
+  return raw
+    .split("-")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
+const toProductCard = (product: ApiProduct): ProductCard => {
+  const categoryLabel = formatCategoryLabel(product.category?.name || product.category?.slug);
+  const primaryVariant = getPrimaryVariant(product.variants);
+  return {
+    id: product.id,
+    slug: product.slug,
+    name: product.title,
+    category: categoryLabel,
+    weight: getWeightLabel(product.variants),
+    dietary: ["Halal Certified", "No Preservatives", "Freeze Dried"],
+    img: product.images?.[0]?.url || DEFAULT_IMAGE,
+    variantId: primaryVariant?.id,
+    variantTitle: primaryVariant?.title || "Default",
+    price: typeof primaryVariant?.price === "string" || typeof primaryVariant?.price === "number" ? Number(primaryVariant.price) : undefined,
+    currency: primaryVariant?.currency || "CAD",
+  };
+};
 
 const TICKER_ITEMS = [
   "FROZEN GOODNESS", "HALAL CERTIFIED", "NO PRESERVATIVES",
@@ -143,12 +209,62 @@ const SLOT_CONFIG: Record<SlotOffset, {
 };
 
 export function Products() {
+  const { addItem, openCart } = useCart();
+  const { user, isLoading: isAuthLoading } = useAuth();
+  const navigateToRoute = useNavigate();
   const [activeCategory, setActiveCategory] = useState("Most Popular");
   const [centerIdx, setCenterIdx] = useState(0);
   const [hoveredSlot, setHoveredSlot] = useState<SlotOffset | null>(null);
+  const [products, setProducts] = useState<ProductCard[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const loadProducts = async () => {
+      try {
+        setIsLoading(true);
+        setLoadError(null);
+        const response = await fetch(`${API_BASE_URL}/catalog/products`);
+        if (!response.ok) {
+          throw new Error(`Unable to load products (${response.status})`);
+        }
+        const data: ApiProduct[] = await response.json();
+        if (isActive) {
+          setProducts(data.map(toProductCard));
+        }
+      } catch (error) {
+        if (isActive) {
+          setLoadError(error instanceof Error ? error.message : "Unable to load products");
+        }
+      } finally {
+        if (isActive) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadProducts();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const categories = useMemo<CategoryPill[]>(() => {
+    const fromProducts = Array.from(new Set(products.map(p => p.category)));
+    return [
+      { label: "Most Popular", color: "#6D28D9" },
+      ...fromProducts.map((label, index) => ({
+        label,
+        color: FALLBACK_COLORS[index % FALLBACK_COLORS.length],
+      })),
+    ];
+  }, [products]);
 
   const filtered = products.filter(p => activeCategory === "Most Popular" || p.category === activeCategory);
-  const safeCenter = centerIdx % filtered.length;
+  const safeCenter = filtered.length ? centerIdx % filtered.length : 0;
 
   const navigate = (dir: 1 | -1) =>
     setCenterIdx(i => (i + dir + filtered.length) % filtered.length);
@@ -158,12 +274,37 @@ export function Products() {
     setCenterIdx(0);
   };
 
-  const slotProducts = SLOTS.map(offset => {
-    const idx = ((safeCenter + offset) % filtered.length + filtered.length) % filtered.length;
-    return { offset, product: filtered[idx] };
-  });
+  const slotProducts = filtered.length
+    ? SLOTS.map(offset => {
+        const idx = ((safeCenter + offset) % filtered.length + filtered.length) % filtered.length;
+        return { offset, product: filtered[idx] };
+      })
+    : [];
 
-  const activeCatColor = CATEGORIES.find(c => c.label === activeCategory)?.color || "#6D28D9";
+  const activeCatColor = categories.find(c => c.label === activeCategory)?.color || "#6D28D9";
+
+  const handleAddToCart = async (product: ProductCard) => {
+    if (!user) {
+      navigateToRoute("/signin");
+      return;
+    }
+    if (!product.variantId || typeof product.price !== "number") return;
+    await addItem(
+      {
+        productId: product.id,
+        productTitle: product.name,
+        productSlug: product.slug,
+        variantId: product.variantId,
+        variantTitle: product.variantTitle || "Default",
+        variantSku: product.variantId,
+        unitPrice: product.price,
+        currency: product.currency,
+        image: product.img,
+      },
+      1,
+    );
+    openCart();
+  };
 
   return (
     <section id="products" style={{ backgroundColor: "#0d9488", padding: "48px 24px 64px", minHeight: "100vh" }}>
@@ -176,7 +317,7 @@ export function Products() {
         {/* Category pills */}
         <div style={{ paddingTop: "36px", paddingBottom: "20px", display: "flex", justifyContent: "center", paddingLeft: "24px", paddingRight: "24px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "18px", flexWrap: "wrap", justifyContent: "center" }}>
-            {CATEGORIES.map((cat, i) => {
+            {categories.map((cat, i) => {
               const isActive = activeCategory === cat.label;
               return (
                 <motion.button
@@ -209,7 +350,28 @@ export function Products() {
 
         {/* ── Carousel ── */}
         <div style={{ paddingBottom: "52px", paddingTop: "16px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "28px", minHeight: "520px" }}>
+          {isLoading && (
+            <div style={{ textAlign: "center", minHeight: "220px", display: "grid", placeItems: "center" }}>
+              <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "20px", color: "#1a1a1a" }}>Loading products...</p>
+            </div>
+          )}
+
+          {!isLoading && loadError && (
+            <div style={{ textAlign: "center", minHeight: "220px", display: "grid", placeItems: "center", padding: "0 20px" }}>
+              <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", color: "#991b1b" }}>
+                {loadError}. Make sure the API is running on port 3001.
+              </p>
+            </div>
+          )}
+
+          {!isLoading && !loadError && filtered.length === 0 && (
+            <div style={{ textAlign: "center", minHeight: "220px", display: "grid", placeItems: "center" }}>
+              <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", color: "#1a1a1a" }}>No products found in this category.</p>
+            </div>
+          )}
+
+          {!isLoading && !loadError && filtered.length > 0 && (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "28px", minHeight: "520px" }}>
             {slotProducts.map(({ offset, product }) => {
               const cfg = SLOT_CONFIG[offset];
               const isCenter = offset === 0;
@@ -294,13 +456,39 @@ export function Products() {
                         {product.dietary.map(d => <DietaryTag key={d} label={d} />)}
                       </div>
                     )}
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        void handleAddToCart(product);
+                      }}
+                      disabled={!product.variantId || typeof product.price !== "number" || isAuthLoading}
+                      style={{
+                        marginTop: "14px",
+                        border: "none",
+                        borderRadius: "999px",
+                        backgroundColor: activeCatColor,
+                        color: "white",
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontSize: "13px",
+                        fontWeight: 700,
+                        padding: "11px 18px",
+                        cursor: (product.variantId && !isAuthLoading) ? "pointer" : "not-allowed",
+                        opacity: (product.variantId && !isAuthLoading) ? 1 : 0.55,
+                        boxShadow: "0 10px 24px rgba(0,0,0,0.16)",
+                      }}
+                    >
+                      {isAuthLoading ? "Loading..." : product.price ? `${!user ? "Sign In to Add" : "Add to Cart"} · ${product.currency} ${product.price.toFixed(2)}` : "Add to Cart"}
+                    </button>
                   </div>
                 </motion.div>
               );
             })}
           </div>
+          )}
 
           {/* Nav dots */}
+          {!isLoading && !loadError && filtered.length > 0 && (
           <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginTop: "24px" }}>
             {filtered.map((_, i) => (
               <motion.button
@@ -312,6 +500,7 @@ export function Products() {
               />
             ))}
           </div>
+          )}
         </div>
       </div>
     </section>
