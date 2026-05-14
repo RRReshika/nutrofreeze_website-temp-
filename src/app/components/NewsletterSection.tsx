@@ -16,7 +16,7 @@ export function NewsletterSection() {
       <div style={{ position: "absolute", top: "50%", bottom: 0, left: 0, right: 0, backgroundColor: "#231F20", zIndex: 1 }} />
 
       <div ref={ref} style={{ position: "relative", zIndex: 10, maxWidth: "1200px", margin: "0 auto", padding: "100px 20px 140px" }}>
-        
+
         {/* Animated Dark Clouds Silhouette (Top Edge of Dark Background) */}
         <div style={{ position: "absolute", top: "10px", left: "50%", transform: "translateX(-50%)", width: "100%", height: "250px", zIndex: 2, display: "flex", justifyContent: "center" }}>
           <motion.svg
@@ -40,7 +40,7 @@ export function NewsletterSection() {
 
         {/* The Purple Card */}
         <div style={{ position: "relative", zIndex: 5, maxWidth: "900px", margin: "0 auto" }}>
-          
+
           {/* Yellow Starburst Badge (Left) */}
           <div style={{ position: "absolute", left: "-80px", top: "0px", zIndex: 10, width: "160px", height: "160px" }}>
             <motion.div
@@ -58,7 +58,7 @@ export function NewsletterSection() {
             </motion.div>
             <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
               <span style={{ fontFamily: "'Bangers', cursive", fontSize: "22px", color: "#231F20", lineHeight: 1.1, textAlign: "center" }}>
-                SINCE<br/>2024<br/>DEPUIS
+                SINCE<br />2024<br />DEPUIS
               </span>
             </div>
           </div>
@@ -102,25 +102,25 @@ export function NewsletterSection() {
                   <path id="arc-orange" d="M 20,90 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" />
                 </defs>
                 <text fill="white" style={{ fontSize: "11px", fontFamily: "'Space Grotesk', sans-serif", fontWeight: "bold", letterSpacing: "1.5px" }}>
-                  <textPath href="#arc-orange" startOffset="0%">PROUD FAMILY RECIPE MADE IN CANADA RECETTE FIÈREMENT FAMILIALE </textPath>
+                  <textPath href="#arc-orange" startOffset="0%">FREEZE DRIED NUTRITION PURE WHOLESOME FOOD FOR YOUR FAMILY </textPath>
                 </text>
               </svg>
             </motion.div>
             <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontSize: "50px" }}>🍁</span>
+              <span style={{ fontFamily: "'Bangers', cursive", fontSize: "22px", letterSpacing: "1px", color: "#0d9488", fontWeight: 400 }}>NF</span>
             </div>
           </div>
 
           {/* Card Content */}
-          <div style={{ 
-            backgroundColor: "#C8B6E2", 
-            borderRadius: "48px", 
+          <div style={{
+            backgroundColor: "#C8B6E2",
+            borderRadius: "48px",
             padding: "80px 60px",
             textAlign: "center",
             position: "relative",
             overflow: "hidden"
           }}>
-            
+
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}

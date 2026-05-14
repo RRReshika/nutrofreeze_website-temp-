@@ -3,6 +3,7 @@ import { Hero } from "../components/Hero";
 import { Products } from "../components/Products";
 import { DietaryShowcase } from "../components/DietaryShowcase";
 import { OurStory } from "../components/OurStory";
+import { CategoryShowcase } from "../components/CategoryShowcase";
 import { Recipes } from "../components/Recipes";
 import { NewsSection } from "../components/NewsSection";
 import { SocialMedia } from "../components/SocialMedia";
@@ -17,6 +18,7 @@ export function HomePage() {
       <Products />
       <DietaryShowcase />
       <OurStory />
+      <CategoryShowcase />
       <Recipes />
       <NewsSection />
       <SocialMedia />

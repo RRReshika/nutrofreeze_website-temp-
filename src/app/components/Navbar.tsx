@@ -1,24 +1,24 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, Menu, X, ArrowRight, ChevronDown, ShoppingCart, Minus, Plus, Trash2, ChevronUp } from "lucide-react";
+import { Search, Menu, X, ArrowRight, ChevronDown, ShoppingCart, Minus, Plus, Trash2, ChevronUp, Leaf, Check, Wheat, Star } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import logoImage from "figma:asset/03e425ef142c13c416fab01ab43d6bd3c5981222.png";
 import { useCart } from "../lib/cart";
 import { useAuth } from "../lib/auth-context";
 
 const productCategories = [
-  { label: "Fruits", emoji: "🍓", img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=80&q=80" },
-  { label: "Vegetables", emoji: "🥦", img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=80&q=80" },
-  { label: "Baby Food", emoji: "👶", img: "https://images.unsplash.com/photo-1711205229065-89353695a869?w=80&q=80" },
-  { label: "Gym Food", emoji: "💪", img: "https://images.unsplash.com/photo-1679279726937-122c49626802?w=80&q=80" },
-  { label: "Snacks", emoji: "🥨", img: "https://images.unsplash.com/photo-1615592602926-a3bfacbc1cbd?w=80&q=80" },
+  { label: "Fruits", img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=80&q=80" },
+  { label: "Vegetables", img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=80&q=80" },
+  { label: "Baby Food", img: "https://images.unsplash.com/photo-1711205229065-89353695a869?w=80&q=80" },
+  { label: "Meals", img: "https://images.unsplash.com/photo-1679279726937-122c49626802?w=80&q=80" },
+  { label: "Snacks", img: "https://images.unsplash.com/photo-1615592602926-a3bfacbc1cbd?w=80&q=80" },
 ];
 
 const productTypes = [
-  { label: "Vegan", icon: "🌸" },
-  { label: "Gelatin Free", icon: "✅" },
-  { label: "Gluten Free", icon: "🌾" },
-  { label: "Halal", icon: "🌿" },
+  { label: "Vegan", Icon: Leaf },
+  { label: "Gelatin Free", Icon: Check },
+  { label: "Gluten Free", Icon: Wheat },
+  { label: "Halal", Icon: Star },
 ];
 
 const navLinks = [
@@ -412,9 +412,8 @@ export function Navbar() {
                       <div className="flex items-center gap-3">
                         <div
                           className="w-11 h-11 rounded-xl bg-[#ede9fe] flex items-center justify-center flex-shrink-0"
-                          style={{ fontSize: "22px" }}
                         >
-                          {type.icon}
+                          <type.Icon size={18} color="#7c3aed" />
                         </div>
                         <span
                           className="text-gray-900 group-hover:text-[#7c3aed] transition-colors"
@@ -466,7 +465,7 @@ export function Navbar() {
                       Berry Power<br />Blend
                     </h3>
                     <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.72)", lineHeight: 1.65, marginBottom: "20px" }}>
-                      Premium frozen mixed berry blend — strawberries, blueberries & raspberries. Vegan, gelatin free, no added sugar.
+                      Premium freeze dried mixed berry blend. Strawberries, blueberries and raspberries. Vegan, gelatin free, no added sugar.
                     </p>
                     <img
                       src="https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=200&q=80"

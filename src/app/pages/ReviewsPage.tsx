@@ -34,8 +34,8 @@ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "/api").replace(/\/$/
 const WIDE_CARD = {
   tag: "Customer Review",
   title: "LOADED WITH\nFLAVOUR, LIGHT\nON EFFORT",
-  desc: "\"I'm a personal trainer and I need fast, nutritious meals. NutroFreeze's Protein Quinoa Bowl has everything — high protein, clean ingredients, and it tastes incredible. I recommend it to all my clients.\"",
-  author: "Marcus O., Personal Trainer & NutroFreeze Fan",
+  desc: "\"I am always on the go and I need fast, nutritious meals. NutroFreeze ready-to-eat meals have everything I need. Clean ingredients, real nutrition and ready in just minutes. I recommend it to everyone.\"",
+  author: "Marcus O., Busy Parent and NutroFreeze Fan",
   img: "https://images.unsplash.com/photo-1592578630143-fac65cda7a67?w=700&q=90",
 };
 
@@ -45,14 +45,14 @@ const SIDE_CARDS = [
     color: "#7c1d6f",
     img: "https://images.unsplash.com/photo-1639771884984-88fa62ac7e19?w=400&q=80",
     title: "OUR RECIPE FOR GROWTH? VISION PLUS VALUES",
-    desc: "We partnered with Canada's top health retailers to expand our footprint while staying true to our roots…",
+    desc: "NutroFreeze is growing while staying true to our core promise. Pure ingredients, no preservatives, real nutrition for every family.",
   },
   {
     id: "s2",
     color: "#0891b2",
     img: "https://images.unsplash.com/photo-1727041423608-c15f1a145cc2?w=400&q=80",
     title: "HELPING MORE FAMILIES EAT BETTER",
-    desc: "NutroFreeze partners with community food banks to donate healthy frozen meals to families across Ontario…",
+    desc: "NutroFreeze partners with community programmes to bring healthy, freeze-dried nutrition to families across Singapore.",
   },
 ];
 
@@ -389,7 +389,7 @@ function FeaturedSection() {
             className="mt-2"
             style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.55)", fontWeight: 600 }}
           >
-            — {WIDE_CARD.author}
+            {WIDE_CARD.author}
           </p>
           <motion.button
             className="mt-5 self-start flex items-center gap-2 bg-white text-[#0f172a] px-6 py-3 rounded-full hover:bg-[#5eead4] transition-all"
@@ -549,7 +549,7 @@ function FreezeYourInbox() {
               color: "#1c1c1e", textAlign: "center",
               lineHeight: 1.2, letterSpacing: "0.5px",
             }}>
-              EST.<br />2024<br />🍁
+              EST.<br />2024
             </span>
           </div>
         </motion.div>
@@ -577,16 +577,16 @@ function FreezeYourInbox() {
                 transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
               >
                 <defs>
-                  <path id="arc-nf3" d="M 68,68 m -54,0 a 54,54 0 1,1 108,0 a 54,54 0 1,1 -108,0" />
+                  <path id="arc-nf3" d="M 122,68 a 54,54 0 1,0 -108,0" />
                 </defs>
                 <circle cx="68" cy="68" r="67" fill="#7c3aed" />
                 <text fill="white" style={{ fontSize: "10.5px", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, letterSpacing: "2.6px" }}>
-                  <textPath href="#arc-nf3">NUTROFREEZE · MADE IN CANADA · </textPath>
+                  <textPath href="#arc-nf3">NUTROFREEZE · MADE IN SINGAPORE · </textPath>
                 </text>
               </motion.svg>
               <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <div style={{ width: "48px", height: "48px", borderRadius: "50%", backgroundColor: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px" }}>
-                  🍁
+                <div style={{ width: "48px", height: "48px", borderRadius: "50%", backgroundColor: "white", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontFamily: "'Bangers', cursive", fontSize: "16px", color: "#7c3aed", letterSpacing: "0.5px" }}>NF</span>
                 </div>
               </div>
             </div>
@@ -735,7 +735,9 @@ function FreezeYourInbox() {
               transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
               style={{ paddingTop: "10px" }}
             >
-              <div style={{ fontSize: "50px", marginBottom: "14px" }}>🎉</div>
+              <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "#0d9488", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "14px", marginLeft: "auto", marginRight: "auto" }}>
+                <span style={{ fontFamily: "'Bangers', cursive", fontSize: "22px", color: "white", letterSpacing: "1px" }}>NF</span>
+              </div>
               <h3 style={{
                 fontFamily: "'Bangers', cursive",
                 fontSize: "clamp(38px, 6vw, 62px)",
@@ -809,7 +811,7 @@ function ReviewsFooter() {
         <div>
           <p style={{ fontFamily: "'Bangers', cursive", fontSize: "22px", letterSpacing: "0.05em", color: "white", marginBottom: "10px" }}>CONTACT US</p>
           <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.55)", lineHeight: 1.9 }}>
-            +1.905.502.7277<br />info@nutrofreeze.com<br />sales@nutrofreeze.com
+            +65 8503 9022<br />nutrofreeze@gmail.com
           </p>
         </div>
         <div>
@@ -951,18 +953,18 @@ export function ReviewsPage() {
         )}
 
         {!isLoadingReviews && !reviewsError && (
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab + activeSort}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {filtered.map((card, i) => (
-              <ReviewCard key={card.id} card={card} index={i} />
-            ))}
-          </motion.div>
-        </AnimatePresence>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab + activeSort}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {filtered.map((card, i) => (
+                <ReviewCard key={card.id} card={card} index={i} />
+              ))}
+            </motion.div>
+          </AnimatePresence>
         )}
 
         {/* ── Wide + 2 side cards (screenshot 3 layout) ── */}

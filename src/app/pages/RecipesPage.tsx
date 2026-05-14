@@ -4,21 +4,37 @@ import { ChevronRight, ArrowLeft, Search, X } from "lucide-react";
 import { Link } from "react-router";
 import { Navbar } from "../components/Navbar";
 
+function HeroSparkle({ top, left, right, bottom, size, delay }: {
+  top?: string; left?: string; right?: string; bottom?: string; size: number; delay: number;
+}) {
+  return (
+    <motion.div
+      style={{ position: "absolute", top, left, right, bottom, width: size, height: size, zIndex: 8, pointerEvents: "none" }}
+      animate={{ rotate: 360, scale: [1, 1.25, 1] }}
+      transition={{ rotate: { duration: 16, repeat: Infinity, ease: "linear" }, scale: { duration: 3.5, repeat: Infinity, delay, ease: "easeInOut" } }}
+    >
+      <svg viewBox="0 0 47 47" fill="white" opacity={0.55}>
+        <path d="M23.2496 0.345703C17.2963 12.4504 12.4733 17.2676 0.350836 23.217C12.4795 29.1664 17.3075 33.9836 23.2736 46.1089C29.2269 33.9836 34.0292 29.1664 46.1723 23.217C34.023 17.2676 29.2156 12.4504 23.2496 0.345703Z" />
+      </svg>
+    </motion.div>
+  );
+}
+
 /* ─── Category filter config ─────────────────── */
 const CATEGORIES = [
-  { label: "All recipes", dot: null,      icon: "♦" },
-  { label: "Snacks",      dot: "#f97316", icon: null },
-  { label: "Meal Prep",   dot: "#38bdf8", icon: null },
-  { label: "Desserts",    dot: "#c084fc", icon: null },
-  { label: "Smoothies",   dot: "#34d399", icon: null },
+  { label: "All recipes", dot: null, icon: "♦" },
+  { label: "Snacks", dot: "#f97316", icon: null },
+  { label: "Meal Prep", dot: "#38bdf8", icon: null },
+  { label: "Desserts", dot: "#c084fc", icon: null },
+  { label: "Smoothies", dot: "#34d399", icon: null },
 ];
 
 const SORT_OPTIONS = ["Default", "A - Z", "Most Popular"];
 const DIETARY_FILTERS = ["Vegetarian", "Vegan", "High in Protein"];
 
 const CARD_COLORS = [
-  "#c4a000","#7c3aed","#0891b2","#9f1239",
-  "#0d9488","#6d28d9","#0369a1","#be185d",
+  "#c4a000", "#7c3aed", "#0891b2", "#9f1239",
+  "#0d9488", "#6d28d9", "#0369a1", "#be185d",
 ];
 
 type Recipe = {
@@ -123,23 +139,23 @@ const heroRecipes = [
     id: 1, label: "NUTROFREEZE RECIPES",
     name: "MIXED BERRY\nSMOOTHIE BOWL",
     product: "Mixed Berry Blend",
-    desc: "Thick frozen berries blended and topped with granola, chia seeds and fresh fruit — under 10 minutes.",
+    desc: "Rehydrate our freeze dried mixed fruits with a splash of water, blend and top with granola. A wholesome breakfast ready in under 10 minutes.",
     img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=600&q=90",
     bg: "#0d9488",
   },
   {
     id: 2, label: "NUTROFREEZE RECIPES",
-    name: "GYM MEAL\nPREP SUNDAY",
-    product: "Protein Quinoa Bowl",
-    desc: "Five high-protein meals from one prep session. Our Quinoa Bowl makes it effortless.",
-    img: "https://images.unsplash.com/photo-1679279726937-122c49626802?w=600&q=90",
+    name: "QUICK VEGGIE\nSOUP IN MINUTES",
+    product: "Freeze Dried Vegetables",
+    desc: "Add our freeze dried vegetables straight into your broth and they rehydrate in minutes with all nutrients preserved.",
+    img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=600&q=90",
     bg: "#1e1b4b",
   },
   {
     id: 3, label: "NUTROFREEZE RECIPES",
-    name: "SWEET POTATO\nBABY PURÉE",
-    product: "Sweet Potato Purée",
-    desc: "Naturally sweet, no salt added. The ultimate first food for babies 4 months and up.",
+    name: "BABY PUREE\nIN SECONDS",
+    product: "Freeze Dried Baby Food",
+    desc: "Mix our freeze dried puree powder with a little water for a smooth, nutritious meal for your baby. No fillers, pure ingredients.",
     img: "https://images.unsplash.com/photo-1711205229065-89353695a869?w=600&q=90",
     bg: "#7c1d6f",
   },
@@ -430,11 +446,11 @@ function RecipesFooter() {
         <div>
           <p style={{ fontFamily: "'Bangers', cursive", fontSize: "22px", letterSpacing: "0.05em", color: "white", marginBottom: "10px" }}>CONTACT US</p>
           <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.55)", lineHeight: 1.9 }}>
-            +1.905.502.7277<br />info@nutrofreeze.com<br />sales@nutrofreeze.com
+            +65 8503 9022<br />nutrofreeze@gmail.com
           </p>
-          <p style={{ fontFamily: "'Bangers', cursive", fontSize: "22px", letterSpacing: "0.05em", color: "white", marginTop: "22px", marginBottom: "10px" }}>HEAD OFFICE</p>
+          <p style={{ fontFamily: "'Bangers', cursive", fontSize: "22px", letterSpacing: "0.05em", color: "white", marginTop: "22px", marginBottom: "10px" }}>HEADQUARTERS</p>
           <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.55)", lineHeight: 1.9 }}>
-            Ontario Impex of Canada<br />190 Statesman Drive<br />Mississauga, Ontario L5S 1X7
+            NutroFreeze Pte Ltd<br />Singapore
           </p>
         </div>
       </div>
@@ -540,6 +556,9 @@ export function RecipesPage() {
             <div className="flex-1 flex flex-col justify-center px-8 md:px-16 py-12 relative z-10">
               <div className="absolute top-8 right-8 opacity-40 hidden md:block"><DiamondIcon /></div>
               <div className="absolute bottom-12 left-6 opacity-25 hidden md:block"><DiamondIcon /></div>
+              <HeroSparkle top="12%" left="5%" size={28} delay={0} />
+              <HeroSparkle top="25%" left="55%" size={18} delay={0.7} />
+              <HeroSparkle bottom="18%" left="40%" size={22} delay={1.2} />
 
               <motion.span className="mb-3 block"
                 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "12px", fontWeight: 800, letterSpacing: "3px", color: "rgba(255,255,255,0.6)", textTransform: "uppercase" }}
@@ -706,32 +725,34 @@ export function RecipesPage() {
           )}
 
           {!isLoadingRecipes && !recipesError && (
-          <AnimatePresence mode="wait">
-            {filtered.length > 0 ? (
-              <motion.div key={activeSort + searchQuery + dietary.join() + activeCategory}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-                {filtered.map((recipe, i) => (
-                  <RecipeCard key={recipe.id} recipe={recipe} index={i} color={CARD_COLORS[i % CARD_COLORS.length]} />
-                ))}
-              </motion.div>
-            ) : (
-              <motion.div key="empty" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center py-24 text-center">
-                <span style={{ fontSize: "56px" }}>🔍</span>
-                <h3 style={{ fontFamily: "'Bangers', cursive", fontSize: "32px", letterSpacing: "0.04em", color: "#0f172a", marginTop: "16px", textTransform: "uppercase" }}>
-                  No Recipes Found
-                </h3>
-                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: "#64748b", marginTop: "8px" }}>
-                  Try a different search or filter
-                </p>
-                <button onClick={clearAll} className="mt-6 px-7 py-3 rounded-full bg-[#0f172a] text-white"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px", fontWeight: 700, border: "none", cursor: "pointer" }}>
-                  Clear filters
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            <AnimatePresence mode="wait">
+              {filtered.length > 0 ? (
+                <motion.div key={activeSort + searchQuery + dietary.join() + activeCategory}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+                  {filtered.map((recipe, i) => (
+                    <RecipeCard key={recipe.id} recipe={recipe} index={i} color={CARD_COLORS[i % CARD_COLORS.length]} />
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div key="empty" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center justify-center py-24 text-center">
+                  <div style={{ width: "72px", height: "72px", borderRadius: "50%", backgroundColor: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "4px" }}>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                  </div>
+                  <h3 style={{ fontFamily: "'Bangers', cursive", fontSize: "32px", letterSpacing: "0.04em", color: "#0f172a", marginTop: "16px", textTransform: "uppercase" }}>
+                    No Recipes Found
+                  </h3>
+                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: "#64748b", marginTop: "8px" }}>
+                    Try a different search or filter
+                  </p>
+                  <button onClick={clearAll} className="mt-6 px-7 py-3 rounded-full bg-[#0f172a] text-white"
+                    style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px", fontWeight: 700, border: "none", cursor: "pointer" }}>
+                    Clear filters
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           )}
 
           {/* Spice Up Your Inbox */}

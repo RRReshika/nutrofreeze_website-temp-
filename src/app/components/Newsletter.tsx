@@ -106,7 +106,7 @@ export function Newsletter() {
             className="mt-4"
             style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.5)" }}
           >
-            No spam, ever. Unsubscribe anytime. 🍁
+            No spam, ever. Unsubscribe anytime.
           </p>
         </motion.div>
       </div>

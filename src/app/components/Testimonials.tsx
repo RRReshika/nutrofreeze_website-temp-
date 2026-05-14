@@ -5,42 +5,42 @@ import { Star } from "lucide-react";
 const testimonials = [
   {
     id: 1,
-    name: "Parveen S.",
-    location: "Toronto, ON",
+    name: "Sarah T.",
+    location: "Singapore",
     rating: 5,
-    text: "The Mixed Berry Blend is incredible for smoothie bowls! Every morning it takes me 5 minutes and the flavour is absolutely fresh and bursting. My whole family has switched to Nutrofreeze.",
-    product: "Mixed Berry Blend",
-    avatar: "P",
+    text: "The freeze dried mixed fruits are amazing for my kids. They love the crunchy texture and I love knowing there are no preservatives or added sugar. Goes straight into every lunchbox.",
+    product: "Freeze Dried Fruits",
+    avatar: "S",
     accentTeal: true,
   },
   {
     id: 2,
-    name: "Rajinder K.",
-    location: "Brampton, ON",
+    name: "Marcus L.",
+    location: "Singapore",
     rating: 5,
-    text: "Been buying the Protein Quinoa Bowl every week now. As someone who trains 5 days a week, having 32g of plant protein ready in 3 minutes is a game changer. Quality is outstanding.",
-    product: "Protein Quinoa Bowl",
-    avatar: "R",
+    text: "The ready to eat meals are a lifesaver on busy weeknights. Just add water and you have a proper nutritious meal in minutes. Quality is outstanding and nothing artificial inside.",
+    product: "Ready to Eat Meals",
+    avatar: "M",
     accentTeal: false,
   },
   {
     id: 3,
-    name: "Manjit D.",
-    location: "Vancouver, BC",
+    name: "Priya K.",
+    location: "Singapore",
     rating: 5,
-    text: "The Sweet Potato Baby Purée is the best thing I found for my little one. No salt, no preservatives — just pure sweet potato. My baby loves it and I feel good giving it every day.",
-    product: "Sweet Potato Purée",
-    avatar: "M",
+    text: "The baby food range is the best I have found for my little one. No salt, no preservatives, just pure ingredients. My baby loves it and I feel confident giving it every single day.",
+    product: "Baby Food",
+    avatar: "P",
     accentTeal: true,
   },
   {
     id: 4,
-    name: "Harpreet B.",
-    location: "Calgary, AB",
+    name: "Wei Ling C.",
+    location: "Singapore",
     rating: 5,
-    text: "The Broccoli Florets and Spinach Mix are genuinely the freshest frozen vegetables I've ever cooked. You can tell they're triple-washed and high quality. Won't buy any other brand.",
-    product: "Broccoli Florets",
-    avatar: "H",
+    text: "The freeze dried vegetables are genuinely so convenient. I add them to soups and stir fries and they rehydrate perfectly. You can taste the freshness. Will not buy any other brand.",
+    product: "Freeze Dried Vegetables",
+    avatar: "W",
     accentTeal: false,
   },
 ];
@@ -74,7 +74,7 @@ export function Testimonials() {
               letterSpacing: "-1px",
             }}
           >
-            Loved by<br /><span style={{ color: "#0d9488" }}>Canadians</span>
+            Loved by<br /><span style={{ color: "#0d9488" }}>Families</span>
           </h2>
         </motion.div>
 

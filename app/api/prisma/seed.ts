@@ -33,15 +33,17 @@ const permissions = [
 
 const roles = [
   { name: 'OWNER', description: 'Full system access', permissions: permissions.map(p => `${p.resource}:${p.action}`) },
-  { name: 'ADMIN', description: 'Can manage most things except critical security', permissions: [
-    'product:read','product:create','product:update','product:delete','inventory:read','inventory:update',
-    'order:read','order:update_status','order:cancel','order:refund',
-    'promo:read','promo:create','promo:update','promo:delete','loyalty:read','loyalty:adjust',
-    'admin_user:read','admin_user:create','admin_user:update',
-  ]},
-  { name: 'OPS', description: 'Orders and inventory', permissions: ['product:read','inventory:read','inventory:update','order:read','order:update_status'] },
-  { name: 'SUPPORT', description: 'Customer support', permissions: ['order:read','order:update_status','loyalty:read'] },
-  { name: 'MARKETING', description: 'Promotions and content', permissions: ['product:read','promo:read','promo:create','promo:update'] },
+  {
+    name: 'ADMIN', description: 'Can manage most things except critical security', permissions: [
+      'product:read', 'product:create', 'product:update', 'product:delete', 'inventory:read', 'inventory:update',
+      'order:read', 'order:update_status', 'order:cancel', 'order:refund',
+      'promo:read', 'promo:create', 'promo:update', 'promo:delete', 'loyalty:read', 'loyalty:adjust',
+      'admin_user:read', 'admin_user:create', 'admin_user:update',
+    ]
+  },
+  { name: 'OPS', description: 'Orders and inventory', permissions: ['product:read', 'inventory:read', 'inventory:update', 'order:read', 'order:update_status'] },
+  { name: 'SUPPORT', description: 'Customer support', permissions: ['order:read', 'order:update_status', 'loyalty:read'] },
+  { name: 'MARKETING', description: 'Promotions and content', permissions: ['product:read', 'promo:read', 'promo:create', 'promo:update'] },
 ];
 
 // ============================================
@@ -61,140 +63,33 @@ const catalogData: { category: string; slug: string; sortOrder: number; products
     category: 'Fruits', slug: 'fruits', sortOrder: 1,
     products: [
       { name: 'Apple (Slice)', formFactor: 'Slice', description: 'Freeze-dried apple slices with a satisfying crunch and natural sweetness.', price50g: 10.90, price100g: 19.90 },
-      { name: 'Banana (Slice)', formFactor: 'Slice', description: 'Freeze-dried banana slices — naturally sweet and perfectly crispy.', price50g: 9.90, price100g: 17.90 },
+      { name: 'Banana (Slice)', formFactor: 'Slice', description: 'Freeze-dried banana slices, naturally sweet and perfectly crispy.', price50g: 9.90, price100g: 17.90 },
       { name: 'Strawberry (Slice)', formFactor: 'Slice', description: 'Freeze-dried strawberry slices bursting with intense berry flavor.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Mango (Cube)', formFactor: 'Cube', description: 'Freeze-dried mango cubes — sweet, tangy, and tropical.', price50g: 14.90, price100g: 26.90 },
+      { name: 'Mango (Cube)', formFactor: 'Cube', description: 'Freeze-dried mango cubes, sweet, tangy, and tropical.', price50g: 14.90, price100g: 26.90 },
       { name: 'Custard Apple (Cube)', formFactor: 'Cube', description: 'Freeze-dried custard apple cubes with a creamy, sweet flavor.', price50g: 15.90, price100g: 28.90 },
-      { name: 'Jamun (Slice)', formFactor: 'Slice', description: 'Freeze-dried jamun slices — tart and rich in antioxidants.', price50g: 13.90, price100g: 24.90 },
+      { name: 'Jamun (Slice)', formFactor: 'Slice', description: 'Freeze-dried jamun slices, tart and rich in antioxidants.', price50g: 13.90, price100g: 24.90 },
       { name: 'Chikoo (Sapota) (Slice)', formFactor: 'Slice', description: 'Freeze-dried chikoo slices with a caramel-like sweetness.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Pink/White Guava (Cube)', formFactor: 'Cube', description: 'Freeze-dried guava cubes — fragrant and vitamin C rich.', price50g: 11.90, price100g: 20.90 },
-      { name: 'Pomegranate (Kernels)', formFactor: 'Kernels', description: 'Freeze-dried pomegranate kernels — crunchy and packed with antioxidants.', price50g: 16.90, price100g: 30.90 },
-      { name: 'Blueberry (Whole)', formFactor: 'Whole', description: 'Freeze-dried whole blueberries — tiny bursts of superfood goodness.', price50g: 18.90, price100g: 34.90 },
+      { name: 'Pink/White Guava (Cube)', formFactor: 'Cube', description: 'Freeze-dried guava cubes, fragrant and vitamin C rich.', price50g: 11.90, price100g: 20.90 },
+      { name: 'Blueberry (Whole)', formFactor: 'Whole', description: 'Freeze-dried whole blueberries, tiny bursts of superfood goodness.', price50g: 18.90, price100g: 34.90 },
       { name: 'Jackfruit (Slice)', formFactor: 'Slice', description: 'Freeze-dried jackfruit slices with a unique tropical sweetness.', price50g: 13.90, price100g: 24.90 },
-      { name: 'Pineapple (Slice)', formFactor: 'Slice', description: 'Freeze-dried pineapple slices — tangy, sweet, and refreshing.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Kiwi (Slice)', formFactor: 'Slice', description: 'Freeze-dried kiwi slices — tart and loaded with vitamin C.', price50g: 14.90, price100g: 26.90 },
-      { name: 'Papaya (Cube)', formFactor: 'Cube', description: 'Freeze-dried papaya cubes — soft, sweet, and tropical.', price50g: 11.90, price100g: 20.90 },
-      { name: 'Black Jamun (Cube)', formFactor: 'Cube', description: 'Freeze-dried black jamun cubes — deeply flavored and nutrient-rich.', price50g: 14.90, price100g: 26.90 },
-      { name: 'Orange (Flakes)', formFactor: 'Flakes', description: 'Freeze-dried orange flakes — zesty citrus flavor in every bite.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Raspberry (Whole)', formFactor: 'Whole', description: 'Freeze-dried whole raspberries — delicate, tart, and aromatic.', price50g: 18.90, price100g: 34.90 },
-      { name: 'Mixed Fruit Pack', formFactor: null, description: 'An assortment of our best freeze-dried fruits in one convenient pack.', price50g: 16.90, price100g: 29.90 },
+      { name: 'Pineapple (Slice)', formFactor: 'Slice', description: 'Freeze-dried pineapple slices, tangy, sweet, and refreshing.', price50g: 12.90, price100g: 22.90 },
+      { name: 'Kiwi (Slice)', formFactor: 'Slice', description: 'Freeze-dried kiwi slices, tart and loaded with vitamin C.', price50g: 14.90, price100g: 26.90 },
+      { name: 'Papaya (Cube)', formFactor: 'Cube', description: 'Freeze-dried papaya cubes, soft, sweet, and tropical.', price50g: 11.90, price100g: 20.90 },
+      { name: 'Raspberry (Whole)', formFactor: 'Whole', description: 'Freeze-dried whole raspberries, delicate, tart, and aromatic.', price50g: 18.90, price100g: 34.90 },
     ],
   },
   {
     category: 'Vegetables', slug: 'vegetables', sortOrder: 2,
     products: [
-      { name: 'Carrots (Cube/Pieces)', formFactor: 'Cube', description: 'Freeze-dried carrot cubes — sweet, crunchy, and versatile.', price50g: 8.90, price100g: 15.90 },
-      { name: 'Peas (Whole)', formFactor: 'Whole', description: 'Freeze-dried whole peas — naturally sweet and great for soups.', price50g: 7.90, price100g: 13.90 },
-      { name: 'Broccoli', formFactor: null, description: 'Freeze-dried broccoli florets — nutrient-dense and easy to rehydrate.', price50g: 9.90, price100g: 17.90 },
-      { name: 'Corn (Whole)', formFactor: 'Whole', description: 'Freeze-dried sweet corn kernels — naturally sweet and crunchy.', price50g: 8.90, price100g: 15.90 },
-      { name: 'Ginger (Flakes)', formFactor: 'Flakes', description: 'Freeze-dried ginger flakes — aromatic and perfect for teas and cooking.', price50g: 10.90, price100g: 19.90 },
-      { name: 'French Bean (Flakes/Shredded)', formFactor: 'Flakes', description: 'Freeze-dried french bean flakes — light and nutritious.', price50g: 8.90, price100g: 15.90 },
-      { name: 'Green Bell Pepper (Flakes)', formFactor: 'Flakes', description: 'Freeze-dried green bell pepper flakes — vibrant and flavorful.', price50g: 9.90, price100g: 17.90 },
-      { name: 'Potato (Cube/Pieces)', formFactor: 'Cube', description: 'Freeze-dried potato cubes — quick to rehydrate for any meal.', price50g: 7.90, price100g: 13.90 },
-      { name: 'Red Bell Pepper (Flakes)', formFactor: 'Flakes', description: 'Freeze-dried red bell pepper flakes — sweet and colorful.', price50g: 9.90, price100g: 17.90 },
-      { name: 'Cabbage (Flakes)', formFactor: 'Flakes', description: 'Freeze-dried cabbage flakes — mild and versatile for soups and stir-fries.', price50g: 7.90, price100g: 13.90 },
-      { name: 'Amla (Gooseberry) (Flakes/Peel)', formFactor: 'Flakes', description: 'Freeze-dried amla flakes — one of the richest sources of vitamin C.', price50g: 11.90, price100g: 20.90 },
-      { name: 'Bitter Gourd (Slice)', formFactor: 'Slice', description: 'Freeze-dried bitter gourd slices — a superfood for health-conscious eaters.', price50g: 9.90, price100g: 17.90 },
-      { name: 'Zucchini (Slice)', formFactor: 'Slice', description: 'Freeze-dried zucchini slices — light, mild, and nutrient-packed.', price50g: 9.90, price100g: 17.90 },
-      { name: 'Mixed Vegetable Pack', formFactor: null, description: 'A mix of our best freeze-dried vegetables for easy meal prep.', price50g: 10.90, price100g: 19.90 },
-    ],
-  },
-  {
-    category: 'Herbs', slug: 'herbs', sortOrder: 3,
-    products: [
-      { name: 'Tulsi (Whole)', formFactor: 'Whole', description: 'Freeze-dried whole tulsi leaves — sacred basil for teas and wellness.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Tulsi (Flakes)', formFactor: 'Flakes', description: 'Freeze-dried tulsi flakes — easy to sprinkle into drinks and dishes.', price50g: 11.90, price100g: 20.90 },
-      { name: 'Basil (Whole)', formFactor: 'Whole', description: 'Freeze-dried whole basil leaves — aromatic Italian herb at its finest.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Basil (Flakes)', formFactor: 'Flakes', description: 'Freeze-dried basil flakes — convenient and intensely flavorful.', price50g: 11.90, price100g: 20.90 },
-      { name: 'Parsley (Whole)', formFactor: 'Whole', description: 'Freeze-dried whole parsley — fresh flavor preserved perfectly.', price50g: 11.90, price100g: 20.90 },
-      { name: 'Parsley (Flakes)', formFactor: 'Flakes', description: 'Freeze-dried parsley flakes — a kitchen essential.', price50g: 10.90, price100g: 19.90 },
-      { name: 'Oregano (Whole)', formFactor: 'Whole', description: 'Freeze-dried whole oregano — bold Mediterranean flavor.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Oregano (Shredded)', formFactor: 'Shredded', description: 'Freeze-dried shredded oregano — ready to use in any recipe.', price50g: 11.90, price100g: 20.90 },
-      { name: 'Mint (Flakes)', formFactor: 'Flakes', description: 'Freeze-dried mint flakes — cool, refreshing, and versatile.', price50g: 10.90, price100g: 19.90 },
-      { name: 'Rose Petal (Flakes)', formFactor: 'Flakes', description: 'Freeze-dried rose petal flakes — fragrant and beautiful for garnishing.', price50g: 14.90, price100g: 26.90 },
-    ],
-  },
-  {
-    category: 'Food Powders', slug: 'food-powders', sortOrder: 4,
-    products: [
-      { name: 'Strawberry Powder', formFactor: 'Powder', description: 'Freeze-dried strawberry powder — perfect for smoothies and baking.', price50g: 13.90, price100g: 24.90 },
-      { name: 'Banana Powder', formFactor: 'Powder', description: 'Freeze-dried banana powder — natural sweetener for shakes.', price50g: 10.90, price100g: 19.90 },
-      { name: 'Custard Apple Powder', formFactor: 'Powder', description: 'Freeze-dried custard apple powder — creamy and unique.', price50g: 15.90, price100g: 28.90 },
-      { name: 'Jamun Powder', formFactor: 'Powder', description: 'Freeze-dried jamun powder — rich in iron and antioxidants.', price50g: 13.90, price100g: 24.90 },
-      { name: 'Mango Powder', formFactor: 'Powder', description: 'Freeze-dried mango powder — tropical flavor for any recipe.', price50g: 14.90, price100g: 26.90 },
-      { name: 'Chikoo Powder', formFactor: 'Powder', description: 'Freeze-dried chikoo powder — naturally sweet and smooth.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Pink/White Guava Powder', formFactor: 'Powder', description: 'Freeze-dried guava powder — vitamin C powerhouse.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Pomegranate Powder', formFactor: 'Powder', description: 'Freeze-dried pomegranate powder — antioxidant-rich superfood.', price50g: 16.90, price100g: 30.90 },
-      { name: 'Blueberry Powder', formFactor: 'Powder', description: 'Freeze-dried blueberry powder — brain-boosting superfood.', price50g: 18.90, price100g: 34.90 },
-      { name: 'Jackfruit Powder', formFactor: 'Powder', description: 'Freeze-dried jackfruit powder — unique tropical flavor.', price50g: 13.90, price100g: 24.90 },
-      { name: 'Pineapple Powder', formFactor: 'Powder', description: 'Freeze-dried pineapple powder — tangy and refreshing.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Spinach Powder', formFactor: 'Powder', description: 'Freeze-dried spinach powder — iron-rich green superfood.', price50g: 10.90, price100g: 19.90 },
-      { name: 'Ginger Powder', formFactor: 'Powder', description: 'Freeze-dried ginger powder — warming and anti-inflammatory.', price50g: 11.90, price100g: 20.90 },
-      { name: 'Beetroot Powder', formFactor: 'Powder', description: 'Freeze-dried beetroot powder — vibrant color and earthy flavor.', price50g: 10.90, price100g: 19.90 },
-      { name: 'Amla Powder', formFactor: 'Powder', description: 'Freeze-dried amla powder — immunity-boosting vitamin C.', price50g: 11.90, price100g: 20.90 },
-      { name: 'Green Peas Powder', formFactor: 'Powder', description: 'Freeze-dried green peas powder — plant protein boost.', price50g: 9.90, price100g: 17.90 },
-      { name: 'Mint Powder', formFactor: 'Powder', description: 'Freeze-dried mint powder — refreshing and digestive.', price50g: 10.90, price100g: 19.90 },
-      { name: 'Carrot Powder', formFactor: 'Powder', description: 'Freeze-dried carrot powder — beta-carotene rich.', price50g: 9.90, price100g: 17.90 },
-      { name: 'Leek Powder', formFactor: 'Powder', description: 'Freeze-dried leek powder — mild onion flavor for soups.', price50g: 10.90, price100g: 19.90 },
-      { name: 'Sweet Corn Powder', formFactor: 'Powder', description: 'Freeze-dried sweet corn powder — naturally sweet and versatile.', price50g: 9.90, price100g: 17.90 },
-      { name: 'Celery Powder', formFactor: 'Powder', description: 'Freeze-dried celery powder — savory and aromatic.', price50g: 10.90, price100g: 19.90 },
-      { name: 'Coriander Powder', formFactor: 'Powder', description: 'Freeze-dried coriander powder — fresh herb flavor preserved.', price50g: 10.90, price100g: 19.90 },
-      { name: 'Rose Petal Powder', formFactor: 'Powder', description: 'Freeze-dried rose petal powder — floral and luxurious.', price50g: 14.90, price100g: 26.90 },
-      { name: 'Kale Powder', formFactor: 'Powder', description: 'Freeze-dried kale powder — the ultimate green superfood.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Mixed Fruit Powder', formFactor: 'Powder', description: 'Blend of freeze-dried fruit powders for smoothies.', price50g: 14.90, price100g: 26.90 },
-      { name: 'Mixed Vegetable Powder', formFactor: 'Powder', description: 'Blend of freeze-dried veggie powders for nutrition.', price50g: 11.90, price100g: 20.90 },
-      { name: 'Superfood Powder Blend', formFactor: 'Powder', description: 'Beetroot, kale, and amla blend — ultimate nutrition boost.', price50g: 16.90, price100g: 30.90 },
-    ],
-  },
-  {
-    category: 'Meals Ready to Eat (MRE)', slug: 'meals-ready-to-eat', sortOrder: 5,
-    products: [
-      { name: 'Pasta Dishes', formFactor: null, description: 'Freeze-dried pasta meals — just add hot water for a complete meal.', price50g: 18.90, price100g: 34.90 },
-      { name: 'Rice Meals', formFactor: null, description: 'Freeze-dried rice meals — convenient and satisfying.', price50g: 16.90, price100g: 30.90 },
-      { name: 'Soups', formFactor: null, description: 'Freeze-dried soup mixes — warm, nourishing, and ready in minutes.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Breakfast Options', formFactor: null, description: 'Freeze-dried breakfast meals — start your day right anywhere.', price50g: 14.90, price100g: 26.90 },
-      { name: 'Vegetarian Entrees', formFactor: null, description: 'Freeze-dried vegetarian meals — plant-based and delicious.', price50g: 16.90, price100g: 30.90 },
-      { name: 'Non-Vegetarian Entrees', formFactor: null, description: 'Freeze-dried meat-based meals — protein-packed and hearty.', price50g: 19.90, price100g: 36.90 },
-    ],
-  },
-  {
-    category: 'Snacks', slug: 'snacks', sortOrder: 6,
-    products: [
-      { name: 'Chips', formFactor: null, description: 'Freeze-dried potato and veggie chips — light and addictively crunchy.', price50g: 8.90, price100g: 15.90 },
-      { name: 'Ice Cream', formFactor: null, description: 'Freeze-dried ice cream bites — a crunchy twist on a classic treat.', price50g: 14.90, price100g: 26.90 },
-      { name: 'Candies', formFactor: null, description: 'Freeze-dried fruit-flavored candies — intensely flavorful and fun.', price50g: 9.90, price100g: 17.90 },
-      { name: 'Biscuits', formFactor: null, description: 'Freeze-dried cookies and crackers — crispy and shelf-stable.', price50g: 10.90, price100g: 19.90 },
-      { name: 'Yogurt Drops', formFactor: null, description: 'Freeze-dried yogurt snacks — tangy, creamy, and probiotic-rich.', price50g: 12.90, price100g: 22.90 },
-    ],
-  },
-  {
-    category: 'Variety Buckets', slug: 'variety-buckets', sortOrder: 7,
-    products: [
-      { name: 'Fruit Variety Bucket', formFactor: null, description: '5 types of freeze-dried fruits in one convenient bucket.', price50g: 39.90, price100g: 69.90 },
-      { name: 'Vegetable Variety Bucket', formFactor: null, description: '5 types of freeze-dried vegetables in one bucket.', price50g: 34.90, price100g: 59.90 },
-      { name: 'Powder Assortment Bucket', formFactor: null, description: 'Multiple fruit, veggie, and herb powders in one bucket.', price50g: 44.90, price100g: 79.90 },
-      { name: 'Snack Mix Bucket', formFactor: null, description: 'Mix of chips, candies, biscuits, and more.', price50g: 36.90, price100g: 64.90 },
-      { name: 'Meal Sampler Bucket', formFactor: null, description: 'Assortment of MRE entrees for emergency or adventure.', price50g: 49.90, price100g: 89.90 },
-    ],
-  },
-  {
-    category: 'Meats', slug: 'meats', sortOrder: 8,
-    products: [
-      { name: 'Chicken', formFactor: null, description: 'Freeze-dried chicken strips or cubes — high protein, ready to rehydrate.', price50g: 22.90, price100g: 42.90 },
-      { name: 'Mutton', formFactor: null, description: 'Freeze-dried mutton pieces — rich flavor preserved perfectly.', price50g: 26.90, price100g: 49.90 },
-      { name: 'Turkey', formFactor: null, description: 'Freeze-dried turkey slices — lean protein for any meal.', price50g: 24.90, price100g: 45.90 },
-      { name: 'Egg', formFactor: null, description: 'Freeze-dried eggs — scramble or use in baking, just add water.', price50g: 18.90, price100g: 34.90 },
-      { name: 'Seafood (Shrimp)', formFactor: null, description: 'Freeze-dried shrimp — lightweight and flavor-packed.', price50g: 28.90, price100g: 52.90 },
-    ],
-  },
-  {
-    category: 'Baby Food', slug: 'baby-food', sortOrder: 9,
-    products: [
-      { name: 'Pureed Fruits', formFactor: null, description: 'Freeze-dried fruit purees for infants — gentle and nutritious.', price50g: 14.90, price100g: 26.90 },
-      { name: 'Vegetable Blends', formFactor: null, description: 'Freeze-dried veggie mixes for babies — smooth and wholesome.', price50g: 13.90, price100g: 24.90 },
-      { name: 'Meat Purees', formFactor: null, description: 'Freeze-dried meat-based baby meals — protein for growing babies.', price50g: 16.90, price100g: 30.90 },
-      { name: 'Yogurt Bites', formFactor: null, description: 'Freeze-dried yogurt for toddlers — melts in the mouth.', price50g: 12.90, price100g: 22.90 },
-      { name: 'Cereal Powders', formFactor: null, description: 'Freeze-dried baby cereals — easy to prepare and nutrient-rich.', price50g: 11.90, price100g: 20.90 },
+      { name: 'Carrots (Cube/Pieces)', formFactor: 'Cube', description: 'Freeze-dried carrot cubes, sweet, crunchy, and versatile.', price50g: 8.90, price100g: 15.90 },
+      { name: 'Peas (Whole)', formFactor: 'Whole', description: 'Freeze-dried whole peas, naturally sweet and great for soups.', price50g: 7.90, price100g: 13.90 },
+      { name: 'Corn (Whole)', formFactor: 'Whole', description: 'Freeze-dried sweet corn kernels, naturally sweet and crunchy.', price50g: 8.90, price100g: 15.90 },
+      { name: 'Green Bell Pepper (Flakes)', formFactor: 'Flakes', description: 'Freeze-dried green bell pepper flakes, vibrant and flavorful.', price50g: 9.90, price100g: 17.90 },
+      { name: 'Potato (Cube/Pieces)', formFactor: 'Cube', description: 'Freeze-dried potato cubes, quick to rehydrate for any meal.', price50g: 7.90, price100g: 13.90 },
+      { name: 'Red Bell Pepper (Flakes)', formFactor: 'Flakes', description: 'Freeze-dried red bell pepper flakes, sweet and colorful.', price50g: 9.90, price100g: 17.90 },
+      { name: 'Amla (Gooseberry) (Slice)', formFactor: 'Slice', description: 'Freeze-dried amla slices, one of the richest sources of vitamin C.', price50g: 11.90, price100g: 20.90 },
+      { name: 'Bitter Gourd (Slice)', formFactor: 'Slice', description: 'Freeze-dried bitter gourd slices, a superfood for health-conscious eaters.', price50g: 9.90, price100g: 17.90 },
+      { name: 'Zucchini (Slice)', formFactor: 'Slice', description: 'Freeze-dried zucchini slices, light, mild, and nutrient-packed.', price50g: 9.90, price100g: 17.90 },
     ],
   },
 ];
@@ -313,6 +208,14 @@ async function main() {
   }
 
   // --- CATALOG ---
+  // Wipe all catalog data so stale products/categories don't linger
+  await prisma.productImage.deleteMany({});
+  await prisma.inventory.deleteMany({});
+  await prisma.variant.deleteMany({});
+  await prisma.product.deleteMany({});
+  await prisma.category.deleteMany({});
+  console.log('🗑️  Cleared old catalog data');
+
   let totalProducts = 0;
 
   for (const cat of catalogData) {

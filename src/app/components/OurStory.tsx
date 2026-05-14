@@ -22,7 +22,7 @@ function SpinBadge() {
         <circle cx="60" cy="60" r="54" fill="none" stroke="#0d9488" strokeWidth="2" opacity="0.4" />
         <text style={{ fontSize: "9.5px", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "4px", fill: "#0d9488" }}>
           <textPath href="#circleText">
-            SOUTH ASIAN RECIPES · CANADIAN MADE · PREMIUM QUALITY ·&nbsp;
+            FREEZE DRIED · PURE NUTRITION · NO ADDITIVES ·&nbsp;
           </textPath>
         </text>
       </motion.svg>
@@ -33,7 +33,7 @@ function SpinBadge() {
         display: "flex", alignItems: "center", justifyContent: "center",
       }}>
         <svg viewBox="0 0 24 24" fill="white" style={{ width: "28px", height: "28px" }}>
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
         </svg>
       </div>
     </div>
@@ -46,7 +46,7 @@ function StampBadge() {
     <motion.div
       animate={{ rotate: [-8, -12, -8] }}
       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-      style={{ position: "relative", width: "110px", height: "110px" }}
+      style={{ position: "relative", width: "150px", height: "150px" }}
     >
       <svg viewBox="0 0 110 110" style={{ width: "100%", height: "100%" }}>
         <polygon
@@ -59,11 +59,11 @@ function StampBadge() {
         />
       </svg>
       <div style={{
-        position: "absolute", inset: "22px",
+        position: "absolute", inset: "28px",
         display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
         textAlign: "center",
       }}>
-        <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "8px", letterSpacing: "1px", color: "white", lineHeight: 1.3 }}>
+        <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "11px", letterSpacing: "1px", color: "white", lineHeight: 1.3 }}>
           FROZEN<br />THE NUTRO<br />WAY<br />★<br />FROZEN<br />THE NUTRO<br />WAY
         </span>
       </div>
@@ -94,7 +94,7 @@ export function OurStory() {
             letterSpacing: "0.03em",
           }}
         >
-          ROOTED IN<br />TRADITION,
+          BORN FROM A<br />MOM'S DREAM,
         </motion.h2>
       </div>
 
@@ -154,7 +154,7 @@ export function OurStory() {
             marginBottom: "32px",
             marginTop: "80px",
           }}>
-            We're on a mission to share our love of authentic, nutritious frozen South Asian snacks with every household. That's why you'll never find a product on our shelves that we wouldn't serve at our own family table.
+            NutroFreeze was founded by a mother who sought a better way to nourish her child in today's fast-paced environment. Frustrated by the lack of convenient, high-quality options free from additives, she discovered freeze-drying, a gentle method that locks in natural flavours, vitamins, and nutrients with no preservatives. Every product is crafted with the same care any parent would expect for their own child.
           </p>
 
           <motion.a
@@ -184,7 +184,7 @@ export function OurStory() {
       </div>
 
       {/* ── BOTTOM HUGE HEADLINE ── */}
-      <div style={{ padding: "0 40px 52px", overflow: "hidden", marginTop: "-24px" }}>
+      <div style={{ padding: "0 40px 52px", overflow: "hidden", marginTop: "8px" }}>
         <motion.h2
           initial={{ y: "110%", opacity: 0 }}
           animate={inView ? { y: 0, opacity: 1 } : {}}
@@ -199,7 +199,7 @@ export function OurStory() {
             letterSpacing: "0.03em",
           }}
         >
-          GROWING WITH<br />COMMUNITY
+          REAL NUTRITION,<br />REAL CONVENIENCE
         </motion.h2>
       </div>
 

@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "motion/react";
+import { Heart, Leaf, Snowflake, Shield } from "lucide-react";
 
 // Animated word reveal — each word slides up one by one
 function RevealWord({ word, delay = 0, color = "white" }: { word: string; delay?: number; color?: string }) {
@@ -20,10 +21,10 @@ function RevealWord({ word, delay = 0, color = "white" }: { word: string; delay?
 }
 
 const values = [
-  { icon: "🍁", title: "Made in Canada", desc: "Proudly made in Canada by a family who cares." },
-  { icon: "🌿", title: "No Preservatives", desc: "Clean ingredients, no artificial additives." },
-  { icon: "❄️", title: "Flash Frozen", desc: "Frozen at peak freshness to lock in flavour." },
-  { icon: "🏠", title: "Family Recipe", desc: "Recipes passed down through generations." },
+  { Icon: Heart, title: "Mom's Promise", desc: "Born from a mother's mission to nourish her child with pure, wholesome food." },
+  { Icon: Leaf, title: "No Preservatives", desc: "100% natural. No additives, no preservatives, no hidden fillers." },
+  { Icon: Snowflake, title: "Freeze Dried", desc: "Gently freeze-dried to preserve up to 97% of vitamins and nutrients." },
+  { Icon: Shield, title: "Tummy-Friendly", desc: "Pure, safe, and gentle nutrition for babies, toddlers, and the whole family." },
 ];
 
 export function Heritage() {
@@ -67,12 +68,12 @@ export function Heritage() {
             }}
           >
             <div>
-              {["ROOTED", "IN"].map((w, i) => (
+              {["BORN", "FROM"].map((w, i) => (
                 <RevealWord key={w} word={w} delay={i * 0.12} color="white" />
               ))}
             </div>
             <div>
-              {["TRADITION,"].map((w, i) => (
+              {["A MOM'S DREAM,"].map((w, i) => (
                 <RevealWord key={w} word={w} delay={0.2 + i * 0.12} color="white" />
               ))}
             </div>
@@ -152,7 +153,7 @@ export function Heritage() {
                 transition={{ delay: 0.4, duration: 0.6 }}
               >
                 <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: "rgba(255,255,255,0.72)", lineHeight: 1.75 }}>
-                  We're on a mission to share our love of wholesome frozen food with every Canadian family. That's why you'll never see anything on our shelves we wouldn't serve at our own table.
+                  NutroFreeze was founded by a mother seeking pure, convenient nutrition for her child. Every product is crafted with no additives, no preservatives. Real food, made with the same care you would give your own little one.
                 </p>
                 <motion.a
                   href="/about"
@@ -180,12 +181,12 @@ export function Heritage() {
             }}
           >
             <div>
-              {["GROWING", "WITH"].map((w, i) => (
+              {["PURE", "NUTRITION"].map((w, i) => (
                 <RevealWord key={w} word={w} delay={0.5 + i * 0.1} color="#5eead4" />
               ))}
             </div>
             <div>
-              {["COMMUNITY"].map((w, i) => (
+              {["REAL CONVENIENCE"].map((w, i) => (
                 <RevealWord key={w} word={w} delay={0.7 + i * 0.1} color="#5eead4" />
               ))}
             </div>
@@ -196,7 +197,7 @@ export function Heritage() {
       {/* ─── Mobile "Learn More" ─── */}
       <div className="lg:hidden px-6 pt-6 pb-2">
         <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "15px", color: "rgba(255,255,255,0.65)", lineHeight: 1.75 }}>
-          We're on a mission to share wholesome frozen food with every Canadian family. Real ingredients, authentic flavour.
+          NutroFreeze was founded by a mother seeking pure, convenient nutrition for her child. Real food, no additives, no compromise.
         </p>
         <a
           href="/about"
@@ -222,11 +223,11 @@ export function Heritage() {
                 whileHover={{ backgroundColor: "rgba(13,148,136,0.06)" }}
               >
                 <motion.div
-                  className="text-4xl mb-4"
+                  className="mb-4 flex items-center justify-center"
                   animate={{ y: [0, -7, 0] }}
                   transition={{ duration: 2.6 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
                 >
-                  {v.icon}
+                  <v.Icon size={30} color="#5eead4" />
                 </motion.div>
                 <div
                   style={{

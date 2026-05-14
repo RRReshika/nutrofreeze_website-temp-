@@ -1,14 +1,14 @@
 import { motion } from "motion/react";
 
 const items = [
-  "🍁 Proud Family Recipe",
-  "🇨🇦 Made in Canada",
-  "🌿 No Artificial Preservatives",
-  "⭐ Award Winning Taste",
-  "❄️ Flash Frozen Fresh",
-  "🌶️ Authentic South Asian Flavours",
-  "🥘 Ready in Minutes",
-  "💚 Vegetarian Options Available",
+  "Freeze Dried Nutrition",
+  "No Additives or Preservatives",
+  "Baby and Family Friendly",
+  "Just Add Water",
+  "Freeze Dried Fruits",
+  "Freeze Dried Vegetables",
+  "Freeze Dried Baby Food",
+  "Ready to Eat Meals",
 ];
 
 export function MarqueeBanner() {

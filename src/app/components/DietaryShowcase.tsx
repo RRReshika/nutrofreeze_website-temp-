@@ -24,33 +24,33 @@ interface LabelConfig {
 const LABELS: LabelConfig[] = [
   {
     text: "VEGAN", color: "#0d9488",
-    left:  { img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=500&q=90", name: "Mixed Berry Blend", rotate: -11, top: "8%",  inset: "-30px" },
-    right: { img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=500&q=90", name: "Broccoli Florets",  rotate:  8,  bottom: "6%", inset: "-25px" },
+    left: { img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=500&q=90", name: "Mixed Berry Blend", rotate: -11, top: "8%", inset: "-30px" },
+    right: { img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=500&q=90", name: "Broccoli Florets", rotate: 8, bottom: "6%", inset: "-25px" },
   },
   {
     text: "GELATIN FREE", color: "#7c3aed",
-    left:  { img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=500&q=90", name: "Mixed Berry Blend",  rotate: -14, bottom: "5%",  inset: "-20px" },
-    right: { img: "https://images.unsplash.com/photo-1711205229065-89353695a869?w=500&q=90", name: "Sweet Potato Purée",  rotate:   7, top: "6%",   inset: "-30px" },
+    left: { img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=500&q=90", name: "Mixed Berry Blend", rotate: -14, bottom: "5%", inset: "-20px" },
+    right: { img: "https://images.unsplash.com/photo-1711205229065-89353695a869?w=500&q=90", name: "Sweet Potato Purée", rotate: 7, top: "6%", inset: "-30px" },
   },
   {
     text: "GLUTEN FREE", color: "#0d9488",
-    left:  { img: "https://images.unsplash.com/photo-1667889244854-364252b3c14a?w=500&q=90", name: "Mango Chunks",        rotate:  -8, top: "38%",  inset: "-28px" },
-    right: { img: "https://images.unsplash.com/photo-1679279726937-122c49626802?w=500&q=90", name: "Protein Quinoa Bowl", rotate:  13, top: "18%",  inset: "-22px" },
+    left: { img: "https://images.unsplash.com/photo-1667889244854-364252b3c14a?w=500&q=90", name: "Mango Chunks", rotate: -8, top: "38%", inset: "-28px" },
+    right: { img: "https://images.unsplash.com/photo-1679279726937-122c49626802?w=500&q=90", name: "Ready to Eat Meal", rotate: 13, top: "18%", inset: "-22px" },
   },
   {
     text: "DAIRY FREE", color: "#7c3aed",
-    left:  { img: "https://images.unsplash.com/photo-1595265185654-f7b3c41c9a57?w=500&q=90", name: "Spinach & Greens", rotate: -10, top: "18%",   inset: "-35px" },
-    right: { img: "https://images.unsplash.com/photo-1667889244854-364252b3c14a?w=500&q=90", name: "Mango Chunks",      rotate:   9, bottom: "18%", inset: "-20px" },
+    left: { img: "https://images.unsplash.com/photo-1595265185654-f7b3c41c9a57?w=500&q=90", name: "Spinach & Greens", rotate: -10, top: "18%", inset: "-35px" },
+    right: { img: "https://images.unsplash.com/photo-1667889244854-364252b3c14a?w=500&q=90", name: "Mango Chunks", rotate: 9, bottom: "18%", inset: "-20px" },
   },
   {
     text: "KETO FRIENDLY", color: "#0d9488",
-    left:  { img: "https://images.unsplash.com/photo-1687041568037-dab13851ea14?w=500&q=90", name: "Lean Power Pack",  rotate:  -9, bottom: "20%", inset: "-25px" },
-    right: { img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=500&q=90", name: "Broccoli Florets", rotate:  11, bottom: "8%",  inset: "-30px" },
+    left: { img: "https://images.unsplash.com/photo-1687041568037-dab13851ea14?w=500&q=90", name: "Freeze Dried Snack", rotate: -9, bottom: "20%", inset: "-25px" },
+    right: { img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=500&q=90", name: "Broccoli Florets", rotate: 11, bottom: "8%", inset: "-30px" },
   },
   {
     text: "HALAL", color: "#7c3aed",
-    left:  { img: "https://images.unsplash.com/photo-1473340186413-a68ba9c2564e?w=500&q=90", name: "Mixed Veg Purée", rotate: -12, top: "26%",    inset: "-20px" },
-    right: { img: "https://images.unsplash.com/photo-1687041568037-dab13851ea14?w=500&q=90", name: "Lean Power Pack", rotate:   6, top: "30%",    inset: "-28px" },
+    left: { img: "https://images.unsplash.com/photo-1473340186413-a68ba9c2564e?w=500&q=90", name: "Mixed Veg Purée", rotate: -12, top: "26%", inset: "-20px" },
+    right: { img: "https://images.unsplash.com/photo-1687041568037-dab13851ea14?w=500&q=90", name: "Freeze Dried Snack", rotate: 6, top: "30%", inset: "-28px" },
   },
 ];
 
@@ -79,7 +79,7 @@ function ProductFloat({ cfg, side, blobColor, labelKey, rotate }: FloatProps) {
   const posStyle: React.CSSProperties = {
     position: "absolute",
     [side]: cfg.inset ?? "-20px",
-    ...(cfg.top    !== undefined ? { top:    cfg.top }    : {}),
+    ...(cfg.top !== undefined ? { top: cfg.top } : {}),
     ...(cfg.bottom !== undefined ? { bottom: cfg.bottom } : {}),
     width: "clamp(160px, 17vw, 250px)",
     zIndex: 10,
@@ -124,7 +124,7 @@ export function DietaryShowcase() {
   const [active, setActive] = useState<string | null>("GLUTEN FREE");
 
   const activeLabel = LABELS.find(l => l.text === active) ?? LABELS[2];
-  const blobColor   = activeLabel.color === "#0d9488" ? "#99f6e4" : "#ddd6fe";
+  const blobColor = activeLabel.color === "#0d9488" ? "#99f6e4" : "#ddd6fe";
 
   return (
     <section

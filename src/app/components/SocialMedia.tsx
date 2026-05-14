@@ -2,6 +2,35 @@ import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { ArrowRight } from "lucide-react";
 
+// Brars-style spinning mandala decoration
+function SpinMandala({ size = 100, color = "#c4b5fd" }: { size?: number; color?: string }) {
+  return (
+    <motion.svg
+      width={size}
+      height={size}
+      viewBox="0 0 120 120"
+      animate={{ rotate: 360 }}
+      transition={{ duration: 26, repeat: Infinity, ease: "linear" }}
+      style={{ display: "block", opacity: 0.22 }}
+    >
+      {[0, 45, 90, 135].map((deg) => (
+        <g key={deg} transform={`rotate(${deg} 60 60)`}>
+          <ellipse cx="60" cy="32" rx="6" ry="26" fill={color} />
+          <ellipse cx="60" cy="88" rx="6" ry="26" fill={color} />
+        </g>
+      ))}
+      {[22.5, 67.5, 112.5, 157.5].map((deg) => (
+        <g key={deg} transform={`rotate(${deg} 60 60)`}>
+          <ellipse cx="60" cy="36" rx="4" ry="20" fill={color} opacity="0.5" />
+          <ellipse cx="60" cy="84" rx="4" ry="20" fill={color} opacity="0.5" />
+        </g>
+      ))}
+      <circle cx="60" cy="60" r="10" fill="none" stroke={color} strokeWidth="1.5" />
+      <circle cx="60" cy="60" r="22" fill="none" stroke={color} strokeWidth="0.8" opacity="0.5" />
+    </motion.svg>
+  );
+}
+
 const socialLinks = [
   {
     platform: "Instagram",
@@ -34,14 +63,14 @@ const socialLinks = [
 
 // Doubled so the marquee loops seamlessly
 const gridPhotos = [
-  { id: 1,  img: "https://images.unsplash.com/photo-1716801564904-5605f562b664?w=500&q=80",  caption: "Samosa perfection" },
-  { id: 2,  img: "https://images.unsplash.com/photo-1595265185654-f7b3c41c9a57?w=500&q=80",  caption: "Family recipes" },
-  { id: 3,  img: "https://images.unsplash.com/photo-1588798571170-5e9df66a6c1d?w=500&q=80",  caption: "Paneer bites" },
-  { id: 4,  img: "https://images.unsplash.com/photo-1707424963059-6a7a559cae28?w=500&q=80",  caption: "Pure Makhani" },
-  { id: 5,  img: "https://images.unsplash.com/photo-1473340186413-a68ba9c2564e?w=500&q=80",  caption: "Sweet desserts" },
-  { id: 6,  img: "https://images.unsplash.com/photo-1738573519644-93b700f3adf3?w=500&q=80",  caption: "Spring rolls" },
-  { id: 7,  img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=500&q=80",  caption: "Berry smoothies" },
-  { id: 8,  img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=500&q=80",  caption: "Broccoli bites" },
+  { id: 1, img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=500&q=80", caption: "Freeze Dried Fruits" },
+  { id: 2, img: "https://images.unsplash.com/photo-1711205229065-89353695a869?w=500&q=80", caption: "Baby Nutrition" },
+  { id: 3, img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=500&q=80", caption: "Pure Vegetables" },
+  { id: 4, img: "https://images.unsplash.com/photo-1473340186413-a68ba9c2564e?w=500&q=80", caption: "Ready to Eat" },
+  { id: 5, img: "https://images.unsplash.com/photo-1595265185654-f7b3c41c9a57?w=500&q=80", caption: "Berry Goodness" },
+  { id: 6, img: "https://images.unsplash.com/photo-1615592602926-a3bfacbc1cbd?w=500&q=80", caption: "Crunchy Snacks" },
+  { id: 7, img: "https://images.unsplash.com/photo-1679279726937-122c49626802?w=500&q=80", caption: "Family Nutrition" },
+  { id: 8, img: "https://images.unsplash.com/photo-1716801564904-5605f562b664?w=500&q=80", caption: "Just Add Water" },
 ];
 
 // Inject the marquee keyframe once via a style tag
@@ -80,6 +109,14 @@ export function SocialMedia() {
         <div className="absolute top-0 left-0 w-72 h-72 rounded-full bg-white/5 -translate-x-1/2 -translate-y-1/2" />
         <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-[#7c3aed]/15 translate-x-1/3 translate-y-1/3" />
         <div className="absolute top-1/2 left-1/4 w-40 h-40 rounded-full bg-white/5" />
+
+        {/* Spinning mandala — Brars style */}
+        <div className="absolute top-4 right-6 pointer-events-none">
+          <SpinMandala size={140} color="#c4b5fd" />
+        </div>
+        <div className="absolute bottom-4 left-8 pointer-events-none">
+          <SpinMandala size={90} color="#5eead4" />
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 40 }}

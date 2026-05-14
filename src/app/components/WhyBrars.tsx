@@ -1,33 +1,34 @@
 import { useRef } from "react";
 import { motion, useInView } from "motion/react";
+import { Search, Star, Droplets, Heart } from "lucide-react";
 
 const steps = [
   {
     num: "01",
-    title: "Find Your Favourite",
-    desc: "Browse our range of frozen South Asian snacks — from Dahi Ke Kebab to crispy Samosas. Something for everyone.",
-    icon: "🔍",
+    title: "Choose Your Range",
+    desc: "Browse our freeze-dried fruits, vegetables, baby foods, and ready-to-eat meals. Pure nutrition for every family.",
+    Icon: Search,
     color: "#0d9488",
   },
   {
     num: "02",
-    title: "Find a Retailer",
-    desc: "Available at major Canadian grocery chains including Costco, Real Canadian Superstore, T&T, and more.",
-    icon: "🏪",
+    title: "Enjoy as a Snack",
+    desc: "Crunchy freeze-dried bites are ready straight from the pack, perfect for lunchboxes and on-the-go moments.",
+    Icon: Star,
     color: "#7c3aed",
   },
   {
     num: "03",
-    title: "Cook in Minutes",
-    desc: "From freezer to table in under 15 minutes. Bake, fry or air fry — they come out perfect every time.",
-    icon: "⏱️",
+    title: "Rehydrate in Minutes",
+    desc: "Simply add water to reconstitute into a delicious, nourishing meal or puree in minutes. No cooking required.",
+    Icon: Droplets,
     color: "#0d9488",
   },
   {
     num: "04",
     title: "Enjoy & Share",
-    desc: "Serve up at parties, family dinners, or just a late-night snack. The flavour speaks for itself.",
-    icon: "🎉",
+    desc: "Pure, wholesome nutrition for babies, toddlers, and the whole family, anytime, anywhere.",
+    Icon: Heart,
     color: "#7c3aed",
   },
 ];
@@ -92,10 +93,10 @@ export function WhyBrars() {
 
               {/* Icon */}
               <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-5"
+                className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
                 style={{ backgroundColor: step.color + "20" }}
               >
-                {step.icon}
+                <step.Icon size={24} color={step.color} />
               </div>
 
               {/* Step badge */}

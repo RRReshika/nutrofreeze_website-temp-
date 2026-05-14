@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ArrowLeft, LogOut, Mail, MapPin, ShoppingBag, Heart } from "lucide-react";
+import { motion } from "motion/react";
 import { Navbar } from "../components/Navbar";
 import { useAuth } from "../lib/auth-context";
 import { API_BASE_URL, authStorage } from "../lib/auth";
@@ -104,7 +105,7 @@ export function AccountPage() {
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="rounded-[28px] border border-slate-200 bg-white p-8 shadow-sm">
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-teal-700">Account</p>
-            <h1 className="mt-4 text-4xl font-black text-slate-950" style={{ fontFamily: "'Syne', sans-serif" }}>Sign in to view your profile.</h1>
+            <h1 className="mt-4 text-4xl font-black text-slate-950" style={{ fontFamily: "'Bangers', cursive", fontSize: "clamp(52px, 8vw, 80px)", letterSpacing: "2px" }}>SIGN IN TO VIEW YOUR PROFILE</h1>
             <p className="mt-4 max-w-xl text-slate-600">Your cart, orders, and wishlist sync after you sign in.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/signin" className="rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white no-underline">Sign In</Link>
@@ -122,29 +123,64 @@ export function AccountPage() {
       <Navbar />
       <div className="mx-auto max-w-6xl px-6 py-10">
         <div className="rounded-[32px] border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="relative overflow-hidden bg-[#0f172a] px-8 py-10 text-white sm:px-10">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(94,234,212,0.25),_transparent_40%),radial-gradient(circle_at_bottom_left,_rgba(124,58,237,0.22),_transparent_40%)]" />
+          <div className="relative overflow-hidden px-8 py-10 text-white sm:px-10" style={{ backgroundColor: "#231F20" }}>
+            <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 80% 20%, rgba(0,178,169,0.3) 0%, transparent 45%), radial-gradient(circle at 10% 80%, rgba(157,124,206,0.2) 0%, transparent 40%)", pointerEvents: "none" }} />
+            {/* Sparkles */}
+            {[{ top: "10%", left: "4%", s: 26, d: 0 }, { top: "30%", right: "18%", s: 16, d: 0.6 }, { bottom: "15%", left: "30%", s: 18, d: 1.0 }, { bottom: "8%", right: "5%", s: 22, d: 0.3 }].map((sp, i) => (
+              <motion.div key={i} style={{ position: "absolute", top: sp.top, left: (sp as any).left, right: (sp as any).right, bottom: sp.bottom, width: sp.s, height: sp.s, zIndex: 3, pointerEvents: "none" }}
+                animate={{ rotate: 360, scale: [1, 1.2, 1] }}
+                transition={{ rotate: { duration: 16, repeat: Infinity, ease: "linear" }, scale: { duration: 3.5, repeat: Infinity, delay: sp.d, ease: "easeInOut" } }}>
+                <svg viewBox="0 0 47 47" fill="white" opacity={0.4}>
+                  <path d="M23.2496 0.345703C17.2963 12.4504 12.4733 17.2676 0.350836 23.217C12.4795 29.1664 17.3075 33.9836 23.2736 46.1089C29.2269 33.9836 34.0292 29.1664 46.1723 23.217C34.023 17.2676 29.2156 12.4504 23.2496 0.345703Z" />
+                </svg>
+              </motion.div>
+            ))}
             <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-teal-200">Your account</p>
-                <h1 className="mt-4 text-4xl font-black tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>{displayName}</h1>
-                <div className="mt-4 flex items-center gap-2 text-white/80">
+                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-teal-200" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Your account</p>
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  style={{ fontFamily: "'Bangers', cursive", fontSize: "clamp(52px, 8vw, 90px)", lineHeight: 0.9, letterSpacing: "2px", margin: "12px 0" }}
+                >
+                  {displayName}
+                </motion.h1>
+                <div className="mt-3 flex items-center gap-2 text-white/80">
                   <Mail size={16} />
-                  <span>{user.email}</span>
+                  <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px" }}>{user.email}</span>
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={async () => {
-                  await signOut();
-                  navigate("/", { replace: true });
-                }}
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-sm font-semibold text-white hover:bg-white/10"
-              >
-                <LogOut size={16} />
-                Sign Out
-              </button>
+              <div className="flex items-end gap-4">
+                {/* Spin badge */}
+                <motion.div style={{ width: 90, height: 90, flexShrink: 0 }}
+                  initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 18, delay: 0.4 }}>
+                  <svg viewBox="0 0 90 90" width={90} height={90}>
+                    <circle cx="45" cy="45" r="43" fill="#00B2A9" />
+                    <defs><path id="acct-spin" d="M 78,45 a 33,33 0 1,0 -66,0" /></defs>
+                    <motion.g animate={{ rotate: 360 }} transition={{ duration: 18, repeat: Infinity, ease: "linear" }} style={{ transformOrigin: "45px 45px" }}>
+                      <text fill="white" style={{ fontSize: "8.5px", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, letterSpacing: "2px" } as React.CSSProperties}>
+                        <textPath href="#acct-spin" startOffset="0%">NUTROFREEZE · PURE NUTRITION · SG ·&nbsp;</textPath>
+                      </text>
+                    </motion.g>
+                    {[0, 45, 90, 135].map(a => <line key={a} x1="45" y1="35" x2="45" y2="55" stroke="white" strokeWidth="1.6" strokeLinecap="round" transform={`rotate(${a} 45 45)`} />)}
+                    <circle cx="45" cy="45" r="4" fill="white" />
+                  </svg>
+                </motion.div>
+
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await signOut();
+                    navigate("/", { replace: true });
+                  }}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-sm font-semibold text-white hover:bg-white/10"
+                >
+                  <LogOut size={16} />
+                  Sign Out
+                </button>
+              </div>
             </div>
           </div>
 
