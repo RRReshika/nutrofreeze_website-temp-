@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 
-const PRODUCT_IMG = "https://images.unsplash.com/photo-1643494847705-74808059bf07?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcm96ZW4lMjBmb29kJTIwcHJvZHVjdHMlMjBzcHJlYWQlMjBhcnJhbmdlbWVudHxlbnwxfHx8fDE3NzM4NDU5Nzh8MA&ixlib=rb-4.1.0&q=80&w=1080";
+const PRODUCT_IMG = "/images/mom%27s%20touch%20pic.png";
 
 // Circular spinning badge
 function SpinBadge() {

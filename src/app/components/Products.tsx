@@ -18,35 +18,35 @@ const FALLBACK_COLORS = [
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=700&q=90";
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "/api").replace(/\/$/, "");
 
-// Map product title keywords → local public/images path (1.png is the main product shot)
+// Map product title keywords → PC design-background images
 // Order matters: more specific patterns first
 const LOCAL_IMAGE_MAP: [RegExp, string][] = [
   // Fruits
-  [/custard\s*apple/i, "/images/Custard%20apple/1.png"],
-  [/black\s*jamun/i, "/images/Jamun/1.png"],
-  [/jamun/i, "/images/Jamun/1.png"],
-  [/chikoo|sapota/i, "/images/Chikoo/1.png"],
-  [/pink.*guava|white.*guava|guava/i, "/images/Guava/1.png"],
-  [/jackfruit|jack\s*fruit/i, "/images/Jack%20Fruit/1.png"],
-  [/blueberry/i, "/images/Blueberry/1.png"],
-  [/strawberry/i, "/images/Strawberry/1.png"],
-  [/raspberry/i, "/images/Raspberry/1.png"],
-  [/pineapple/i, "/images/Pineapple/1.png"],
-  [/papaya/i, "/images/Papaya/1.png"],
-  [/kiwi/i, "/images/Kiwi/1.png"],
-  [/mango/i, "/images/Mango/1.png"],
-  [/banana/i, "/images/Banana/1.png"],
-  [/apple/i, "/images/APPLE/1.png"],
+  [/custard\s*apple/i, "/images/Custard%20apple/PC%20Custard%20apple.png"],
+  [/black\s*jamun/i, "/images/Jamun/PC%20Jamun.png"],
+  [/jamun/i, "/images/Jamun/PC%20Jamun.png"],
+  [/chikoo|sapota/i, "/images/Chikoo/PC%20chikoo%20.png"],
+  [/pink.*guava|white.*guava|guava/i, "/images/Guava/PC%20Pink%20guava.png"],
+  [/jackfruit|jack\s*fruit/i, "/images/Jack%20Fruit/PC%20Jackfruit%20.png"],
+  [/blueberry/i, "/images/Blueberry/PC%20Blueberry.png"],
+  [/strawberry/i, "/images/Strawberry/PC%20strawberry.png"],
+  [/raspberry/i, "/images/Raspberry/PC%20raspberry.png"],
+  [/pineapple/i, "/images/Pineapple/PC%20Pineapple.png"],
+  [/papaya/i, "/images/Papaya/PC%20papaya%20.png"],
+  [/kiwi/i, "/images/Kiwi/PC%20Kiwi.png"],
+  [/mango/i, "/images/Mango/PC%20Mango.png"],
+  [/banana/i, "/images/Banana/PC%20Banana.png"],
+  [/apple/i, "/images/APPLE/PC%20Apple%20.png"],
   // Vegetables
-  [/amla|gooseberry/i, "/images/Amla/1.png"],
-  [/bitter\s*gourd/i, "/images/Bitter%20gourd/1.png"],
-  [/zucchini/i, "/images/zucchini/1.png"],
-  [/green\s*bell\s*pepper/i, "/images/_GREEN%20Bellpepper/1.png"],
-  [/red\s*bell\s*pepper/i, "/images/red%20Bellpepper/1.png"],
-  [/carrot/i, "/images/Carrot/1.png"],
-  [/green\s*peas?|peas?\s*\(whole\)/i, "/images/GREEN%20Peas/1.png"],
-  [/sweet\s*corn|corn/i, "/images/corn/1.png"],
-  [/potato/i, "/images/Potato/1.png"],
+  [/amla|gooseberry/i, "/images/Amla/PC%20Amla.png"],
+  [/bitter\s*gourd/i, "/images/Bitter%20gourd/PC%20Bitter%20guord.png"],
+  [/zucchini/i, "/images/zucchini/PC%20zucchini.png"],
+  [/green\s*bell\s*pepper/i, "/images/_GREEN%20Bellpepper/PC%20green%20bell%20pepper.png"],
+  [/red\s*bell\s*pepper/i, "/images/red%20Bellpepper/PC%20red%20bell%20pepper.png"],
+  [/carrot/i, "/images/Carrot/PC%20Carrot.png"],
+  [/green\s*peas?|peas?\s*\(whole\)/i, "/images/GREEN%20Peas/PC%20Green%20peas%20.png"],
+  [/sweet\s*corn|corn/i, "/images/corn/PC%20corn.png"],
+  [/potato/i, "/images/Potato/PC%20potato%20.png"],
 ];
 
 function getLocalImage(title: string): string | null {
@@ -305,18 +305,19 @@ function DietaryTag({ label }: { label: string }) {
 }
 
 // ── Slot config ──────────────────────────────────────────────────────
-const SLOTS = [-1, 0, 1] as const;
+const SLOTS = [-2, -1, 0, 1, 2] as const;
 type SlotOffset = typeof SLOTS[number];
 
-// pinwheelSize is bigger than imgW so blades peek out around the image
 const SLOT_CONFIG: Record<SlotOffset, {
   imgW: number; imgH: number;
   nameSize: number; zIndex: number;
-  showTags: boolean; pinwheelSize: number;
+  showInfo: boolean; opacity: number; yOffset: number;
 }> = {
-  "-1": { imgW: 295, imgH: 250, nameSize: 24, zIndex: 2, showTags: false, pinwheelSize: 390 },
-  "0": { imgW: 340, imgH: 285, nameSize: 34, zIndex: 5, showTags: true, pinwheelSize: 440 },
-  "1": { imgW: 295, imgH: 250, nameSize: 24, zIndex: 2, showTags: false, pinwheelSize: 390 },
+  "-2": { imgW: 200, imgH: 200, nameSize: 0,  zIndex: 1, showInfo: false, opacity: 0.38, yOffset: 42 },
+  "-1": { imgW: 330, imgH: 330, nameSize: 22, zIndex: 2, showInfo: false, opacity: 0.7,  yOffset: 20 },
+  "0":  { imgW: 460, imgH: 460, nameSize: 36, zIndex: 5, showInfo: true,  opacity: 1,    yOffset: 0  },
+  "1":  { imgW: 330, imgH: 330, nameSize: 22, zIndex: 2, showInfo: false, opacity: 0.7,  yOffset: 20 },
+  "2":  { imgW: 200, imgH: 200, nameSize: 0,  zIndex: 1, showInfo: false, opacity: 0.38, yOffset: 42 },
 };
 
 export function Products() {
@@ -418,9 +419,9 @@ export function Products() {
   };
 
   return (
-    <section id="products" style={{ backgroundColor: "#0d9488", padding: "48px 24px 64px", minHeight: "100vh" }}>
+    <section id="products" style={{ backgroundColor: "#0d9488", padding: "48px 16px 64px", minHeight: "100vh" }}>
       {/* ── Rounded cream card ── */}
-      <div style={{ backgroundColor: "#f6f3eb", borderRadius: "24px", overflow: "hidden", maxWidth: "1100px", margin: "0 auto", boxShadow: "0 24px 60px rgba(0,0,0,0.18)" }}>
+      <div style={{ backgroundColor: "#f6f3eb", borderRadius: "24px", overflow: "hidden", maxWidth: "1440px", margin: "0 auto", boxShadow: "0 24px 60px rgba(0,0,0,0.18)" }}>
 
         {/* Purple ticker at top of card */}
         <Ticker />
@@ -482,7 +483,7 @@ export function Products() {
           )}
 
           {!isLoading && !loadError && filtered.length > 0 && (
-            <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", gap: "28px", minHeight: "520px" }}>
+            <div style={{ position: "relative", display: "flex", alignItems: "flex-end", justifyContent: "center", gap: "12px", minHeight: "660px", paddingBottom: "52px", overflow: "visible" }}>
 
               {/* ── Background sparkle decorations (Brars style) ── */}
               {[
@@ -526,19 +527,17 @@ export function Products() {
                       cursor: !isCenter ? "pointer" : "default",
                     }}
                     initial={false}
-                    animate={{ scale: isCenter ? 1 : 0.93, y: isCenter ? 0 : 14 }}
+                    animate={{ opacity: cfg.opacity, y: cfg.yOffset }}
                     transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
                   >
-                    {/* Image + pinwheel — overflow visible so blades show outside */}
+                    {/* Image */}
                     <div
                       style={{
                         position: "relative",
                         width: `${cfg.imgW}px`,
                         height: `${cfg.imgH}px`,
-                        marginBottom: "24px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        marginBottom: isCenter ? "28px" : "12px",
+                        display: "flex", alignItems: "center", justifyContent: "center",
                         overflow: "visible",
                       }}
                       onMouseEnter={() => setHoveredSlot(offset)}
@@ -546,39 +545,22 @@ export function Products() {
                       onTouchStart={() => setHoveredSlot(offset)}
                       onTouchEnd={() => setHoveredSlot(null)}
                     >
-                      {/* Pinwheel — centred behind image, larger so blades peek out */}
-                      <div
+                      <motion.img
+                        src={product.img}
+                        alt={product.name}
                         style={{
-                          position: "absolute",
-                          top: "50%", left: "50%",
-                          transform: "translate(-50%, -50%)",
-                          zIndex: 0, pointerEvents: "none",
+                          width: "100%", height: "100%",
+                          objectFit: "contain", display: "block",
+                          borderRadius: "20px",
+                          filter: isCenter
+                            ? "drop-shadow(0 28px 52px rgba(0,0,0,0.26))"
+                            : "drop-shadow(0 10px 22px rgba(0,0,0,0.14)) brightness(0.88)",
                         }}
-                      >
-                        <AnimatedPinwheel
-                          color={isCenter ? activeCatColor : "#c4b5fd"}
-                          size={cfg.pinwheelSize}
-                          isHovered={isHovered}
-                        />
-                      </div>
+                        animate={isHovered && isCenter ? { scale: 1.04 } : { scale: 1 }}
+                        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                      />
 
-                      {/* Product image on top */}
-                      <div
-                        style={{
-                          position: "relative", zIndex: 1,
-                          width: `${cfg.imgW}px`, height: `${cfg.imgH}px`,
-                          borderRadius: "16px", overflow: "hidden",
-                          boxShadow: isCenter ? "0 20px 48px rgba(0,0,0,0.22)" : "0 10px 28px rgba(0,0,0,0.14)",
-                        }}
-                      >
-                        <img
-                          src={product.img}
-                          alt={product.name}
-                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                        />
-                      </div>
-
-                      {/* Sparkles at image corners (center card only) */}
+                      {/* Corner sparkles + spin badge — center only */}
                       {isCenter && (
                         <>
                           <motion.div style={{ position: "absolute", top: "-44px", left: "-52px", zIndex: 6, pointerEvents: "none" }}
@@ -601,71 +583,71 @@ export function Products() {
                             transition={{ delay: 0.15, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}>
                             <Sparkle size={34} color="#1a1a1a" opacity={0.5} />
                           </motion.div>
+                          <motion.div
+                            style={{ position: "absolute", top: "-16px", right: "-62px", zIndex: 8, pointerEvents: "none" }}
+                            initial={{ opacity: 0, scale: 0.4, rotate: -30 }}
+                            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                            transition={{ delay: 0.25, duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
+                          >
+                            <ProductSpinBadge color={activeCatColor} />
+                          </motion.div>
                         </>
                       )}
-
-                      {/* Rotating stamp badge — top-right of center card */}
-                      {isCenter && (
-                        <motion.div
-                          style={{ position: "absolute", top: "-16px", right: "-62px", zIndex: 8, pointerEvents: "none" }}
-                          initial={{ opacity: 0, scale: 0.4, rotate: -30 }}
-                          animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                          transition={{ delay: 0.25, duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
-                        >
-                          <ProductSpinBadge color={activeCatColor} />
-                        </motion.div>
-                      )}
                     </div>
 
-                    {/* Product info */}
-                    <div style={{ width: `${cfg.imgW}px`, textAlign: "center", position: "relative", zIndex: 3 }}>
-                      <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: `${cfg.nameSize}px`, color: "#000", textTransform: "uppercase", letterSpacing: "2px", lineHeight: 1.05, marginBottom: "8px" }}>
-                        {product.name}
-                        {isCenter && (
-                          <span style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", marginLeft: "8px", color: activeCatColor, letterSpacing: "1px" }}>
-                            {product.weight}
-                          </span>
+                    {/* Info — ±1 gets name only, center gets full info */}
+                    {cfg.nameSize > 0 && (
+                      <div style={{ width: `${cfg.imgW}px`, textAlign: "center", position: "relative", zIndex: 3 }}>
+                        <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: `${cfg.nameSize}px`, color: "#000", textTransform: "uppercase", letterSpacing: "2px", lineHeight: 1.05, marginBottom: isCenter ? "10px" : "0" }}>
+                          {product.name}
+                          {isCenter && (
+                            <span style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", marginLeft: "8px", color: activeCatColor, letterSpacing: "1px" }}>
+                              {product.weight}
+                            </span>
+                          )}
+                        </h3>
+                        {cfg.showInfo && (
+                          <>
+                            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px 10px", marginTop: "4px" }}>
+                              {product.dietary.map(d => <DietaryTag key={d} label={d} />)}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                void handleAddToCart(product);
+                              }}
+                              disabled={!product.variantId || typeof product.price !== "number" || isAuthLoading}
+                              style={{
+                                marginTop: "14px",
+                                border: "none",
+                                borderRadius: "999px",
+                                backgroundColor: activeCatColor,
+                                color: "white",
+                                fontFamily: "'Space Grotesk', sans-serif",
+                                fontSize: "13px",
+                                fontWeight: 700,
+                                padding: "11px 18px",
+                                cursor: (product.variantId && !isAuthLoading) ? "pointer" : "not-allowed",
+                                opacity: (product.variantId && !isAuthLoading) ? 1 : 0.55,
+                                boxShadow: "0 10px 24px rgba(0,0,0,0.16)",
+                              }}
+                            >
+                              {isAuthLoading ? "Loading..." : product.price ? `${!user ? "Sign In to Add" : "Add to Cart"} \u00B7 ${product.currency} ${product.price.toFixed(2)}` : "Add to Cart"}
+                            </button>
+                          </>
                         )}
-                      </h3>
-                      {cfg.showTags && (
-                        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px 10px", marginTop: "4px" }}>
-                          {product.dietary.map(d => <DietaryTag key={d} label={d} />)}
-                        </div>
-                      )}
-                      <button
-                        type="button"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          void handleAddToCart(product);
-                        }}
-                        disabled={!product.variantId || typeof product.price !== "number" || isAuthLoading}
-                        style={{
-                          marginTop: "14px",
-                          border: "none",
-                          borderRadius: "999px",
-                          backgroundColor: activeCatColor,
-                          color: "white",
-                          fontFamily: "'Space Grotesk', sans-serif",
-                          fontSize: "13px",
-                          fontWeight: 700,
-                          padding: "11px 18px",
-                          cursor: (product.variantId && !isAuthLoading) ? "pointer" : "not-allowed",
-                          opacity: (product.variantId && !isAuthLoading) ? 1 : 0.55,
-                          boxShadow: "0 10px 24px rgba(0,0,0,0.16)",
-                        }}
-                      >
-                        {isAuthLoading ? "Loading..." : product.price ? `${!user ? "Sign In to Add" : "Add to Cart"} · ${product.currency} ${product.price.toFixed(2)}` : "Add to Cart"}
-                      </button>
-                    </div>
+                      </div>
+                    )}
                   </motion.div>
                 );
               })}
             </div>
           )}
 
-          {/* Nav arrows */}
+          {/* Nav: arrows + dots + View All */}
           {!isLoading && !loadError && filtered.length > 1 && (
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "16px", marginTop: "28px", paddingBottom: "4px" }}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "16px", paddingBottom: "16px", paddingLeft: "24px", paddingRight: "24px", flexWrap: "wrap" }}>
               <motion.button
                 onClick={() => navigate(-1)}
                 whileHover={{ scale: 1.08 }}
@@ -685,9 +667,22 @@ export function Products() {
                 </svg>
               </motion.button>
 
-              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "13px", fontWeight: 700, color: "#888", minWidth: "70px", textAlign: "center" }}>
-                {safeCenter + 1} / {filtered.length}
-              </span>
+              {/* Progress dots — capped at 12 */}
+              <div style={{ display: "flex", gap: "7px", alignItems: "center" }}>
+                {filtered.slice(0, Math.min(filtered.length, 12)).map((_, i) => (
+                  <motion.button
+                    key={i}
+                    onClick={() => setCenterIdx(i)}
+                    style={{ height: "8px", borderRadius: "999px", backgroundColor: i === safeCenter ? activeCatColor : "#c4b5fd", border: "none", padding: 0, cursor: "pointer", flexShrink: 0 }}
+                    animate={{ width: i === safeCenter ? 28 : 8 }}
+                    initial={false}
+                    transition={{ duration: 0.3 }}
+                  />
+                ))}
+                {filtered.length > 12 && (
+                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "12px", color: "#888", marginLeft: "4px" }}>+{filtered.length - 12} more</span>
+                )}
+              </div>
 
               <motion.button
                 onClick={() => navigate(1)}
@@ -705,6 +700,32 @@ export function Products() {
                 }}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </motion.button>
+
+              {/* View All */}
+              <motion.button
+                onClick={() => navigateToRoute("/catalog")}
+                whileHover={{ scale: 1.04, backgroundColor: "#333" }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  display: "flex", alignItems: "center", gap: "8px",
+                  padding: "14px 24px",
+                  borderRadius: "999px",
+                  backgroundColor: "#1a1a1a",
+                  color: "white",
+                  border: "none",
+                  fontFamily: "'Gagalin', sans-serif",
+                  fontSize: "15px",
+                  letterSpacing: "0.5px",
+                  cursor: "pointer",
+                  boxShadow: "0 6px 20px rgba(0,0,0,0.2)",
+                  flexShrink: 0,
+                }}
+              >
+                View All
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="9 18 15 12 9 6" />
                 </svg>
               </motion.button>
