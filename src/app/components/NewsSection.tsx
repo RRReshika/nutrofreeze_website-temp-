@@ -1,8 +1,14 @@
-import { useRef, useState } from "react";
+﻿import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { ArrowRight } from "lucide-react";
 
 const tabs = ["Latest News", "Company Updates", "Product News"];
+
+const tabColors: Record<string, string> = {
+  "Latest News": "#0d9488",
+  "Company Updates": "#7c3aed",
+  "Product News": "#0891b2",
+};
 
 const articles = {
   "Latest News": [
@@ -10,7 +16,7 @@ const articles = {
       id: 1,
       date: "March 1, 2026",
       headline: "NUTROFREEZE WINS BEST HEALTH FOOD BRAND 2026",
-      excerpt: 'The \"Pure Nutrition For Every Family\" campaign earned recognition across two categories at the Singapore Health and Wellness Awards.',
+      excerpt: 'The "Pure Nutrition For Every Family" campaign earned recognition across two categories at the Singapore Health and Wellness Awards.',
       img: "https://images.unsplash.com/photo-1758523671087-b256bbbca475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMHdvbWFuJTIwbW92aW5nJTIwYm94ZXMlMjBob21lJTIwZmFtaWx5fGVufDF8fHx8MTc3MjQ5NzE4MXww&ixlib=rb-4.1.0&q=80&w=800",
       tag: "Award",
       tagBg: "#0d9488",
@@ -77,125 +83,177 @@ export function NewsSection() {
   const secondary = currentArticles[1];
 
   return (
-    <section id="news" className="bg-white py-16" ref={ref}>
+    <section id="news" ref={ref} style={{ backgroundColor: "#0f172a", padding: "80px 0 80px" }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        {/* Header row */}
+
+        {/* ── CENTERED HEADER ── */}
         <motion.div
-          className="flex items-center justify-between mb-10"
+          className="text-center mb-12"
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <div>
-            <div
-              className="inline-block px-4 py-1.5 rounded-full bg-[#ccfbf1] mb-3"
-              style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "11px", fontWeight: 800, letterSpacing: "3px", color: "#0d9488", textTransform: "uppercase" }}
-            >
-              News & Updates
-            </div>
-            <h2
-              style={{
-                fontFamily: "'Bangers', cursive",
-                fontSize: "clamp(32px, 5vw, 64px)",
-                color: "#1c1c1e",
-                textTransform: "uppercase",
-                lineHeight: 0.95,
-                letterSpacing: "0.03em",
-              }}
-            >
-              STAY IN THE<br /><span style={{ color: "#0d9488" }}>KNOW</span>
-            </h2>
+          {/* "WHAT'S NEW" pill */}
+          <div
+            className="inline-block px-5 py-2 rounded-full mb-5"
+            style={{
+              backgroundColor: "#0d9488",
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontSize: "11px",
+              fontWeight: 800,
+              letterSpacing: "3px",
+              color: "white",
+              textTransform: "uppercase",
+            }}
+          >
+            What's New
           </div>
+
+          {/* Big title */}
+          <h2
+            style={{
+              fontFamily: "'Bangers', cursive",
+              fontSize: "clamp(52px, 10vw, 120px)",
+              color: "white",
+              textTransform: "uppercase",
+              lineHeight: 0.9,
+              letterSpacing: "0.02em",
+              marginBottom: "32px",
+            }}
+          >
+            THE WORLD OF<br />
+            <span style={{ color: "#5eead4" }}>NUTROFREEZE</span>
+          </h2>
+
+          {/* View More button */}
           <motion.a
             href="#"
-            className="hidden md:flex items-center gap-2 border-2 border-[#1c1c1e] text-[#1c1c1e] px-6 py-2.5 rounded-full hover:bg-[#1c1c1e] hover:text-white transition-all"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px", fontWeight: 700, whiteSpace: "nowrap" }}
-            whileHover={{ scale: 1.04 }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "10px",
+              backgroundColor: "#1c1c1e",
+              color: "white",
+              padding: "14px 32px",
+              borderRadius: "100px",
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: "15px",
+              textDecoration: "none",
+              border: "2px solid rgba(255,255,255,0.12)",
+            }}
+            whileHover={{ backgroundColor: "#0d9488", scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
           >
-            View More <ArrowRight size={15} />
+            View More <ArrowRight size={16} />
           </motion.a>
         </motion.div>
 
-        {/* Main card + side tabs layout */}
+        {/* ── MAIN CARD + SIDE TABS ── */}
         <motion.div
-          className="flex gap-3"
-          initial={{ opacity: 0, y: 40 }}
+          className="flex gap-3 items-stretch"
+          initial={{ opacity: 0, y: 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.1 }}
+          transition={{ duration: 0.7, delay: 0.15 }}
         >
-          {/* Left vertical label */}
-          <div
-            className="hidden lg:flex items-center justify-center bg-[#1c1c1e] rounded-2xl px-3 py-6 flex-shrink-0"
-            style={{ width: "52px", writingMode: "vertical-rl", textOrientation: "mixed" }}
-          >
-            <span
-              style={{
-                fontFamily: "'Syne', sans-serif",
-                fontSize: "13px",
-                fontWeight: 900,
-                letterSpacing: "3px",
-                textTransform: "uppercase",
-                color: "#5eead4",
-                transform: "rotate(180deg)",
-                display: "block",
-              }}
-            >
-              {activeTab}
-            </span>
-          </div>
-
-          {/* Featured article */}
+          {/* Featured article card */}
           <AnimatePresence mode="wait">
             <motion.div
               key={featured.id}
-              className="flex-1 rounded-2xl overflow-hidden flex flex-col md:flex-row"
-              style={{ backgroundColor: "#f0fdf4", minHeight: "380px" }}
-              initial={{ opacity: 0, x: -20 }}
+              className="flex-1 rounded-3xl overflow-hidden flex flex-col lg:flex-row"
+              style={{
+                background: `linear-gradient(135deg, ${tabColors[activeTab]}22 0%, ${tabColors[activeTab]}44 100%)`,
+                border: `1px solid ${tabColors[activeTab]}55`,
+                minHeight: "400px",
+              }}
+              initial={{ opacity: 0, x: -24 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.4 }}
+              exit={{ opacity: 0, x: 24 }}
+              transition={{ duration: 0.45 }}
             >
               {/* Image */}
-              <div className="md:w-[44%] relative overflow-hidden flex-shrink-0">
+              <div className="lg:w-[42%] relative overflow-hidden flex-shrink-0" style={{ minHeight: "280px" }}>
                 <img
                   src={featured.img}
                   alt={featured.headline}
-                  className="w-full h-64 md:h-full object-cover"
+                  className="w-full h-full object-cover"
+                  style={{ minHeight: "280px" }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#f0fdf4]/30" />
+                <div
+                  className="absolute inset-0"
+                  style={{ background: "linear-gradient(to right, transparent 60%, rgba(15,23,42,0.4))" }}
+                />
+                {/* Tag badge on image */}
+                <div
+                  className="absolute top-4 left-4 px-3 py-1.5 rounded-full"
+                  style={{
+                    backgroundColor: featured.tagBg,
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontSize: "11px",
+                    fontWeight: 800,
+                    letterSpacing: "2px",
+                    color: "white",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {featured.tag}
+                </div>
               </div>
 
               {/* Content */}
-              <div className="flex-1 p-7 md:p-10 flex flex-col justify-center">
+              <div className="flex-1 p-8 lg:p-10 flex flex-col justify-center">
                 <div
-                  className="text-sm mb-3"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "13px", color: "#666" }}
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontSize: "13px",
+                    color: "rgba(255,255,255,0.45)",
+                    marginBottom: "12px",
+                    letterSpacing: "0.5px",
+                  }}
                 >
                   {featured.date}
                 </div>
                 <h3
                   style={{
                     fontFamily: "'Bangers', cursive",
-                    fontSize: "clamp(22px, 3.5vw, 40px)",
-                    color: "#1c1c1e",
+                    fontSize: "clamp(24px, 3.8vw, 44px)",
+                    color: "white",
                     textTransform: "uppercase",
                     lineHeight: 1.0,
                     letterSpacing: "0.03em",
-                    marginBottom: "14px",
+                    marginBottom: "16px",
                   }}
                 >
                   {featured.headline}
                 </h3>
                 <p
-                  style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px", color: "#555", lineHeight: 1.7, marginBottom: "20px" }}
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: "15px",
+                    color: "rgba(255,255,255,0.65)",
+                    lineHeight: 1.72,
+                    marginBottom: "24px",
+                  }}
                 >
                   {featured.excerpt}
                 </p>
                 <motion.a
                   href="#"
-                  className="inline-flex items-center gap-2 bg-[#1c1c1e] text-white px-6 py-3 rounded-full self-start hover:bg-[#0d9488] transition-all"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px", fontWeight: 700 }}
-                  whileHover={{ scale: 1.04 }}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    backgroundColor: "white",
+                    color: "#1c1c1e",
+                    padding: "13px 26px",
+                    borderRadius: "100px",
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontSize: "14px",
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    alignSelf: "flex-start",
+                  }}
+                  whileHover={{ backgroundColor: "#5eead4", scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
                 >
                   Read More <ArrowRight size={14} />
@@ -204,43 +262,51 @@ export function NewsSection() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Right tab strip */}
-          <div className="hidden lg:flex flex-col gap-2 flex-shrink-0" style={{ width: "160px" }}>
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className="flex-1 rounded-2xl flex items-center justify-center transition-all duration-200 relative overflow-hidden"
-                style={{
-                  backgroundColor: activeTab === tab ? "#0d9488" : "#ede9fe",
-                  writingMode: "vertical-rl",
-                  textOrientation: "mixed",
-                }}
-              >
-                <span
+          {/* Right vertical tab strip */}
+          <div className="hidden lg:flex flex-col gap-2 flex-shrink-0" style={{ width: "180px" }}>
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab;
+              const color = tabColors[tab];
+              return (
+                <motion.button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className="flex-1 rounded-2xl flex items-center justify-center relative overflow-hidden cursor-pointer"
                   style={{
-                    fontFamily: "'Syne', sans-serif",
-                    fontSize: "12px",
-                    fontWeight: 900,
-                    letterSpacing: "3px",
-                    textTransform: "uppercase",
-                    color: activeTab === tab ? "white" : "#7c3aed",
-                    transform: "rotate(180deg)",
-                    display: "block",
-                    padding: "16px 0",
+                    backgroundColor: isActive ? color : "#1c1c1e",
+                    border: isActive ? `2px solid ${color}` : "2px solid rgba(255,255,255,0.06)",
+                    writingMode: "vertical-rl",
+                    textOrientation: "mixed",
+                    transition: "all 0.25s ease",
                   }}
+                  whileHover={{ scale: 1.03, backgroundColor: isActive ? color : "#252535" }}
+                  whileTap={{ scale: 0.97 }}
                 >
-                  {tab}
-                </span>
-                {activeTab === tab && (
-                  <motion.div
-                    className="absolute inset-0 bg-white/10"
-                    layoutId="activeTab"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </button>
-            ))}
+                  <span
+                    style={{
+                      fontFamily: "'Syne', sans-serif",
+                      fontSize: "13px",
+                      fontWeight: 900,
+                      letterSpacing: "3px",
+                      textTransform: "uppercase",
+                      color: isActive ? "white" : "rgba(255,255,255,0.4)",
+                      transform: "rotate(180deg)",
+                      display: "block",
+                      padding: "20px 0",
+                    }}
+                  >
+                    {tab}
+                  </span>
+                  {isActive && (
+                    <motion.div
+                      className="absolute inset-0 bg-white/10"
+                      layoutId="newsActiveTab"
+                      transition={{ type: "spring", stiffness: 320, damping: 28 }}
+                    />
+                  )}
+                </motion.button>
+              );
+            })}
           </div>
         </motion.div>
 
@@ -250,13 +316,14 @@ export function NewsSection() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className="flex-1 py-2 rounded-xl text-center transition-all"
+              className="flex-1 py-2.5 rounded-xl text-center transition-all"
               style={{
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: "12px",
                 fontWeight: 700,
-                backgroundColor: activeTab === tab ? "#0d9488" : "#ede9fe",
-                color: activeTab === tab ? "white" : "#7c3aed",
+                backgroundColor: activeTab === tab ? tabColors[tab] : "#1c1c1e",
+                color: activeTab === tab ? "white" : "rgba(255,255,255,0.45)",
+                border: `2px solid ${activeTab === tab ? tabColors[tab] : "rgba(255,255,255,0.06)"}`,
               }}
             >
               {tab}
@@ -264,11 +331,15 @@ export function NewsSection() {
           ))}
         </div>
 
-        {/* Secondary article (smaller) */}
+        {/* Secondary article */}
         <AnimatePresence mode="wait">
           <motion.div
             key={secondary.id}
-            className="mt-4 rounded-2xl overflow-hidden flex gap-5 items-center p-5 bg-[#faf5ff] border border-[#ede9fe]"
+            className="mt-4 rounded-2xl overflow-hidden flex gap-4 items-center p-5"
+            style={{
+              backgroundColor: "#1c1c1e",
+              border: "1px solid rgba(255,255,255,0.07)",
+            }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -280,29 +351,53 @@ export function NewsSection() {
               className="w-24 h-20 object-cover rounded-xl flex-shrink-0"
             />
             <div className="flex-1 min-w-0">
-              <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "12px", color: "#999", marginBottom: "4px" }}>
+              <div
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontSize: "12px",
+                  color: "rgba(255,255,255,0.35)",
+                  marginBottom: "4px",
+                }}
+              >
                 {secondary.date}
               </div>
               <h4
                 className="truncate"
-                style={{ fontFamily: "'Bangers', cursive", fontSize: "22px", color: "#1c1c1e", textTransform: "uppercase", letterSpacing: "0.03em" }}
+                style={{
+                  fontFamily: "'Bangers', cursive",
+                  fontSize: "22px",
+                  color: "white",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.03em",
+                }}
               >
                 {secondary.headline}
               </h4>
               <p
                 className="mt-1 line-clamp-1"
-                style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "13px", color: "#666" }}
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "13px",
+                  color: "rgba(255,255,255,0.45)",
+                }}
               >
                 {secondary.excerpt}
               </p>
             </div>
-            <a
+            <motion.a
               href="#"
-              className="hidden sm:flex items-center gap-1 text-[#7c3aed] flex-shrink-0"
-              style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "13px", fontWeight: 700 }}
+              className="hidden sm:flex items-center gap-1 flex-shrink-0"
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontSize: "13px",
+                fontWeight: 700,
+                color: "#5eead4",
+                textDecoration: "none",
+              }}
+              whileHover={{ gap: "6px" }}
             >
               Read <ArrowRight size={13} />
-            </a>
+            </motion.a>
           </motion.div>
         </AnimatePresence>
       </div>

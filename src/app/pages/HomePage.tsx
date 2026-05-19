@@ -15,15 +15,17 @@ export function HomePage() {
     <div className="min-h-screen overflow-x-hidden" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <Navbar />
       <Hero />
-      <Products />
-      <DietaryShowcase />
-      <OurStory />
-      <CategoryShowcase />
-      <Recipes />
-      <NewsSection />
-      <SocialMedia />
-      <Newsletter />
-      <Footer />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <Products />
+        <DietaryShowcase />
+        <OurStory />
+        <CategoryShowcase />
+        <Recipes />
+        <NewsSection />
+        <SocialMedia />
+        <Newsletter />
+        <Footer />
+      </div>
     </div>
   );
 }

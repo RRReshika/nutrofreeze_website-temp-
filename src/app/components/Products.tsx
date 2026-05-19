@@ -78,6 +78,7 @@ type ProductCard = {
   id: string;
   slug?: string;
   name: string;
+  formFactor?: string | null;
   category: string;
   weight: string;
   dietary: string[];
@@ -92,6 +93,16 @@ type CategoryPill = {
   label: string;
   color: string;
 };
+
+function cleanProductName(raw: string): string {
+  // Remove everything in parentheses (Slice, Cube, Whole, alternate names like Gooseberry/Sapota)
+  return raw.replace(/\s*\([^)]*\)/g, "").replace(/\/\S+/g, "").trim();
+}
+
+function getFormFactor(raw: string): string | null {
+  const m = raw.match(/\((Slice|Cube|Whole|Pieces|Flakes?|Powder)\)/i);
+  return m ? m[1].toUpperCase() : null;
+}
 
 const getWeightLabel = (variants: ApiProduct["variants"]) => {
   const weight = variants?.find(v => typeof v.packSizeG === "number")?.packSizeG;
@@ -114,7 +125,8 @@ const toProductCard = (product: ApiProduct): ProductCard => {
   return {
     id: product.id,
     slug: product.slug,
-    name: product.title,
+    name: cleanProductName(product.title),
+    formFactor: getFormFactor(product.title),
     category: categoryLabel,
     weight: getWeightLabel(product.variants),
     dietary: ["Halal Certified", "No Preservatives", "Freeze Dried"],
@@ -325,8 +337,6 @@ export function Products() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const navigateToRoute = useNavigate();
   const [activeCategory, setActiveCategory] = useState("Most Popular");
-  const [centerIdx, setCenterIdx] = useState(0);
-  const [hoveredSlot, setHoveredSlot] = useState<SlotOffset | null>(null);
   const [products, setProducts] = useState<ProductCard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -376,24 +386,11 @@ export function Products() {
   }, [products]);
 
   const filtered = products.filter(p => activeCategory === "Most Popular" || p.category === activeCategory);
-  const safeCenter = filtered.length ? centerIdx % filtered.length : 0;
-
-  const navigate = (dir: 1 | -1) =>
-    setCenterIdx(i => (i + dir + filtered.length) % filtered.length);
+  const activeCatColor = categories.find(c => c.label === activeCategory)?.color || "#6D28D9";
 
   const handleCategoryChange = (cat: string) => {
     setActiveCategory(cat);
-    setCenterIdx(0);
   };
-
-  const slotProducts = filtered.length
-    ? SLOTS.map(offset => {
-      const idx = ((safeCenter + offset) % filtered.length + filtered.length) % filtered.length;
-      return { offset, product: filtered[idx] };
-    })
-    : [];
-
-  const activeCatColor = categories.find(c => c.label === activeCategory)?.color || "#6D28D9";
 
   const handleAddToCart = async (product: ProductCard) => {
     if (!user) {
@@ -419,320 +416,283 @@ export function Products() {
   };
 
   return (
-    <section id="products" style={{ backgroundColor: "#0d9488", padding: "48px 16px 64px", minHeight: "100vh" }}>
-      {/* ── Rounded cream card ── */}
-      <div style={{ backgroundColor: "#f6f3eb", borderRadius: "24px", overflow: "hidden", maxWidth: "1440px", margin: "0 auto", boxShadow: "0 24px 60px rgba(0,0,0,0.18)" }}>
+    <section id="products" style={{ backgroundColor: "#f6f3eb", padding: "0 0 64px" }}>
 
-        {/* Purple ticker at top of card */}
-        <Ticker />
+      {/* Purple ticker strip */}
+      <Ticker />
 
-        {/* Category pills */}
-        <div style={{ paddingTop: "36px", paddingBottom: "20px", display: "flex", justifyContent: "center", paddingLeft: "24px", paddingRight: "24px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "18px", flexWrap: "wrap", justifyContent: "center" }}>
-            {categories.map((cat, i) => {
-              const isActive = activeCategory === cat.label;
-              return (
-                <motion.button
-                  key={cat.label}
-                  onClick={() => handleCategoryChange(cat.label)}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  style={{
-                    display: "flex", alignItems: "center", gap: "9px",
-                    padding: isActive ? "10px 26px" : "10px 18px",
-                    borderRadius: isActive ? "12px" : "0px",
-                    border: "none", cursor: "pointer",
-                    fontFamily: "'Gagalin', sans-serif", fontSize: "17px", letterSpacing: "0.5px",
-                    backgroundColor: isActive ? "#1a1a1a" : "transparent",
-                    color: isActive ? "white" : "#1a1a1a",
-                    transition: "all 0.2s",
-                    boxShadow: isActive ? "0 6px 20px rgba(0,0,0,0.18)" : "none",
-                  }}
-                >
-                  <Diamond color={isActive ? "white" : cat.color} />
-                  {cat.label}
-                </motion.button>
-              );
-            })}
-          </div>
+      {/* Section header */}
+      <div style={{ paddingTop: "40px", paddingBottom: "4px", textAlign: "center" }}>
+        <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "12px", fontWeight: 700, letterSpacing: "3px", color: "#888", textTransform: "uppercase", margin: "0 0 10px" }}>
+          Our Products
+        </p>
+        <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(36px, 5vw, 64px)", color: "#1a1a1a", letterSpacing: "2px", margin: 0, lineHeight: 1 }}>
+          THE WORLD OF NUTROFREEZE
+        </h2>
+      </div>
+
+      {/* Category pills */}
+      <div style={{ paddingTop: "28px", paddingBottom: "12px", display: "flex", justifyContent: "center", paddingLeft: "24px", paddingRight: "24px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "18px", flexWrap: "wrap", justifyContent: "center" }}>
+          {categories.map((cat, i) => {
+            const isActive = activeCategory === cat.label;
+            return (
+              <motion.button
+                key={cat.label}
+                onClick={() => handleCategoryChange(cat.label)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                style={{
+                  display: "flex", alignItems: "center", gap: "9px",
+                  padding: isActive ? "10px 26px" : "10px 18px",
+                  borderRadius: isActive ? "12px" : "0px",
+                  border: "none", cursor: "pointer",
+                  fontFamily: "'Gagalin', sans-serif", fontSize: "17px", letterSpacing: "0.5px",
+                  backgroundColor: isActive ? "#1a1a1a" : "transparent",
+                  color: isActive ? "white" : "#1a1a1a",
+                  transition: "all 0.2s",
+                  boxShadow: isActive ? "0 6px 20px rgba(0,0,0,0.18)" : "none",
+                }}
+              >
+                <Diamond color={isActive ? "white" : cat.color} />
+                {cat.label}
+              </motion.button>
+            );
+          })}
         </div>
+      </div>
 
-        {/* ── Carousel ── */}
-        <div style={{ paddingBottom: "52px", paddingTop: "16px" }}>
-          {isLoading && (
-            <div style={{ textAlign: "center", minHeight: "220px", display: "grid", placeItems: "center" }}>
-              <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "20px", color: "#1a1a1a" }}>Loading products...</p>
-            </div>
-          )}
+      {/* ── Product grid ── */}
+      <div style={{ padding: "16px 40px 52px", maxWidth: "1440px", margin: "0 auto" }}>
+        {isLoading && (
+          <div style={{ textAlign: "center", minHeight: "220px", display: "grid", placeItems: "center" }}>
+            <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "20px", color: "#1a1a1a" }}>Loading products...</p>
+          </div>
+        )}
 
-          {!isLoading && loadError && (
-            <div style={{ textAlign: "center", minHeight: "220px", display: "grid", placeItems: "center", padding: "0 20px" }}>
-              <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", color: "#991b1b" }}>
-                {loadError}. Make sure the API is running on port 3001.
-              </p>
-            </div>
-          )}
+        {!isLoading && loadError && (
+          <div style={{ textAlign: "center", minHeight: "220px", display: "grid", placeItems: "center", padding: "0 20px" }}>
+            <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", color: "#991b1b" }}>
+              {loadError}. Make sure the API is running on port 3001.
+            </p>
+          </div>
+        )}
 
-          {!isLoading && !loadError && filtered.length === 0 && (
-            <div style={{ textAlign: "center", minHeight: "220px", display: "grid", placeItems: "center" }}>
-              <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", color: "#1a1a1a" }}>No products found in this category.</p>
-            </div>
-          )}
+        {!isLoading && !loadError && filtered.length === 0 && (
+          <div style={{ textAlign: "center", minHeight: "220px", display: "grid", placeItems: "center" }}>
+            <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", color: "#1a1a1a" }}>No products found in this category.</p>
+          </div>
+        )}
 
-          {!isLoading && !loadError && filtered.length > 0 && (
-            <div style={{ position: "relative", display: "flex", alignItems: "flex-end", justifyContent: "center", gap: "12px", minHeight: "660px", paddingBottom: "52px", overflow: "visible" }}>
-
-              {/* ── Background sparkle decorations (Brars style) ── */}
-              {[
-                { size: 44, top: "6%", left: "2%", delay: 0, opac: 0.55 },
-                { size: 26, top: "14%", right: "3%", delay: 0.8, opac: 0.45 },
-                { size: 34, top: "62%", left: "4%", delay: 1.4, opac: 0.5 },
-                { size: 20, top: "72%", right: "5%", delay: 0.4, opac: 0.4 },
-                { size: 18, top: "38%", left: "1%", delay: 1.8, opac: 0.35 },
-                { size: 16, top: "48%", right: "2%", delay: 1.1, opac: 0.3 },
-              ].map((s, i) => (
-                <motion.div
-                  key={i}
-                  style={{
-                    position: "absolute",
-                    top: s.top,
-                    ...(("left" in s) ? { left: (s as any).left } : { right: (s as any).right }),
-                    pointerEvents: "none",
-                    zIndex: 1,
-                  }}
-                  initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
-                  animate={{ opacity: s.opac, scale: 1, rotate: 0 }}
-                  transition={{ delay: s.delay, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-                >
-                  <Sparkle size={s.size} color={activeCatColor} opacity={1} />
-                </motion.div>
+        {!isLoading && !loadError && filtered.length > 0 && (
+          <>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: "20px",
+            }}>
+              {filtered.map((product, i) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  index={i}
+                  catColor={activeCatColor}
+                  isAuthLoading={isAuthLoading}
+                  user={!!user}
+                  onAddToCart={() => void handleAddToCart(product)}
+                />
               ))}
-
-              {slotProducts.map(({ offset, product }) => {
-                const cfg = SLOT_CONFIG[offset];
-                const isCenter = offset === 0;
-                const isHovered = hoveredSlot === offset;
-
-                return (
-                  <motion.div
-                    key={product.id + "-" + offset}
-                    onClick={!isCenter ? () => navigate(offset > 0 ? 1 : -1) : undefined}
-                    style={{
-                      display: "flex", flexDirection: "column", alignItems: "center",
-                      flexShrink: 0, position: "relative", zIndex: cfg.zIndex,
-                      width: `${cfg.imgW}px`,
-                      cursor: !isCenter ? "pointer" : "default",
-                    }}
-                    initial={false}
-                    animate={{ opacity: cfg.opacity, y: cfg.yOffset }}
-                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-                  >
-                    {/* Image */}
-                    <div
-                      style={{
-                        position: "relative",
-                        width: `${cfg.imgW}px`,
-                        height: `${cfg.imgH}px`,
-                        marginBottom: isCenter ? "28px" : "12px",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        overflow: "visible",
-                      }}
-                      onMouseEnter={() => setHoveredSlot(offset)}
-                      onMouseLeave={() => setHoveredSlot(null)}
-                      onTouchStart={() => setHoveredSlot(offset)}
-                      onTouchEnd={() => setHoveredSlot(null)}
-                    >
-                      <motion.img
-                        src={product.img}
-                        alt={product.name}
-                        style={{
-                          width: "100%", height: "100%",
-                          objectFit: "contain", display: "block",
-                          borderRadius: "20px",
-                          filter: isCenter
-                            ? "drop-shadow(0 28px 52px rgba(0,0,0,0.26))"
-                            : "drop-shadow(0 10px 22px rgba(0,0,0,0.14)) brightness(0.88)",
-                        }}
-                        animate={isHovered && isCenter ? { scale: 1.04 } : { scale: 1 }}
-                        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-                      />
-
-                      {/* Corner sparkles + spin badge — center only */}
-                      {isCenter && (
-                        <>
-                          <motion.div style={{ position: "absolute", top: "-44px", left: "-52px", zIndex: 6, pointerEvents: "none" }}
-                            initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}>
-                            <Sparkle size={40} color="#1a1a1a" opacity={0.6} />
-                          </motion.div>
-                          <motion.div style={{ position: "absolute", top: "-28px", right: "-44px", zIndex: 6, pointerEvents: "none" }}
-                            initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.1, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}>
-                            <Sparkle size={25} color={activeCatColor} opacity={0.75} />
-                          </motion.div>
-                          <motion.div style={{ position: "absolute", bottom: "-38px", left: "-44px", zIndex: 6, pointerEvents: "none" }}
-                            initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.2, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}>
-                            <Sparkle size={20} color={activeCatColor} opacity={0.55} />
-                          </motion.div>
-                          <motion.div style={{ position: "absolute", bottom: "-44px", right: "-50px", zIndex: 6, pointerEvents: "none" }}
-                            initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.15, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}>
-                            <Sparkle size={34} color="#1a1a1a" opacity={0.5} />
-                          </motion.div>
-                          <motion.div
-                            style={{ position: "absolute", top: "-16px", right: "-62px", zIndex: 8, pointerEvents: "none" }}
-                            initial={{ opacity: 0, scale: 0.4, rotate: -30 }}
-                            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                            transition={{ delay: 0.25, duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
-                          >
-                            <ProductSpinBadge color={activeCatColor} />
-                          </motion.div>
-                        </>
-                      )}
-                    </div>
-
-                    {/* Info — ±1 gets name only, center gets full info */}
-                    {cfg.nameSize > 0 && (
-                      <div style={{ width: `${cfg.imgW}px`, textAlign: "center", position: "relative", zIndex: 3 }}>
-                        <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: `${cfg.nameSize}px`, color: "#000", textTransform: "uppercase", letterSpacing: "2px", lineHeight: 1.05, marginBottom: isCenter ? "10px" : "0" }}>
-                          {product.name}
-                          {isCenter && (
-                            <span style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", marginLeft: "8px", color: activeCatColor, letterSpacing: "1px" }}>
-                              {product.weight}
-                            </span>
-                          )}
-                        </h3>
-                        {cfg.showInfo && (
-                          <>
-                            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px 10px", marginTop: "4px" }}>
-                              {product.dietary.map(d => <DietaryTag key={d} label={d} />)}
-                            </div>
-                            <button
-                              type="button"
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                void handleAddToCart(product);
-                              }}
-                              disabled={!product.variantId || typeof product.price !== "number" || isAuthLoading}
-                              style={{
-                                marginTop: "14px",
-                                border: "none",
-                                borderRadius: "999px",
-                                backgroundColor: activeCatColor,
-                                color: "white",
-                                fontFamily: "'Space Grotesk', sans-serif",
-                                fontSize: "13px",
-                                fontWeight: 700,
-                                padding: "11px 18px",
-                                cursor: (product.variantId && !isAuthLoading) ? "pointer" : "not-allowed",
-                                opacity: (product.variantId && !isAuthLoading) ? 1 : 0.55,
-                                boxShadow: "0 10px 24px rgba(0,0,0,0.16)",
-                              }}
-                            >
-                              {isAuthLoading ? "Loading..." : product.price ? `${!user ? "Sign In to Add" : "Add to Cart"} \u00B7 ${product.currency} ${product.price.toFixed(2)}` : "Add to Cart"}
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </motion.div>
-                );
-              })}
             </div>
-          )}
 
-          {/* Nav: arrows + dots + View All */}
-          {!isLoading && !loadError && filtered.length > 1 && (
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "16px", paddingBottom: "16px", paddingLeft: "24px", paddingRight: "24px", flexWrap: "wrap" }}>
-              <motion.button
-                onClick={() => navigate(-1)}
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.93 }}
-                style={{
-                  width: "52px", height: "52px", borderRadius: "50%",
-                  border: `2px solid ${activeCatColor}`,
-                  backgroundColor: "transparent",
-                  color: activeCatColor,
-                  cursor: "pointer",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="15 18 9 12 15 6" />
-                </svg>
-              </motion.button>
-
-              {/* Progress dots — capped at 12 */}
-              <div style={{ display: "flex", gap: "7px", alignItems: "center" }}>
-                {filtered.slice(0, Math.min(filtered.length, 12)).map((_, i) => (
-                  <motion.button
-                    key={i}
-                    onClick={() => setCenterIdx(i)}
-                    style={{ height: "8px", borderRadius: "999px", backgroundColor: i === safeCenter ? activeCatColor : "#c4b5fd", border: "none", padding: 0, cursor: "pointer", flexShrink: 0 }}
-                    animate={{ width: i === safeCenter ? 28 : 8 }}
-                    initial={false}
-                    transition={{ duration: 0.3 }}
-                  />
-                ))}
-                {filtered.length > 12 && (
-                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "12px", color: "#888", marginLeft: "4px" }}>+{filtered.length - 12} more</span>
-                )}
-              </div>
-
-              <motion.button
-                onClick={() => navigate(1)}
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.93 }}
-                style={{
-                  width: "52px", height: "52px", borderRadius: "50%",
-                  border: "none",
-                  backgroundColor: activeCatColor,
-                  color: "white",
-                  cursor: "pointer",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  flexShrink: 0,
-                  boxShadow: "0 6px 20px rgba(0,0,0,0.18)",
-                }}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </motion.button>
-
-              {/* View All */}
+            {/* View All */}
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "40px" }}>
               <motion.button
                 onClick={() => navigateToRoute("/catalog")}
                 whileHover={{ scale: 1.04, backgroundColor: "#333" }}
                 whileTap={{ scale: 0.97 }}
                 style={{
                   display: "flex", alignItems: "center", gap: "8px",
-                  padding: "14px 24px",
+                  padding: "14px 32px",
                   borderRadius: "999px",
                   backgroundColor: "#1a1a1a",
                   color: "white",
                   border: "none",
                   fontFamily: "'Gagalin', sans-serif",
-                  fontSize: "15px",
+                  fontSize: "16px",
                   letterSpacing: "0.5px",
                   cursor: "pointer",
                   boxShadow: "0 6px 20px rgba(0,0,0,0.2)",
-                  flexShrink: 0,
                 }}
               >
-                View All
+                View All Products
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="9 18 15 12 9 6" />
                 </svg>
               </motion.button>
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </section>
+  );
+}
+
+// Card background tints derived from category color (very light pastel)
+const CARD_BG_TINTS = [
+  "#faf0ff", "#fff7ed", "#f0fdf4", "#fdf2f8",
+  "#eff6ff", "#f0fdfa", "#fefce8", "#fff1f2",
+];
+
+function ProductCard({
+  product, index, catColor, isAuthLoading, user, onAddToCart,
+}: {
+  product: ProductCard;
+  index: number;
+  catColor: string;
+  isAuthLoading: boolean;
+  user: boolean;
+  onAddToCart: () => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+  const tint = CARD_BG_TINTS[index % CARD_BG_TINTS.length];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.04, duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        borderRadius: "20px",
+        overflow: "hidden",
+        backgroundColor: "white",
+        boxShadow: hovered
+          ? "0 20px 48px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.06)"
+          : "0 4px 16px rgba(0,0,0,0.07)",
+        transition: "box-shadow 0.25s ease, transform 0.25s ease",
+        transform: hovered ? "translateY(-6px)" : "translateY(0)",
+        cursor: "pointer",
+      }}
+    >
+      {/* Image area with pastel tinted bg */}
+      <div style={{
+        backgroundColor: tint,
+        padding: "24px 16px 8px",
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "200px",
+      }}>
+        {/* Form factor badge top-left */}
+        {product.formFactor && (
+          <div style={{
+            position: "absolute", top: "12px", left: "12px",
+            backgroundColor: catColor, color: "white",
+            fontFamily: "'Space Grotesk', sans-serif", fontSize: "10px", fontWeight: 700,
+            letterSpacing: "1.5px", textTransform: "uppercase",
+            padding: "3px 8px", borderRadius: "6px",
+          }}>
+            {product.formFactor}
+          </div>
+        )}
+
+        {/* Weight badge top-right */}
+        {product.weight && product.weight !== "-" && (
+          <div style={{
+            position: "absolute", top: "12px", right: "12px",
+            backgroundColor: "white", color: "#555",
+            fontFamily: "'Space Grotesk', sans-serif", fontSize: "10px", fontWeight: 600,
+            letterSpacing: "0.5px",
+            padding: "3px 8px", borderRadius: "6px",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
+          }}>
+            {product.weight}
+          </div>
+        )}
+
+        <motion.img
+          src={product.img}
+          alt={product.name}
+          animate={{ scale: hovered ? 1.06 : 1 }}
+          transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+          style={{
+            width: "160px",
+            height: "160px",
+            objectFit: "contain",
+            display: "block",
+            filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.18))",
+          }}
+        />
+      </div>
+
+      {/* Info area */}
+      <div style={{ padding: "16px 16px 18px", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
+        <h3 style={{
+          fontFamily: "'Bebas Neue', sans-serif",
+          fontSize: "22px",
+          letterSpacing: "1.5px",
+          color: "#1a1a1a",
+          margin: 0,
+          lineHeight: 1.1,
+          textTransform: "uppercase",
+        }}>
+          {product.name}
+        </h3>
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 6px" }}>
+          {product.dietary.slice(0, 2).map(d => (
+            <span key={d} style={{
+              display: "inline-flex", alignItems: "center", gap: "4px",
+              fontFamily: "'Space Grotesk', sans-serif", fontSize: "10px", fontWeight: 600,
+              color: "#555", letterSpacing: "0.3px",
+            }}>
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="8" fill={catColor} />
+                <path d="M4.5 8l2.5 2.5 4.5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {d}
+            </span>
+          ))}
+        </div>
+
+        <div style={{ marginTop: "auto", paddingTop: "8px" }}>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onAddToCart(); }}
+            disabled={!product.variantId || typeof product.price !== "number" || isAuthLoading}
+            style={{
+              width: "100%",
+              border: "none",
+              borderRadius: "12px",
+              backgroundColor: catColor,
+              color: "white",
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontSize: "13px",
+              fontWeight: 700,
+              padding: "10px 14px",
+              cursor: (product.variantId && !isAuthLoading) ? "pointer" : "not-allowed",
+              opacity: (product.variantId && !isAuthLoading) ? 1 : 0.55,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span>{isAuthLoading ? "Loading..." : !user ? "Sign In to Add" : "Add to Cart"}</span>
+            {product.price && (
+              <span style={{ fontWeight: 800, opacity: 0.92 }}>
+                {product.currency} {product.price.toFixed(2)}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+    </motion.div>
   );
 }

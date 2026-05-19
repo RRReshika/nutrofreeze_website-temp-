@@ -140,7 +140,7 @@ const heroRecipes = [
     name: "MIXED BERRY\nSMOOTHIE BOWL",
     product: "Mixed Berry Blend",
     desc: "Rehydrate our freeze dried mixed fruits with a splash of water, blend and top with granola. A wholesome breakfast ready in under 10 minutes.",
-    img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=600&q=90",
+    img: "/images/other%20images/mixed%20berry%20bowl.png",
     bg: "#0d9488",
   },
   {
@@ -148,7 +148,7 @@ const heroRecipes = [
     name: "QUICK VEGGIE\nSOUP IN MINUTES",
     product: "Freeze Dried Vegetables",
     desc: "Add our freeze dried vegetables straight into your broth and they rehydrate in minutes with all nutrients preserved.",
-    img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=600&q=90",
+    img: "/images/other%20images/brocoli%20florets.png",
     bg: "#1e1b4b",
   },
   {
@@ -156,7 +156,7 @@ const heroRecipes = [
     name: "BABY PUREE\nIN SECONDS",
     product: "Freeze Dried Baby Food",
     desc: "Mix our freeze dried puree powder with a little water for a smooth, nutritious meal for your baby. No fillers, pure ingredients.",
-    img: "https://images.unsplash.com/photo-1711205229065-89353695a869?w=600&q=90",
+    img: "/images/other%20images/puree.png",
     bg: "#7c1d6f",
   },
 ];

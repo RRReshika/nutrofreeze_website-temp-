@@ -12,7 +12,7 @@ const recipes = [
     difficulty: "Easy",
     tag: "KID FAVOURITE",
     tagColor: "#0d9488",
-    img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=700&q=90",
+    img: "/images/other%20images/mixed%20berry%20bowl.png",
     desc: "Rehydrate our freeze dried mixed fruits with a splash of water, blend and top with granola. A wholesome breakfast ready in minutes with no added sugar.",
   },
   {
@@ -23,7 +23,7 @@ const recipes = [
     difficulty: "Easy",
     tag: "FAMILY MEAL",
     tagColor: "#7c3aed",
-    img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=700&q=90",
+    img: "/images/other%20images/brocoli%20florets.png",
     desc: "Add our freeze dried vegetables straight into your broth. They rehydrate in minutes and keep all their nutrients. Perfect for a quick weeknight dinner.",
   },
   {
@@ -34,7 +34,7 @@ const recipes = [
     difficulty: "Easy",
     tag: "BABY FRIENDLY",
     tagColor: "#0d9488",
-    img: "https://images.unsplash.com/photo-1711205229065-89353695a869?w=700&q=90",
+    img: "/images/other%20images/puree.png",
     desc: "Mix our freeze dried puree powder with a little water for a smooth, nutritious meal for your baby. Pure ingredients, no fillers, ready in seconds.",
   },
 ];

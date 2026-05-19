@@ -9,7 +9,7 @@ const categories = [
         accentColor: "#0d9488",
         description:
             "NutroFreeze freeze-dried fruits capture the vibrant flavors, natural sweetness, and full nutritional power of fresh fruits in a convenient, lightweight form. Gently freeze-dried to remove only the water while preserving 97% of the nutrients, vitamins, and antioxidants with no additives, no preservatives, and no added sugar. Perfect for busy families, these crunchy, delicious snacks are ideal for lunchboxes, on-the-go moments, or as a wholesome treat that little tummies love.",
-        img: "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=640&q=85",
+        img: "/images/other%20images/mixed%20berry%20bowl.png",
     },
     {
         id: 2,
@@ -18,7 +18,7 @@ const categories = [
         accentColor: "#7c3aed",
         description:
             "NutroFreeze freeze-dried vegetables deliver the pure taste, vibrant color, and complete nutritional goodness of fresh vegetables in a convenient, shelf-stable form. Through gentle freeze-drying, we preserve up to 97% of the essential vitamins, minerals, and antioxidants while removing only the water with no additives, no preservatives, and no compromise on quality. Enjoy them raw as a healthy snack or easily rehydrated and added to soups, stir-fries, pasta, and everyday recipes.",
-        img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=640&q=85",
+        img: "/images/other%20images/brocoli%20florets.png",
     },
     {
         id: 3,
@@ -27,7 +27,7 @@ const categories = [
         accentColor: "#0d9488",
         description:
             "NutroFreeze freeze-dried baby foods are thoughtfully crafted to provide pure, gentle nutrition for babies and toddlers. Available as convenient crunchy bites or fine puree powders, our products preserve nearly all the natural vitamins, minerals, and flavors of fresh ingredients with no additives, no preservatives, and no hidden fillers. Simply enjoy the bites as a wholesome snack or rehydrate the puree powders with water for a quick, nutritious meal. Made with the same care you would give your own little one.",
-        img: "https://images.unsplash.com/photo-1591088398332-8a7791972843?w=640&q=85",
+        img: "/images/other%20images/puree.png",
     },
     {
         id: 4,
@@ -36,7 +36,7 @@ const categories = [
         accentColor: "#7c3aed",
         description:
             "NutroFreeze freeze-dried ready-to-eat meals offer busy families complete, balanced nutrition in a convenient, lightweight form. Each meal is gently freeze-dried to lock in natural flavors, essential nutrients, and wholesome ingredients with no additives, no preservatives, and no compromises. Simply add water to reconstitute into a delicious, nourishing hot or cold meal in minutes, perfect for on-the-go lunches, travel, camping, or hectic weekdays.",
-        img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=640&q=85",
+        img: "/images/other%20images/healthy%20bowl.png",
     },
 ];
 

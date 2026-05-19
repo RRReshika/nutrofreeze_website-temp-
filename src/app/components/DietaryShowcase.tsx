@@ -24,33 +24,33 @@ interface LabelConfig {
 const LABELS: LabelConfig[] = [
   {
     text: "VEGAN", color: "#0d9488",
-    left: { img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=500&q=90", name: "Mixed Berry Blend", rotate: -11, top: "8%", inset: "-30px" },
-    right: { img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=500&q=90", name: "Broccoli Florets", rotate: 8, bottom: "6%", inset: "-25px" },
+    left: { img: "/images/other%20images/mixed%20berry%20bowl.png", name: "Mixed Berry Bowl", rotate: -11, top: "8%", inset: "10px" },
+    right: { img: "/images/other%20images/brocoli%20florets.png", name: "Broccoli Florets", rotate: 8, bottom: "6%", inset: "10px" },
   },
   {
     text: "GELATIN FREE", color: "#7c3aed",
-    left: { img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=500&q=90", name: "Mixed Berry Blend", rotate: -14, bottom: "5%", inset: "-20px" },
-    right: { img: "https://images.unsplash.com/photo-1711205229065-89353695a869?w=500&q=90", name: "Sweet Potato Purée", rotate: 7, top: "6%", inset: "-30px" },
+    left: { img: "/images/other%20images/mixed%20berry%20bowl.png", name: "Mixed Berry Bowl", rotate: -14, bottom: "5%", inset: "10px" },
+    right: { img: "/images/other%20images/puree.png", name: "Baby Purée", rotate: 7, top: "6%", inset: "10px" },
   },
   {
     text: "GLUTEN FREE", color: "#0d9488",
-    left: { img: "https://images.unsplash.com/photo-1667889244854-364252b3c14a?w=500&q=90", name: "Mango Chunks", rotate: -8, top: "38%", inset: "-28px" },
-    right: { img: "https://images.unsplash.com/photo-1679279726937-122c49626802?w=500&q=90", name: "Ready to Eat Meal", rotate: 13, top: "18%", inset: "-22px" },
+    left: { img: "/images/other%20images/mango%20cubes.png", name: "Mango Cubes", rotate: -8, top: "38%", inset: "10px" },
+    right: { img: "/images/other%20images/healthy%20bowl.png", name: "Healthy Bowl", rotate: 13, top: "18%", inset: "10px" },
   },
   {
     text: "DAIRY FREE", color: "#7c3aed",
-    left: { img: "https://images.unsplash.com/photo-1595265185654-f7b3c41c9a57?w=500&q=90", name: "Spinach & Greens", rotate: -10, top: "18%", inset: "-35px" },
-    right: { img: "https://images.unsplash.com/photo-1667889244854-364252b3c14a?w=500&q=90", name: "Mango Chunks", rotate: 9, bottom: "18%", inset: "-20px" },
+    left: { img: "/images/other%20images/healthy%20bowl.png", name: "Healthy Bowl", rotate: -10, top: "18%", inset: "10px" },
+    right: { img: "/images/other%20images/mango%20cubes.png", name: "Mango Cubes", rotate: 9, bottom: "18%", inset: "10px" },
   },
   {
     text: "KETO FRIENDLY", color: "#0d9488",
-    left: { img: "https://images.unsplash.com/photo-1687041568037-dab13851ea14?w=500&q=90", name: "Freeze Dried Snack", rotate: -9, bottom: "20%", inset: "-25px" },
-    right: { img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=500&q=90", name: "Broccoli Florets", rotate: 11, bottom: "8%", inset: "-30px" },
+    left: { img: "/images/other%20images/grains.png", name: "Grains", rotate: -9, bottom: "20%", inset: "10px" },
+    right: { img: "/images/other%20images/brocoli%20florets.png", name: "Broccoli Florets", rotate: 11, bottom: "8%", inset: "10px" },
   },
   {
     text: "HALAL", color: "#7c3aed",
-    left: { img: "https://images.unsplash.com/photo-1473340186413-a68ba9c2564e?w=500&q=90", name: "Mixed Veg Purée", rotate: -12, top: "26%", inset: "-20px" },
-    right: { img: "https://images.unsplash.com/photo-1687041568037-dab13851ea14?w=500&q=90", name: "Freeze Dried Snack", rotate: 6, top: "30%", inset: "-28px" },
+    left: { img: "/images/other%20images/puree.png", name: "Baby Purée", rotate: -12, top: "26%", inset: "10px" },
+    right: { img: "/images/other%20images/grains.png", name: "Grains", rotate: 6, top: "30%", inset: "10px" },
   },
 ];
 
@@ -81,7 +81,7 @@ function ProductFloat({ cfg, side, blobColor, labelKey, rotate }: FloatProps) {
     [side]: cfg.inset ?? "-20px",
     ...(cfg.top !== undefined ? { top: cfg.top } : {}),
     ...(cfg.bottom !== undefined ? { bottom: cfg.bottom } : {}),
-    width: "clamp(160px, 17vw, 250px)",
+    width: "clamp(210px, 23vw, 330px)",
     zIndex: 10,
     pointerEvents: "none",
   };
@@ -98,18 +98,18 @@ function ProductFloat({ cfg, side, blobColor, labelKey, rotate }: FloatProps) {
       >
         <div style={{ transform: `rotate(${rotate}deg)`, transformOrigin: "center center" }}>
           {/* Blob */}
-          <div style={{ position: "absolute", inset: "-22%", zIndex: 0, opacity: 0.8 }}>
+          <div style={{ position: "absolute", inset: "-30%", zIndex: 0, opacity: 1 }}>
             <Blob color={blobColor} />
           </div>
           {/* Card */}
-          <div style={{ position: "relative", zIndex: 1, borderRadius: "20px", overflow: "hidden", boxShadow: "0 18px 44px rgba(0,0,0,0.24)", background: "white" }}>
+          <div style={{ position: "relative", zIndex: 1, borderRadius: "24px", overflow: "hidden", boxShadow: "0 28px 70px rgba(0,0,0,0.38), 0 4px 16px rgba(0,0,0,0.18)", background: "white" }}>
             <img
               src={cfg.img}
               alt={cfg.name}
-              style={{ width: "100%", height: "clamp(120px, 14vw, 200px)", objectFit: "cover", display: "block" }}
+              style={{ width: "100%", height: "clamp(170px, 18vw, 270px)", objectFit: "cover", display: "block" }}
             />
-            <div style={{ padding: "9px 13px", background: "white" }}>
-              <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(11px, 1.3vw, 15px)", letterSpacing: "1.5px", color: "#111", margin: 0 }}>
+            <div style={{ padding: "12px 16px", background: "white" }}>
+              <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(13px, 1.5vw, 18px)", letterSpacing: "2px", color: "#111", margin: 0 }}>
                 {cfg.name}
               </p>
             </div>
