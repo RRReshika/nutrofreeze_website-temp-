@@ -313,11 +313,11 @@ const SLOT_CONFIG: Record<SlotOffset, {
   nameSize: number; zIndex: number;
   showInfo: boolean; opacity: number; yOffset: number;
 }> = {
-  "-2": { imgW: 200, imgH: 200, nameSize: 0,  zIndex: 1, showInfo: false, opacity: 0.38, yOffset: 42 },
-  "-1": { imgW: 330, imgH: 330, nameSize: 22, zIndex: 2, showInfo: false, opacity: 0.7,  yOffset: 20 },
-  "0":  { imgW: 460, imgH: 460, nameSize: 36, zIndex: 5, showInfo: true,  opacity: 1,    yOffset: 0  },
-  "1":  { imgW: 330, imgH: 330, nameSize: 22, zIndex: 2, showInfo: false, opacity: 0.7,  yOffset: 20 },
-  "2":  { imgW: 200, imgH: 200, nameSize: 0,  zIndex: 1, showInfo: false, opacity: 0.38, yOffset: 42 },
+  "-2": { imgW: 200, imgH: 200, nameSize: 0, zIndex: 1, showInfo: false, opacity: 0.38, yOffset: 42 },
+  "-1": { imgW: 330, imgH: 330, nameSize: 22, zIndex: 2, showInfo: false, opacity: 0.7, yOffset: 20 },
+  "0": { imgW: 460, imgH: 460, nameSize: 36, zIndex: 5, showInfo: true, opacity: 1, yOffset: 0 },
+  "1": { imgW: 330, imgH: 330, nameSize: 22, zIndex: 2, showInfo: false, opacity: 0.7, yOffset: 20 },
+  "2": { imgW: 200, imgH: 200, nameSize: 0, zIndex: 1, showInfo: false, opacity: 0.38, yOffset: 42 },
 };
 
 export function Products() {
