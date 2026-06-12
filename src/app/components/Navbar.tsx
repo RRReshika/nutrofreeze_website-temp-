@@ -1,10 +1,29 @@
-import { useState, useRef } from "react";
+import { useState, useRef, type FormEvent } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, Menu, X, ArrowRight, ChevronDown, ShoppingCart, Minus, Plus, Trash2, ChevronUp, Leaf, Check, Wheat, Star } from "lucide-react";
+import {
+  Search,
+  Menu,
+  X,
+  ArrowRight,
+  ChevronDown,
+  ShoppingCart,
+  Minus,
+  Plus,
+  Trash2,
+  ChevronUp,
+  Leaf,
+  Check,
+  Wheat,
+  Star,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router";
-import logoImage from "figma:asset/03e425ef142c13c416fab01ab43d6bd3c5981222.png";
 import { useCart } from "../lib/cart";
 import { useAuth } from "../lib/auth-context";
+
+const logoImage = new URL(
+  "../../assets/03e425ef142c13c416fab01ab43d6bd3c5981222.png",
+  import.meta.url
+).href;
 
 const CART_IMAGE_MAP: [RegExp, string][] = [
   [/custard\s*apple/i, "/images/Custard%20apple/PC%20Custard%20apple.png"],
@@ -24,7 +43,10 @@ const CART_IMAGE_MAP: [RegExp, string][] = [
   [/amla|gooseberry/i, "/images/Amla/PC%20Amla.png"],
   [/bitter\s*gourd/i, "/images/Bitter%20gourd/PC%20Bitter%20guord.png"],
   [/green\s*pea/i, "/images/GREEN%20Peas/PC%20Green%20peas%20.png"],
-  [/green\s*bell|green\s*pepper|bell\s*pepper|capsicum/i, "/images/_GREEN%20Bellpepper/PC%20green%20bell%20pepper.png"],
+  [
+    /green\s*bell|green\s*pepper|bell\s*pepper|capsicum/i,
+    "/images/_GREEN%20Bellpepper/PC%20green%20bell%20pepper.png",
+  ],
   [/red\s*bell|red\s*pepper/i, "/images/red%20Bellpepper/PC%20red%20bell%20pepper.png"],
   [/sweet\s*potato/i, "/images/Potato/PC%20potato%20.png"],
   [/potato/i, "/images/Potato/PC%20potato%20.png"],
@@ -38,7 +60,9 @@ function resolveCartImage(title: string, serverImage: string | undefined): strin
   for (const [regex, path] of CART_IMAGE_MAP) {
     if (regex.test(title)) return path;
   }
+
   if (serverImage && !serverImage.includes("unsplash.com")) return serverImage;
+
   return "";
 }
 
@@ -47,7 +71,7 @@ const productCategories = [
   { label: "Vegetables", img: "/images/other%20images/brocoli%20florets.png" },
   { label: "Baby Food", img: "/images/other%20images/puree.png" },
   { label: "Meals", img: "/images/other%20images/healthy%20bowl.png" },
-  { label: "Snacks", img: "https://images.unsplash.com/photo-1615592602926-a3bfacbc1cbd?w=80&q=80" },
+  
 ];
 
 const productTypes = [
@@ -66,19 +90,33 @@ const navLinks = [
 
 export function Navbar() {
   const navigate = useNavigate();
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [activeLink, setActiveLink] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { cart, isOpen, toggleCart, closeCart, updateQuantity, removeItem, clearCart, isReady } = useCart();
-  const { user, isLoading, signOut } = useAuth();
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+
+  const {
+    cart,
+    isOpen,
+    toggleCart,
+    closeCart,
+    updateQuantity,
+    removeItem,
+    clearCart,
+    isReady,
+  } = useCart();
+
+  const { user, isLoading, signOut } = useAuth();
+
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleMouseEnter = (label: string) => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setActiveLink(label);
+
     if (label === "Products") setMegaOpen(true);
   };
 
@@ -89,15 +127,73 @@ export function Navbar() {
     }, 120);
   };
 
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50" style={{ fontFamily: "'Space Grotesk'", padding: "10px 16px 0", background: "transparent", pointerEvents: "none" }}>
-      <div style={{ pointerEvents: "auto" }}>
-        {/* Floating pill */}
-        <div style={{ maxWidth: "1340px", margin: "0 auto", background: "#1c1c1e", borderRadius: "20px", position: "relative" }}>
-          {/* Main bar */}
-          <div className="px-7 h-[70px] flex items-center justify-between relative">
+  const goToHero = () => {
+    setMobileOpen(false);
+    setMegaOpen(false);
+    setSearchOpen(false);
 
-            {/* Left links */}
+    navigate("/");
+
+    setTimeout(() => {
+      const heroSection =
+        document.getElementById("hero") || document.querySelector("section");
+
+      if (heroSection) {
+        heroSection.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      } else {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+    }, 80);
+  };
+
+  const handleSearchSubmit = (event?: FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
+
+    const query = searchQuery.trim();
+
+    if (!query) return;
+
+    setSearchOpen(false);
+    setMobileOpen(false);
+    setMegaOpen(false);
+
+    navigate(`/?search=${encodeURIComponent(query)}#products`);
+
+    setTimeout(() => {
+      document.getElementById("products")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
+  };
+
+  return (
+    <nav
+      className="fixed top-0 left-0 right-0 z-50"
+      style={{
+        fontFamily: "'Space Grotesk'",
+        padding: "10px 16px 0",
+        background: "transparent",
+        pointerEvents: "none",
+      }}
+    >
+      <div style={{ pointerEvents: "auto" }}>
+        <div
+          style={{
+            maxWidth: "1340px",
+            margin: "0 auto",
+            background: "#1c1c1e",
+            borderRadius: "20px",
+            position: "relative",
+          }}
+        >
+          <div className="px-7 h-[86px] flex items-center justify-between relative">
             <div className="hidden lg:flex items-center gap-8">
               {navLinks.map((link) => (
                 <div
@@ -122,22 +218,33 @@ export function Navbar() {
                     </Link>
                   ) : (
                     <button
+                      type="button"
                       className="flex items-center gap-1.5 py-2 transition-colors duration-200"
                       style={{
                         fontSize: "14px",
                         fontWeight: 600,
                         letterSpacing: "0.2px",
-                        color: activeLink === link.label ? "#5eead4" : "rgba(255,255,255,0.78)",
+                        color:
+                          activeLink === link.label
+                            ? "#5eead4"
+                            : "rgba(255,255,255,0.78)",
                         background: "none",
                         border: "none",
                         cursor: "pointer",
                       }}
                     >
                       {link.label}
+
                       {link.hasMega && (
                         <ChevronDown
                           size={13}
-                          style={{ transform: megaOpen && link.hasMega ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+                          style={{
+                            transform:
+                              megaOpen && link.hasMega
+                                ? "rotate(180deg)"
+                                : "rotate(0deg)",
+                            transition: "transform 0.2s",
+                          }}
                         />
                       )}
                     </button>
@@ -145,9 +252,12 @@ export function Navbar() {
                 </div>
               ))}
 
-              {/* ── Search button: "Search" label + rounded-square icon — exactly like Brars ── */}
               <button
-                onClick={() => { setSearchOpen(!searchOpen); setMegaOpen(false); }}
+                type="button"
+                onClick={() => {
+                  setSearchOpen(!searchOpen);
+                  setMegaOpen(false);
+                }}
                 aria-label="Search"
                 style={{
                   display: "flex",
@@ -159,65 +269,98 @@ export function Navbar() {
                   padding: 0,
                 }}
               >
-                <span style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
-                  fontSize: "14px",
-                  fontWeight: 600,
-                  color: searchOpen ? "#5eead4" : "rgba(255,255,255,0.78)",
-                  transition: "color 0.2s",
-                  letterSpacing: "0.2px",
-                }}>
+                <span
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    color: searchOpen
+                      ? "#5eead4"
+                      : "rgba(255,255,255,0.78)",
+                    transition: "color 0.2s",
+                    letterSpacing: "0.2px",
+                  }}
+                >
                   Search
                 </span>
-                {/* Rounded square icon box */}
-                <span style={{
-                  width: "28px",
-                  height: "28px",
-                  borderRadius: "8px",
-                  backgroundColor: searchOpen ? "#5eead4" : "#2d3748",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "background-color 0.2s",
-                  flexShrink: 0,
-                }}>
+
+                <span
+                  style={{
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "8px",
+                    backgroundColor: searchOpen ? "#5eead4" : "#2d3748",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "background-color 0.2s",
+                    flexShrink: 0,
+                  }}
+                >
                   <Search size={14} color={searchOpen ? "#0f172a" : "white"} />
                 </span>
               </button>
             </div>
 
-            {/* Center logo */}
-            <Link to="/" className="absolute left-1/2 -translate-x-1/2 select-none" style={{ textDecoration: "none" }}>
-              <img
+            <button
+              type="button"
+              onClick={goToHero}
+              aria-label="Go back to hero section"
+              className="absolute left-1/2 top-1/2 select-none"
+              style={{
+                transform: "translate(-50%, -50%)",
+                background: "transparent",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                textDecoration: "none",
+                zIndex: 20,
+              }}
+            >
+              <motion.img
                 src={logoImage}
                 alt="NutroFreeze"
-                style={{ width: "130px", height: "66px", objectFit: "contain" }}
+                style={{
+                  width: "190px",
+                  height: "78px",
+                  objectFit: "contain",
+                  display: "block",
+                }}
+                whileHover={{ scale: 1.06 }}
+                whileTap={{ scale: 0.95 }}
               />
-            </Link>
+            </button>
 
-            {/* Right CTAs */}
             <div className="hidden lg:flex items-center gap-3">
               <motion.a
                 href="/#products"
                 className="flex items-center gap-2 border border-white/25 text-white px-5 py-2.5 rounded-xl hover:bg-white/10 transition-all"
-                style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "0.3px" }}
+                style={{
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  letterSpacing: "0.3px",
+                }}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
               >
                 Find Product
                 <ArrowRight size={14} />
               </motion.a>
+
               {!isLoading && !user && (
-                <>
-                  <Link
-                    to="/signin"
-                    className="flex items-center gap-2 border border-white/25 text-white px-5 py-2.5 rounded-xl hover:bg-white/10 transition-all"
-                    style={{ fontSize: "13px", fontWeight: 700, textDecoration: "none", letterSpacing: "0.3px" }}
-                  >
-                    Sign In
-                    <ArrowRight size={14} />
-                  </Link>
-                </>
+                <Link
+                  to="/signin"
+                  className="flex items-center gap-2 border border-white/25 text-white px-5 py-2.5 rounded-xl hover:bg-white/10 transition-all"
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    letterSpacing: "0.3px",
+                  }}
+                >
+                  Sign In
+                  <ArrowRight size={14} />
+                </Link>
               )}
 
               {isLoading && (
@@ -229,16 +372,24 @@ export function Navbar() {
               {!isLoading && user && (
                 <div className="relative">
                   <div className="flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-[13px] font-semibold text-white transition-all hover:border-[#5eead4] hover:text-[#5eead4]">
-                    <Link to="/account" className="px-2.5 py-1 text-white no-underline hover:text-[#5eead4]">
+                    <Link
+                      to="/account"
+                      className="px-2.5 py-1 text-white no-underline hover:text-[#5eead4]"
+                    >
                       {user.email}
                     </Link>
+
                     <button
                       type="button"
                       onClick={() => setAccountMenuOpen((current) => !current)}
                       className="rounded-full p-1 text-white/80 hover:bg-white/10 hover:text-white"
                       aria-label="Open account menu"
                     >
-                      {accountMenuOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      {accountMenuOpen ? (
+                        <ChevronUp size={14} />
+                      ) : (
+                        <ChevronDown size={14} />
+                      )}
                     </button>
                   </div>
 
@@ -257,6 +408,7 @@ export function Navbar() {
                         >
                           Profile
                         </Link>
+
                         <Link
                           to="/account"
                           onClick={() => setAccountMenuOpen(false)}
@@ -264,6 +416,7 @@ export function Navbar() {
                         >
                           Orders
                         </Link>
+
                         <button
                           type="button"
                           onClick={async () => {
@@ -280,15 +433,23 @@ export function Navbar() {
                   </AnimatePresence>
                 </div>
               )}
+
               {!isLoading && user && (
                 <button
                   type="button"
                   onClick={toggleCart}
                   className="relative flex items-center gap-2 border border-white/20 text-white px-4 py-2.5 rounded-full hover:border-[#5eead4] hover:text-[#5eead4] transition-all"
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif", fontStyle: "italic", fontSize: "13px", fontWeight: 700, background: "transparent" }}
+                  style={{
+                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontStyle: "italic",
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    background: "transparent",
+                  }}
                 >
                   <ShoppingCart size={16} />
                   Cart
+
                   <span className="ml-1 inline-flex min-w-6 items-center justify-center rounded-full bg-[#0d9488] px-1.5 py-0.5 text-[11px] font-bold text-white">
                     {cart.itemCount}
                   </span>
@@ -296,13 +457,15 @@ export function Navbar() {
               )}
             </div>
 
-            {/* Mobile toggle */}
-            <button className="lg:hidden text-white" onClick={() => setMobileOpen(!mobileOpen)}>
+            <button
+              type="button"
+              className="lg:hidden text-white"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
               {mobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
 
-          {/* ── Search panel ── thick dark border, white card, cream inner bar */}
           <AnimatePresence>
             {searchOpen && (
               <motion.div
@@ -315,7 +478,6 @@ export function Navbar() {
                   padding: "14px 24px 18px",
                 }}
               >
-                {/* White card with thick dark border — exactly Brars */}
                 <div
                   style={{
                     maxWidth: "1340px",
@@ -327,8 +489,8 @@ export function Navbar() {
                     boxShadow: "0 6px 24px rgba(0,0,0,0.22)",
                   }}
                 >
-                  {/* Cream inner bar */}
-                  <div
+                  <form
+                    onSubmit={handleSearchSubmit}
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -338,14 +500,21 @@ export function Navbar() {
                       gap: "12px",
                     }}
                   >
-                    <Search size={18} color="#a0856a" style={{ flexShrink: 0 }} />
+                    <Search
+                      size={18}
+                      color="#a0856a"
+                      style={{ flexShrink: 0 }}
+                    />
+
                     <input
                       type="text"
                       value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
+                      onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search"
                       autoFocus
-                      onKeyDown={e => e.key === "Escape" && setSearchOpen(false)}
+                      onKeyDown={(e) =>
+                        e.key === "Escape" && setSearchOpen(false)
+                      }
                       style={{
                         flex: 1,
                         border: "none",
@@ -357,7 +526,9 @@ export function Navbar() {
                         padding: "12px 0",
                       }}
                     />
+
                     <button
+                      type="submit"
                       style={{
                         backgroundColor: "#1c1c1e",
                         color: "white",
@@ -374,13 +545,12 @@ export function Navbar() {
                     >
                       Search
                     </button>
-                  </div>
+                  </form>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Mega Menu */}
           <AnimatePresence>
             {megaOpen && (
               <motion.div
@@ -390,19 +560,25 @@ export function Navbar() {
                 transition={{ duration: 0.22, ease: "easeOut" }}
                 className="absolute top-full mt-2 left-0 right-0 bg-white shadow-2xl z-40"
                 style={{ borderRadius: "20px", overflow: "hidden" }}
-                onMouseEnter={() => { if (closeTimer.current) clearTimeout(closeTimer.current); }}
+                onMouseEnter={() => {
+                  if (closeTimer.current) clearTimeout(closeTimer.current);
+                }}
                 onMouseLeave={handleMouseLeave}
               >
                 <div className="max-w-[1340px] mx-auto px-8 py-8 grid grid-cols-3 gap-8">
-
-                  {/* Column 1: Product Categories */}
                   <div>
                     <p
                       className="mb-5 uppercase tracking-widest text-gray-400"
-                      style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "3px" }}
+                      style={{
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        letterSpacing: "3px",
+                      }}
                     >
                       Product Categories
                     </p>
+
                     <div className="space-y-2">
                       {productCategories.map((cat) => (
                         <a
@@ -416,15 +592,27 @@ export function Navbar() {
                               className="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100"
                               style={{ border: "1px solid rgba(0,0,0,0.06)" }}
                             >
-                              <img src={cat.img} alt={cat.label} className="w-full h-full object-cover" />
+                              <img
+                                src={cat.img}
+                                alt={cat.label}
+                                className="w-full h-full object-cover"
+                              />
                             </div>
+
                             <span
                               className="text-gray-900 group-hover:text-[#0d9488] transition-colors"
-                              style={{ fontFamily: "'Syne', sans-serif", fontSize: "15px", fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase" }}
+                              style={{
+                                fontFamily: "'Syne', sans-serif",
+                                fontSize: "15px",
+                                fontWeight: 700,
+                                letterSpacing: "0.5px",
+                                textTransform: "uppercase",
+                              }}
                             >
                               {cat.label}
                             </span>
                           </div>
+
                           <div className="w-7 h-7 rounded-lg bg-[#0f172a] group-hover:bg-[#0d9488] flex items-center justify-center transition-colors flex-shrink-0">
                             <ArrowRight size={13} color="white" />
                           </div>
@@ -433,14 +621,19 @@ export function Navbar() {
                     </div>
                   </div>
 
-                  {/* Column 2: Type of Products */}
                   <div>
                     <p
                       className="mb-5 uppercase tracking-widest text-gray-400"
-                      style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "3px" }}
+                      style={{
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        letterSpacing: "3px",
+                      }}
                     >
                       Type of Products
                     </p>
+
                     <div className="space-y-2">
                       {productTypes.map((type) => (
                         <a
@@ -450,18 +643,24 @@ export function Navbar() {
                           onClick={() => setMegaOpen(false)}
                         >
                           <div className="flex items-center gap-3">
-                            <div
-                              className="w-11 h-11 rounded-xl bg-[#ede9fe] flex items-center justify-center flex-shrink-0"
-                            >
+                            <div className="w-11 h-11 rounded-xl bg-[#ede9fe] flex items-center justify-center flex-shrink-0">
                               <type.Icon size={18} color="#7c3aed" />
                             </div>
+
                             <span
                               className="text-gray-900 group-hover:text-[#7c3aed] transition-colors"
-                              style={{ fontFamily: "'Syne', sans-serif", fontSize: "15px", fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase" }}
+                              style={{
+                                fontFamily: "'Syne', sans-serif",
+                                fontSize: "15px",
+                                fontWeight: 700,
+                                letterSpacing: "0.5px",
+                                textTransform: "uppercase",
+                              }}
                             >
                               {type.label}
                             </span>
                           </div>
+
                           <div className="w-7 h-7 rounded-lg bg-[#0f172a] group-hover:bg-[#7c3aed] flex items-center justify-center transition-colors flex-shrink-0">
                             <ArrowRight size={13} color="white" />
                           </div>
@@ -470,27 +669,44 @@ export function Navbar() {
                     </div>
                   </div>
 
-                  {/* Column 3: Featured */}
                   <div>
                     <p
                       className="mb-5 uppercase tracking-widest text-gray-400"
-                      style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "3px" }}
+                      style={{
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        letterSpacing: "3px",
+                      }}
                     >
                       Featured
                     </p>
+
                     <div
                       className="rounded-2xl overflow-hidden relative"
-                      style={{ background: "linear-gradient(145deg, #0f4c45 0%, #134e4a 60%, #1a1a2e 100%)", minHeight: "300px" }}
+                      style={{
+                        background:
+                          "linear-gradient(145deg, #0f4c45 0%, #134e4a 60%, #1a1a2e 100%)",
+                        minHeight: "300px",
+                      }}
                     >
                       <div className="absolute -bottom-8 -right-8 w-44 h-44 rounded-full bg-[#0d9488]/30" />
                       <div className="absolute -top-6 -left-6 w-32 h-32 rounded-full bg-[#7c3aed]/20" />
+
                       <div className="relative z-10 p-6">
                         <span
                           className="inline-block px-3 py-1 rounded-full bg-[#5eead4]/20 text-[#5eead4] mb-4"
-                          style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "10px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase" }}
+                          style={{
+                            fontFamily: "'Space Grotesk', sans-serif",
+                            fontSize: "10px",
+                            fontWeight: 700,
+                            letterSpacing: "2px",
+                            textTransform: "uppercase",
+                          }}
                         >
                           New Arrival
                         </span>
+
                         <h3
                           style={{
                             fontFamily: "'Gagalin', sans-serif",
@@ -502,50 +718,74 @@ export function Navbar() {
                             marginBottom: "10px",
                           }}
                         >
-                          Berry Power<br />Blend
+                          Berry Power
+                          <br />
+                          Blend
                         </h3>
-                        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.72)", lineHeight: 1.65, marginBottom: "20px" }}>
-                          Premium freeze dried mixed berry blend. Strawberries, blueberries and raspberries. Vegan, gelatin free, no added sugar.
+
+                        <p
+                          style={{
+                            fontFamily: "'DM Sans', sans-serif",
+                            fontSize: "13px",
+                            color: "rgba(255,255,255,0.72)",
+                            lineHeight: 1.65,
+                            marginBottom: "20px",
+                          }}
+                        >
+                          Premium freeze dried mixed berry blend. Strawberries,
+                          blueberries and raspberries. Vegan, gelatin free, no
+                          added sugar.
                         </p>
+
                         <img
                           src="/images/other%20images/berries%20bowl.png"
                           alt="Berry Blend"
                           className="absolute bottom-0 right-0 w-28 h-24 object-cover rounded-tl-2xl opacity-80"
                         />
+
                         <a
                           href="#products"
                           onClick={() => setMegaOpen(false)}
                           className="inline-flex items-center gap-2 bg-white text-[#0f172a] px-5 py-2.5 rounded-full hover:bg-[#5eead4] transition-colors"
-                          style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "13px", fontWeight: 700 }}
+                          style={{
+                            fontFamily: "'Space Grotesk', sans-serif",
+                            fontSize: "13px",
+                            fontWeight: 700,
+                          }}
                         >
                           View Product <ArrowRight size={13} />
                         </a>
                       </div>
                     </div>
                   </div>
-
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Mobile menu */}
           <AnimatePresence>
             {mobileOpen && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="lg:hidden border-t border-white/10 overflow-hidden" style={{ background: "#1c1c1e" }}
+                className="lg:hidden border-t border-white/10 overflow-hidden"
+                style={{ background: "#1c1c1e" }}
               >
                 <div className="px-6 py-4 space-y-1">
-                  {navLinks.map((link) => (
+                  {navLinks.map((link) =>
                     link.href ? (
                       <Link
                         key={link.label}
                         to={link.href}
                         className="block py-3 border-b border-white/5 transition-colors"
-                        style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "16px", fontWeight: 600, color: "rgba(255,255,255,0.75)", textDecoration: "none" }}
+                        style={{
+                          fontFamily: "'Space Grotesk', sans-serif",
+                          fontSize: "16px",
+                          fontWeight: 600,
+                          color: "rgba(255,255,255,0.75)",
+                          textDecoration: "none",
+                        }}
                         onClick={() => setMobileOpen(false)}
                       >
                         {link.label}
@@ -553,36 +793,77 @@ export function Navbar() {
                     ) : (
                       <a
                         key={link.label}
-                        href="#"
+                        href="#products"
                         className="block py-3 text-white/75 hover:text-[#5eead4] border-b border-white/5 transition-colors"
-                        style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "16px", fontWeight: 600 }}
+                        style={{
+                          fontFamily: "'Space Grotesk', sans-serif",
+                          fontSize: "16px",
+                          fontWeight: 600,
+                        }}
                         onClick={() => setMobileOpen(false)}
                       >
                         {link.label}
                       </a>
                     )
-                  ))}
+                  )}
+
                   <div className="flex flex-col gap-3 pt-4">
-                    <a href="/#products" className="w-full text-center border border-white/20 text-white py-3 rounded-full" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "14px" }}>
+                    <a
+                      href="/#products"
+                      className="w-full text-center border border-white/20 text-white py-3 rounded-full"
+                      style={{
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontWeight: 600,
+                        fontSize: "14px",
+                      }}
+                    >
                       Find Product
                     </a>
+
                     {!isLoading && !user && (
-                      <>
-                        <Link to="/signin" className="w-full text-center bg-[#7c3aed] text-white py-3 rounded-full" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "14px", textDecoration: "none" }}>
-                          Sign In
-                        </Link>
-                      </>
+                      <Link
+                        to="/signin"
+                        className="w-full text-center bg-[#7c3aed] text-white py-3 rounded-full"
+                        style={{
+                          fontFamily: "'Space Grotesk', sans-serif",
+                          fontWeight: 600,
+                          fontSize: "14px",
+                          textDecoration: "none",
+                        }}
+                      >
+                        Sign In
+                      </Link>
                     )}
+
                     {!isLoading && user && (
-                      <Link to="/account" className="w-full text-center bg-[#7c3aed] text-white py-3 rounded-full" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "14px", textDecoration: "none" }}>
+                      <Link
+                        to="/account"
+                        className="w-full text-center bg-[#7c3aed] text-white py-3 rounded-full"
+                        style={{
+                          fontFamily: "'Space Grotesk', sans-serif",
+                          fontWeight: 600,
+                          fontSize: "14px",
+                          textDecoration: "none",
+                        }}
+                      >
                         {user.email}
                       </Link>
                     )}
+
                     <button
                       type="button"
-                      onClick={() => { setMobileOpen(false); toggleCart(); }}
+                      onClick={() => {
+                        setMobileOpen(false);
+                        toggleCart();
+                      }}
                       className="w-full text-center border border-white/20 text-white py-3 rounded-full"
-                      style={{ fontFamily: "'Barlow Condensed', sans-serif", fontStyle: "italic", fontWeight: 700, fontSize: "14px", background: "transparent" }}
+                      style={{
+                        fontFamily: "'Barlow Condensed', sans-serif",
+                        fontStyle: "italic",
+                        fontWeight: 700,
+                        fontSize: "14px",
+                        background: "transparent",
+                      }}
                     >
                       Cart ({cart.itemCount})
                     </button>
@@ -602,60 +883,128 @@ export function Navbar() {
                   exit={{ opacity: 0 }}
                   onClick={closeCart}
                 />
+
                 <motion.aside
                   className="fixed right-0 top-0 z-[61] h-full w-full max-w-md overflow-hidden bg-[#0f172a] text-white shadow-2xl"
                   initial={{ x: 420 }}
                   animate={{ x: 0 }}
                   exit={{ x: 420 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 30 }}
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif", fontStyle: "italic" }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 30,
+                  }}
+                  style={{
+                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontStyle: "italic",
+                  }}
                 >
                   <div className="flex h-full flex-col">
                     <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
                       <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-teal-200">Shopping Cart</p>
-                        <h3 className="mt-2 text-2xl font-black">Your items</h3>
+                        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-teal-200">
+                          Shopping Cart
+                        </p>
+                        <h3 className="mt-2 text-2xl font-black">
+                          Your items
+                        </h3>
                       </div>
-                      <button type="button" onClick={closeCart} className="rounded-full border border-white/15 p-2 text-white hover:bg-white/10">
+
+                      <button
+                        type="button"
+                        onClick={closeCart}
+                        className="rounded-full border border-white/15 p-2 text-white hover:bg-white/10"
+                      >
                         <X size={18} />
                       </button>
                     </div>
 
                     <div className="flex-1 overflow-y-auto px-4 py-4">
                       {!isReady && (
-                        <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">Loading cart...</div>
+                        <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">
+                          Loading cart...
+                        </div>
                       )}
 
                       {isReady && cart.items.length === 0 && (
                         <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">
-                          Your cart is empty. Add any product from the products carousel.
+                          Your cart is empty. Add any product from the products
+                          carousel.
                         </div>
                       )}
 
                       <div className="space-y-3">
                         {cart.items.map((item) => (
-                          <div key={item.id} className="rounded-3xl border border-white/10 bg-white/5 p-4">
+                          <div
+                            key={item.id}
+                            className="rounded-3xl border border-white/10 bg-white/5 p-4"
+                          >
                             <div className="flex gap-3">
-                              <img src={resolveCartImage(item.product.title, item.product.image)} alt={item.product.title} className="h-20 w-20 rounded-2xl object-cover" />
+                              <img
+                                src={resolveCartImage(
+                                  item.product.title,
+                                  item.product.image
+                                )}
+                                alt={item.product.title}
+                                className="h-20 w-20 rounded-2xl object-cover"
+                              />
+
                               <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-semibold uppercase tracking-[0.12em] text-white">{item.product.title}</p>
-                                <p className="mt-1 text-xs text-white/60">{item.variant.title} {item.variant.weightGrams ? `· ${item.variant.weightGrams}g` : ""}</p>
-                                <p className="mt-2 text-sm text-teal-200">${item.unitPrice.toFixed(2)}</p>
+                                <p className="truncate text-sm font-semibold uppercase tracking-[0.12em] text-white">
+                                  {item.product.title}
+                                </p>
+
+                                <p className="mt-1 text-xs text-white/60">
+                                  {item.variant.title}{" "}
+                                  {item.variant.weightGrams
+                                    ? `· ${item.variant.weightGrams}g`
+                                    : ""}
+                                </p>
+
+                                <p className="mt-2 text-sm text-teal-200">
+                                  ${item.unitPrice.toFixed(2)}
+                                </p>
                               </div>
                             </div>
 
                             <div className="mt-4 flex items-center justify-between gap-3">
                               <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-2 py-1">
-                                <button type="button" onClick={() => updateQuantity(item.variantId, item.quantity - 1)} className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/10">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    updateQuantity(
+                                      item.variantId,
+                                      item.quantity - 1
+                                    )
+                                  }
+                                  className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/10"
+                                >
                                   <Minus size={14} />
                                 </button>
-                                <span className="min-w-6 text-center text-sm font-semibold">{item.quantity}</span>
-                                <button type="button" onClick={() => updateQuantity(item.variantId, item.quantity + 1)} className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/10">
+
+                                <span className="min-w-6 text-center text-sm font-semibold">
+                                  {item.quantity}
+                                </span>
+
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    updateQuantity(
+                                      item.variantId,
+                                      item.quantity + 1
+                                    )
+                                  }
+                                  className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/10"
+                                >
                                   <Plus size={14} />
                                 </button>
                               </div>
 
-                              <button type="button" onClick={() => removeItem(item.variantId)} className="inline-flex items-center gap-2 text-sm text-rose-300 hover:text-rose-200">
+                              <button
+                                type="button"
+                                onClick={() => removeItem(item.variantId)}
+                                className="inline-flex items-center gap-2 text-sm text-rose-300 hover:text-rose-200"
+                              >
                                 <Trash2 size={14} /> Remove
                               </button>
                             </div>
@@ -667,13 +1016,25 @@ export function Navbar() {
                     <div className="border-t border-white/10 px-6 py-5">
                       <div className="flex items-center justify-between text-sm text-white/70">
                         <span>Subtotal</span>
-                        <span className="text-base font-semibold text-white">${cart.subtotal.toFixed(2)}</span>
+                        <span className="text-base font-semibold text-white">
+                          ${cart.subtotal.toFixed(2)}
+                        </span>
                       </div>
+
                       <div className="mt-4 flex gap-3">
-                        <button type="button" onClick={clearCart} className="flex-1 rounded-full border border-white/15 px-4 py-3 text-sm font-semibold text-white hover:bg-white/10">
+                        <button
+                          type="button"
+                          onClick={clearCart}
+                          className="flex-1 rounded-full border border-white/15 px-4 py-3 text-sm font-semibold text-white hover:bg-white/10"
+                        >
                           Clear cart
                         </button>
-                        <Link to={user ? "/checkout" : "/signin"} onClick={closeCart} className="flex-1 rounded-full bg-[#0d9488] px-4 py-3 text-center text-sm font-semibold text-white no-underline hover:bg-[#0f766e]">
+
+                        <Link
+                          to={user ? "/checkout" : "/signin"}
+                          onClick={closeCart}
+                          className="flex-1 rounded-full bg-[#0d9488] px-4 py-3 text-center text-sm font-semibold text-white no-underline hover:bg-[#0f766e]"
+                        >
                           Checkout
                         </Link>
                       </div>
@@ -683,8 +1044,8 @@ export function Navbar() {
               </>
             )}
           </AnimatePresence>
-        </div>{/* /pill */}
-      </div>{/* /pointerEvents wrapper */}
+        </div>
+      </div>
     </nav>
   );
 }

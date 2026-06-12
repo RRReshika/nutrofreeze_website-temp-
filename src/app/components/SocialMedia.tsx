@@ -63,14 +63,37 @@ const socialLinks = [
 
 // Doubled so the marquee loops seamlessly
 const gridPhotos = [
-  { id: 1, img: "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=500&q=80", caption: "Freeze Dried Fruits" },
-  { id: 2, img: "https://images.unsplash.com/photo-1711205229065-89353695a869?w=500&q=80", caption: "Baby Nutrition" },
-  { id: 3, img: "https://images.unsplash.com/photo-1662611284583-f34180194370?w=500&q=80", caption: "Pure Vegetables" },
-  { id: 4, img: "https://images.unsplash.com/photo-1473340186413-a68ba9c2564e?w=500&q=80", caption: "Ready to Eat" },
-  { id: 5, img: "https://images.unsplash.com/photo-1595265185654-f7b3c41c9a57?w=500&q=80", caption: "Berry Goodness" },
-  { id: 6, img: "https://images.unsplash.com/photo-1615592602926-a3bfacbc1cbd?w=500&q=80", caption: "Crunchy Snacks" },
-  { id: 7, img: "https://images.unsplash.com/photo-1679279726937-122c49626802?w=500&q=80", caption: "Family Nutrition" },
-  { id: 8, img: "https://images.unsplash.com/photo-1716801564904-5605f562b664?w=500&q=80", caption: "Just Add Water" },
+  {
+    id: 1,
+    img: "/images/other%20images/mixed%20berry%20bowl.png",
+    caption: "Mixed Berry Bowl",
+  },
+  {
+    id: 2,
+    img: "/images/other%20images/berries%20bowl.png",
+    caption: "Berry Bowl",
+  },
+  {
+    id: 3,
+    img: "/images/other%20images/healthy%20bowl.png",
+    caption: "Healthy Meal Bowl",
+  },
+  {
+    id: 4,
+    img: "/images/other%20images/mango%20cubes.png",
+    caption: "Mango Cubes",
+  },
+  {
+    id: 5,
+    img: "/images/other%20images/brocoli%20florets.png",
+    caption: "Broccoli Florets",
+  },
+  {
+    id: 6,
+    img: "/images/other%20images/puree.png",
+    caption: "Baby Puree",
+  },
+  
 ];
 
 // Inject the marquee keyframe once via a style tag
