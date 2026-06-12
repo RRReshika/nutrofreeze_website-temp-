@@ -6,6 +6,42 @@ import logoImage from "figma:asset/03e425ef142c13c416fab01ab43d6bd3c5981222.png"
 import { useCart } from "../lib/cart";
 import { useAuth } from "../lib/auth-context";
 
+const CART_IMAGE_MAP: [RegExp, string][] = [
+  [/custard\s*apple/i, "/images/Custard%20apple/PC%20Custard%20apple.png"],
+  [/black\s*jamun/i, "/images/Jamun/PC%20Jamun.png"],
+  [/jamun/i, "/images/Jamun/PC%20Jamun.png"],
+  [/chikoo|sapota/i, "/images/Chikoo/PC%20chikoo%20.png"],
+  [/pink.*guava|white.*guava|guava/i, "/images/Guava/PC%20Pink%20guava.png"],
+  [/jackfruit|jack\s*fruit/i, "/images/Jack%20Fruit/PC%20Jackfruit%20.png"],
+  [/blueberry/i, "/images/Blueberry/PC%20Blueberry.png"],
+  [/strawberry/i, "/images/Strawberry/PC%20strawberry.png"],
+  [/raspberry/i, "/images/Raspberry/PC%20raspberry.png"],
+  [/pineapple/i, "/images/Pineapple/PC%20Pineapple.png"],
+  [/papaya/i, "/images/Papaya/PC%20papaya%20.png"],
+  [/kiwi/i, "/images/Kiwi/PC%20Kiwi.png"],
+  [/mango/i, "/images/Mango/PC%20Mango.png"],
+  [/banana/i, "/images/Banana/PC%20Banana.png"],
+  [/amla|gooseberry/i, "/images/Amla/PC%20Amla.png"],
+  [/bitter\s*gourd/i, "/images/Bitter%20gourd/PC%20Bitter%20guord.png"],
+  [/green\s*pea/i, "/images/GREEN%20Peas/PC%20Green%20peas%20.png"],
+  [/green\s*bell|green\s*pepper|bell\s*pepper|capsicum/i, "/images/_GREEN%20Bellpepper/PC%20green%20bell%20pepper.png"],
+  [/red\s*bell|red\s*pepper/i, "/images/red%20Bellpepper/PC%20red%20bell%20pepper.png"],
+  [/sweet\s*potato/i, "/images/Potato/PC%20potato%20.png"],
+  [/potato/i, "/images/Potato/PC%20potato%20.png"],
+  [/carrot/i, "/images/Carrot/PC%20Carrot.png"],
+  [/corn/i, "/images/corn/PC%20corn.png"],
+  [/zucchini/i, "/images/zucchini/PC%20zucchini.png"],
+  [/apple/i, "/images/APPLE/PC%20Apple%20.png"],
+];
+
+function resolveCartImage(title: string, serverImage: string | undefined): string {
+  for (const [regex, path] of CART_IMAGE_MAP) {
+    if (regex.test(title)) return path;
+  }
+  if (serverImage && !serverImage.includes("unsplash.com")) return serverImage;
+  return "";
+}
+
 const productCategories = [
   { label: "Fruits", img: "/images/other%20images/mixed%20berry%20bowl.png" },
   { label: "Vegetables", img: "/images/other%20images/brocoli%20florets.png" },
@@ -600,7 +636,7 @@ export function Navbar() {
                         {cart.items.map((item) => (
                           <div key={item.id} className="rounded-3xl border border-white/10 bg-white/5 p-4">
                             <div className="flex gap-3">
-                              <img src={item.product.image} alt={item.product.title} className="h-20 w-20 rounded-2xl object-cover" />
+                              <img src={resolveCartImage(item.product.title, item.product.image)} alt={item.product.title} className="h-20 w-20 rounded-2xl object-cover" />
                               <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm font-semibold uppercase tracking-[0.12em] text-white">{item.product.title}</p>
                                 <p className="mt-1 text-xs text-white/60">{item.variant.title} {item.variant.weightGrams ? `· ${item.variant.weightGrams}g` : ""}</p>
@@ -637,7 +673,7 @@ export function Navbar() {
                         <button type="button" onClick={clearCart} className="flex-1 rounded-full border border-white/15 px-4 py-3 text-sm font-semibold text-white hover:bg-white/10">
                           Clear cart
                         </button>
-                        <Link to={user ? "/account" : "/signin"} onClick={closeCart} className="flex-1 rounded-full bg-[#0d9488] px-4 py-3 text-center text-sm font-semibold text-white no-underline hover:bg-[#0f766e]">
+                        <Link to={user ? "/checkout" : "/signin"} onClick={closeCart} className="flex-1 rounded-full bg-[#0d9488] px-4 py-3 text-center text-sm font-semibold text-white no-underline hover:bg-[#0f766e]">
                           Checkout
                         </Link>
                       </div>

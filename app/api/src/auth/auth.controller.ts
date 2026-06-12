@@ -1,11 +1,11 @@
-import { Controller, Post, Body, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, Get, Patch, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { RegisterDto, LoginDto, RefreshDto, LogoutDto } from './dto/auth.dto';
+import { RegisterDto, LoginDto, RefreshDto, LogoutDto, UpdateProfileDto } from './dto/auth.dto';
 
 @Controller('customers')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('register')
   register(@Body() dto: RegisterDto) {
@@ -31,5 +31,11 @@ export class AuthController {
   @Get('me')
   getProfile(@Request() req) {
     return this.authService.me(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  updateProfile(@Request() req, @Body() dto: UpdateProfileDto) {
+    return this.authService.updateProfile(req.user.userId, dto);
   }
 }

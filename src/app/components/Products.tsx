@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useCart } from "../lib/cart";
 import { useAuth } from "../lib/auth-context";
 import { useNavigate } from "react-router";
@@ -18,39 +18,39 @@ const FALLBACK_COLORS = [
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1576777647084-cac2dd176310?w=700&q=90";
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "/api").replace(/\/$/, "");
 
-// Map product title keywords → PC design-background images
-// Order matters: more specific patterns first
+const BG_BASE = "/images/big%20packets%20no%20background";
+
+// Transparent packet images — no background, float cleanly
 const LOCAL_IMAGE_MAP: [RegExp, string][] = [
   // Fruits
-  [/custard\s*apple/i, "/images/Custard%20apple/PC%20Custard%20apple.png"],
-  [/black\s*jamun/i, "/images/Jamun/PC%20Jamun.png"],
-  [/jamun/i, "/images/Jamun/PC%20Jamun.png"],
-  [/chikoo|sapota/i, "/images/Chikoo/PC%20chikoo%20.png"],
-  [/pink.*guava|white.*guava|guava/i, "/images/Guava/PC%20Pink%20guava.png"],
-  [/jackfruit|jack\s*fruit/i, "/images/Jack%20Fruit/PC%20Jackfruit%20.png"],
-  [/blueberry/i, "/images/Blueberry/PC%20Blueberry.png"],
-  [/strawberry/i, "/images/Strawberry/PC%20strawberry.png"],
-  [/raspberry/i, "/images/Raspberry/PC%20raspberry.png"],
-  [/pineapple/i, "/images/Pineapple/PC%20Pineapple.png"],
-  [/papaya/i, "/images/Papaya/PC%20papaya%20.png"],
-  [/kiwi/i, "/images/Kiwi/PC%20Kiwi.png"],
-  [/mango/i, "/images/Mango/PC%20Mango.png"],
-  [/banana/i, "/images/Banana/PC%20Banana.png"],
-  [/apple/i, "/images/APPLE/PC%20Apple%20.png"],
+  [/custard\s*apple/i, `${BG_BASE}/WB_Custard_front-removebg-preview.png`],
+  [/black\s*jamun/i, `${BG_BASE}/WB_Jamun_front-removebg-preview.png`],
+  [/jamun/i, `${BG_BASE}/WB_Jamun_front-removebg-preview.png`],
+  [/chikoo|sapota/i, `${BG_BASE}/WB_chikoo_front-removebg-preview.png`],
+  [/guava/i, `${BG_BASE}/WB_guava_front-removebg-preview.png`],
+  [/jackfruit|jack\s*fruit/i, `${BG_BASE}/WB_jackfruit_front-removebg-preview.png`],
+  [/blueberry/i, `${BG_BASE}/WB_Blueberry_Front_-removebg-preview.png`],
+  [/strawberry/i, `${BG_BASE}/WB_strawberry_front-removebg-preview.png`],
+  [/raspberry/i, `${BG_BASE}/WB_raspberry_front-removebg-preview.png`],
+  [/pineapple/i, `${BG_BASE}/WB_pineapple_front-removebg-preview.png`],
+  [/papaya/i, `${BG_BASE}/WB_Papaya_Front-removebg-preview.png`],
+  [/kiwi/i, `${BG_BASE}/WB_Kiwi_front-removebg-preview.png`],
+  [/mango/i, `${BG_BASE}/WB_Mango_front-removebg-preview.png`],
+  [/banana/i, `${BG_BASE}/WB_Banana_front-removebg-preview.png`],
+  [/apple/i, `${BG_BASE}/WB_Apple__front_png-removebg-preview.png`],
   // Vegetables
-  [/amla|gooseberry/i, "/images/Amla/PC%20Amla.png"],
-  [/bitter\s*gourd/i, "/images/Bitter%20gourd/PC%20Bitter%20guord.png"],
-  [/zucchini/i, "/images/zucchini/PC%20zucchini.png"],
-  [/green\s*bell\s*pepper/i, "/images/_GREEN%20Bellpepper/PC%20green%20bell%20pepper.png"],
-  [/red\s*bell\s*pepper/i, "/images/red%20Bellpepper/PC%20red%20bell%20pepper.png"],
-  [/carrot/i, "/images/Carrot/PC%20Carrot.png"],
-  [/green\s*peas?|peas?\s*\(whole\)/i, "/images/GREEN%20Peas/PC%20Green%20peas%20.png"],
-  [/sweet\s*corn|corn/i, "/images/corn/PC%20corn.png"],
-  [/potato/i, "/images/Potato/PC%20potato%20.png"],
+  [/amla|gooseberry/i, `${BG_BASE}/WB_Amla_Front-removebg-preview.png`],
+  [/bitter\s*gourd/i, `${BG_BASE}/WB_Bitter_Gourd_Front_-removebg-preview.png`],
+  [/zucchini/i, `${BG_BASE}/WB_Zucchini_front-removebg-preview.png`],
+  [/green\s*bell\s*pepper/i, `${BG_BASE}/WB_green_bell_pepper_front-removebg-preview.png`],
+  [/red\s*bell\s*pepper/i, `${BG_BASE}/WB_Red_bell_pepper_front-removebg-preview.png`],
+  [/carrot/i, `${BG_BASE}/PC_Carrot-removebg-preview.png`],
+  [/green\s*peas?|peas?\s*\(whole\)/i, `${BG_BASE}/WB_Peas_front-removebg-preview.png`],
+  [/sweet\s*corn|corn/i, `${BG_BASE}/WB_corn_front-removebg-preview.png`],
+  [/potato/i, `${BG_BASE}/WB_potato_front-removebg-preview.png`],
 ];
 
 function getLocalImage(title: string): string | null {
-  // Never assign a whole/slice/cube image to a powder or flake product
   if (/powder|flakes?\s*\/\s*peel/i.test(title)) return null;
   for (const [pattern, path] of LOCAL_IMAGE_MAP) {
     if (pattern.test(title)) return path;
@@ -139,30 +139,34 @@ const toProductCard = (product: ApiProduct): ProductCard => {
 };
 
 const TICKER_ITEMS = [
-  "FROZEN GOODNESS", "HALAL CERTIFIED", "NO PRESERVATIVES",
-  "VEGAN FRIENDLY", "PREMIUM QUALITY", "NUTRITIOUS & DELICIOUS",
+  "BRINGING YOU THE BEST IN SNACKS, DESSERTS & DAIRY",
+  "VEGETARIAN DONE BETTER",
+  "HALAL CERTIFIED",
+  "NO PRESERVATIVES",
+  "VEGAN FRIENDLY",
+  "FREEZE DRIED GOODNESS",
 ];
 
-// ── Scrolling ticker ─────────────────────────────────────────────────
 function Ticker() {
-  const items = [...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS];
+  const items = [...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS];
   return (
-    <div style={{ overflow: "hidden", backgroundColor: "#2e1065", padding: "13px 0", whiteSpace: "nowrap" }}>
+    <div style={{ overflow: "hidden", backgroundColor: "#111111", padding: "11px 0", whiteSpace: "nowrap" }}>
       <motion.div
         style={{ display: "inline-flex" }}
-        animate={{ x: ["0%", `-${100 / 4}%`] }}
-        transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
+        animate={{ x: ["0%", `-${100 / 3}%`] }}
+        transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
       >
         {items.map((item, i) => (
           <span
             key={i}
             style={{
-              fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: "15px", letterSpacing: "2.5px", color: "#e9d5ff",
-              display: "inline-flex", alignItems: "center", gap: "16px", paddingRight: "44px",
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontSize: "12.5px", fontWeight: 700, letterSpacing: "2.5px", color: "white",
+              textTransform: "uppercase",
+              display: "inline-flex", alignItems: "center", gap: "14px", paddingRight: "44px",
             }}
           >
-            <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#a78bfa", display: "inline-block", flexShrink: 0 }} />
+            <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#f97316", display: "inline-block", flexShrink: 0 }} />
             {item}
           </span>
         ))}
@@ -171,166 +175,30 @@ function Ticker() {
   );
 }
 
-// ── Elegant Pinwheel — 4 smooth curved swept blades ──────────────────
-function Pinwheel({ color = "#a78bfa", size = 370 }: { color?: string; size?: number }) {
-  const cx = size / 2;
-  const cy = size / 2;
-  const r = size * 0.44;
-
-  // A single swept blade: starts at center, curves outward with a nice arc
-  // Defined in local space (origin = center), then translated
-  const bx1 = -0.22 * r, by1 = 0.12 * r;  // control point 1
-  const bx2 = 0.04 * r, by2 = 0.82 * r;  // control point 2
-  const ex = 0.42 * r, ey = 0.62 * r;  // blade tip
-  const bx3 = 0.78 * r, by3 = 0.42 * r;  // control point 3
-  const bx4 = 0.48 * r, by4 = -0.08 * r; // control point 4
-
-  // Relative-to-center path
-  const localPath = `M 0 0 C ${bx1} ${by1}, ${bx2} ${by2}, ${ex} ${ey} C ${bx3} ${by3}, ${bx4} ${by4}, 0 0 Z`;
-
+// ── Dietary badge with teal check ──────────────────────────────────
+function DietaryCheck({ label }: { label: string }) {
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block" }}>
-      <g transform={`translate(${cx},${cy})`}>
-        {[0, 90, 180, 270].map((deg, i) => (
-          <path
-            key={i}
-            d={localPath}
-            fill={color}
-            opacity={i % 2 === 0 ? 0.92 : 0.78}
-            transform={`rotate(${deg})`}
-          />
-        ))}
-        {/* Center cap */}
-        <circle cx={0} cy={0} r={r * 0.10} fill={color} opacity={1} />
-        <circle cx={0} cy={0} r={r * 0.05} fill="white" opacity={0.6} />
-      </g>
-    </svg>
-  );
-}
-
-// ── Animated pinwheel wrapper ─────────────────────────────────────────
-function AnimatedPinwheel({ color, size, isHovered }: { color: string; size: number; isHovered: boolean }) {
-  return (
-    <motion.div
-      animate={isHovered ? { rotate: 90, scale: 1.06 } : { rotate: 0, scale: 1 }}
-      transition={isHovered
-        ? { duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }
-        : { duration: 0.6, ease: "easeOut" }
-      }
-    >
-      <Pinwheel color={color} size={size} />
-    </motion.div>
-  );
-}
-
-// ── Brars-style 4-pointed sparkle star ──────────────────────────────
-function Sparkle({
-  size = 32,
-  color = "#f6f3eb",
-  opacity = 1,
-  style = {} as React.CSSProperties,
-}: {
-  size?: number;
-  color?: string;
-  opacity?: number;
-  style?: React.CSSProperties;
-}) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 47 47"
-      fill="none"
-      style={{ display: "block", opacity, ...style }}
-    >
-      <path
-        d="M23.2496 0.345703C17.2963 12.4504 12.4733 17.2676 0.350836 23.217C12.4795 29.1664 17.3075 33.9836 23.2736 46.1089C29.2269 33.9836 34.0292 29.1664 46.1723 23.217C34.023 17.2676 29.2156 12.4504 23.2496 0.345703Z"
-        fill={color}
-      />
-    </svg>
-  );
-}
-
-// ── Circular spinning product badge ──────────────────────────────────
-function ProductSpinBadge({ color = "#0d9488" }: { color?: string }) {
-  return (
-    <div style={{ position: "relative", width: "96px", height: "96px" }}>
-      <motion.svg
-        viewBox="0 0 96 96"
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
-      >
-        <defs>
-          <path
-            id="prodCircle"
-            d="M 84,48 a 36,36 0 1,0 -72,0"
-          />
-        </defs>
-        <circle cx="48" cy="48" r="44" fill="none" stroke={color} strokeWidth="1.5" opacity="0.35" />
-        <text style={{ fontSize: "7.5px", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "3.5px", fill: color }}>
-          <textPath href="#prodCircle">
-            FREEZE DRIED · PURE NUTRITION · NO ADDITIVES ·&nbsp;
-          </textPath>
-        </text>
-      </motion.svg>
-      {/* Center snowflake */}
-      <div style={{
-        position: "absolute", inset: "22px", borderRadius: "50%",
-        background: color, display: "flex", alignItems: "center", justifyContent: "center",
-      }}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" style={{ width: "20px", height: "20px" }}>
-          <line x1="12" y1="2" x2="12" y2="22" />
-          <line x1="2" y1="12" x2="22" y2="12" />
-          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
-          <line x1="19.07" y1="4.93" x2="4.93" y2="19.07" />
-          <line x1="12" y1="2" x2="10" y2="6" /><line x1="12" y1="2" x2="14" y2="6" />
-          <line x1="12" y1="22" x2="10" y2="18" /><line x1="12" y1="22" x2="14" y2="18" />
-          <line x1="2" y1="12" x2="6" y2="10" /><line x1="2" y1="12" x2="6" y2="14" />
-          <line x1="22" y1="12" x2="18" y2="10" /><line x1="22" y1="12" x2="18" y2="14" />
-        </svg>
-      </div>
-    </div>
-  );
-}
-
-// ── Diamond pill bullet ──────────────────────────────────────────────
-function Diamond({ color }: { color: string }) {
-  return (
-    <svg width="12" height="12" viewBox="0 0 14 14" fill={color}>
-      <polygon points="7,0 14,7 7,14 0,7" />
-    </svg>
-  );
-}
-
-// ── Dietary tag ──────────────────────────────────────────────────────
-function DietaryTag({ label }: { label: string }) {
-  return (
-    <span className="flex items-center gap-1.5" style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "14px", letterSpacing: "1px", color: "#111", whiteSpace: "nowrap" }}>
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="8" fill="#f97316" />
-        <path d="M4.5 8l2.5 2.5 4.5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: "5px",
+      fontFamily: "'DM Sans', sans-serif", fontSize: "13px", fontWeight: 600,
+      color: "#1a1a1a",
+    }}>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="8" fill="#00B2A9" />
+        <path d="M4.5 8l2.5 2.5 4.5-5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       {label}
     </span>
   );
 }
 
-// ── Slot config ──────────────────────────────────────────────────────
+// ── Carousel slot constants ───────────────────────────────────────────
 const SLOTS = [-2, -1, 0, 1, 2] as const;
-type SlotOffset = typeof SLOTS[number];
 
-const SLOT_CONFIG: Record<SlotOffset, {
-  imgW: number; imgH: number;
-  nameSize: number; zIndex: number;
-  showInfo: boolean; opacity: number; yOffset: number;
-}> = {
-  "-2": { imgW: 200, imgH: 200, nameSize: 0, zIndex: 1, showInfo: false, opacity: 0.38, yOffset: 42 },
-  "-1": { imgW: 330, imgH: 330, nameSize: 22, zIndex: 2, showInfo: false, opacity: 0.7, yOffset: 20 },
-  "0": { imgW: 460, imgH: 460, nameSize: 36, zIndex: 5, showInfo: true, opacity: 1, yOffset: 0 },
-  "1": { imgW: 330, imgH: 330, nameSize: 22, zIndex: 2, showInfo: false, opacity: 0.7, yOffset: 20 },
-  "2": { imgW: 200, imgH: 200, nameSize: 0, zIndex: 1, showInfo: false, opacity: 0.38, yOffset: 42 },
-};
+const SLOT_X: Record<string, number> = { "-2": -660, "-1": -375, "0": 0, "1": 375, "2": 660 };
+const SLOT_SCALE: Record<string, number> = { "-2": 0.33, "-1": 0.58, "0": 1, "1": 0.58, "2": 0.33 };
+const SLOT_OPACITY: Record<string, number> = { "-2": 0.15, "-1": 0.55, "0": 1, "1": 0.55, "2": 0.15 };
+const SLOT_Z: Record<string, number> = { "-2": 1, "-1": 3, "0": 10, "1": 3, "2": 1 };
 
 export function Products() {
   const { addItem, openCart } = useCart();
@@ -340,39 +208,30 @@ export function Products() {
   const [products, setProducts] = useState<ProductCard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     let isActive = true;
-
     const loadProducts = async () => {
       try {
         setIsLoading(true);
         setLoadError(null);
         const response = await fetch(`${API_BASE_URL}/catalog/products`);
-        if (!response.ok) {
-          throw new Error(`Unable to load products (${response.status})`);
-        }
+        if (!response.ok) throw new Error(`Unable to load products (${response.status})`);
         const data: ApiProduct[] = await response.json();
-        if (isActive) {
-          setProducts(data.map(toProductCard).filter(p => p.img !== DEFAULT_IMAGE));
-        }
+        if (isActive) setProducts(data.map(toProductCard).filter(p => p.img !== DEFAULT_IMAGE));
       } catch (error) {
-        if (isActive) {
-          setLoadError(error instanceof Error ? error.message : "Unable to load products");
-        }
+        if (isActive) setLoadError(error instanceof Error ? error.message : "Unable to load products");
       } finally {
-        if (isActive) {
-          setIsLoading(false);
-        }
+        if (isActive) setIsLoading(false);
       }
     };
-
     loadProducts();
-
-    return () => {
-      isActive = false;
-    };
+    return () => { isActive = false; };
   }, []);
+
+  useEffect(() => { setActiveIdx(0); }, [activeCategory]);
 
   const categories = useMemo<CategoryPill[]>(() => {
     const fromProducts = Array.from(new Set(products.map(p => p.category)));
@@ -385,18 +244,30 @@ export function Products() {
     ];
   }, [products]);
 
-  const filtered = products.filter(p => activeCategory === "Most Popular" || p.category === activeCategory);
-  const activeCatColor = categories.find(c => c.label === activeCategory)?.color || "#6D28D9";
+  const filtered = useMemo(
+    () => products.filter(p => activeCategory === "Most Popular" || p.category === activeCategory),
+    [products, activeCategory]
+  );
 
-  const handleCategoryChange = (cat: string) => {
-    setActiveCategory(cat);
+  // Auto-scroll: restarts when products load (filtered.length changes) or hover state changes
+  useEffect(() => {
+    if (paused || filtered.length <= 1) return;
+    const id = setInterval(() => {
+      setActiveIdx(i => (i + 1) % filtered.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [paused, filtered.length]);
+
+  const goNext = () => { if (filtered.length > 0) setActiveIdx(i => (i + 1) % filtered.length); };
+  const goPrev = () => { if (filtered.length > 0) setActiveIdx(i => (i - 1 + filtered.length) % filtered.length); };
+
+  const getIdxAtSlot = (slot: number) => {
+    if (filtered.length === 0) return -1;
+    return (activeIdx + slot + filtered.length * 100) % filtered.length;
   };
 
   const handleAddToCart = async (product: ProductCard) => {
-    if (!user) {
-      navigateToRoute("/signin");
-      return;
-    }
+    if (!user) { navigateToRoute("/signin"); return; }
     if (!product.variantId || typeof product.price !== "number") return;
     await addItem(
       {
@@ -417,8 +288,6 @@ export function Products() {
 
   return (
     <section id="products" style={{ backgroundColor: "#f6f3eb", padding: "0 0 64px" }}>
-
-      {/* Purple ticker strip */}
       <Ticker />
 
       {/* Section header */}
@@ -433,31 +302,37 @@ export function Products() {
 
       {/* Category pills */}
       <div style={{ paddingTop: "28px", paddingBottom: "12px", display: "flex", justifyContent: "center", paddingLeft: "24px", paddingRight: "24px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "18px", flexWrap: "wrap", justifyContent: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
           {categories.map((cat, i) => {
             const isActive = activeCategory === cat.label;
             return (
               <motion.button
                 key={cat.label}
-                onClick={() => handleCategoryChange(cat.label)}
+                onClick={() => setActiveCategory(cat.label)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 style={{
-                  display: "flex", alignItems: "center", gap: "9px",
-                  padding: isActive ? "10px 26px" : "10px 18px",
-                  borderRadius: isActive ? "12px" : "0px",
+                  display: "flex", alignItems: "center", gap: "8px",
+                  padding: "10px 22px",
+                  borderRadius: "12px",
                   border: "none", cursor: "pointer",
                   fontFamily: "'Gagalin', sans-serif", fontSize: "17px", letterSpacing: "0.5px",
                   backgroundColor: isActive ? "#1a1a1a" : "transparent",
                   color: isActive ? "white" : "#1a1a1a",
-                  transition: "all 0.2s",
+                  transition: "background-color 0.2s, color 0.2s",
                   boxShadow: isActive ? "0 6px 20px rgba(0,0,0,0.18)" : "none",
                 }}
               >
-                <Diamond color={isActive ? "white" : cat.color} />
+                {isActive ? (
+                  <svg width="13" height="13" viewBox="0 0 47 47" fill="white">
+                    <path d="M23.2496 0.345703C17.2963 12.4504 12.4733 17.2676 0.350836 23.217C12.4795 29.1664 17.3075 33.9836 23.2736 46.1089C29.2269 33.9836 34.0292 29.1664 46.1723 23.217C34.023 17.2676 29.2156 12.4504 23.2496 0.345703Z" />
+                  </svg>
+                ) : (
+                  <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: cat.color, display: "inline-block", flexShrink: 0 }} />
+                )}
                 {cat.label}
               </motion.button>
             );
@@ -465,234 +340,150 @@ export function Products() {
         </div>
       </div>
 
-      {/* ── Product grid ── */}
-      <div style={{ padding: "16px 40px 52px", maxWidth: "1440px", margin: "0 auto" }}>
-        {isLoading && (
-          <div style={{ textAlign: "center", minHeight: "220px", display: "grid", placeItems: "center" }}>
-            <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "20px", color: "#1a1a1a" }}>Loading products...</p>
-          </div>
-        )}
+      {/* Loading / error states */}
+      {isLoading && (
+        <div style={{ textAlign: "center", height: "500px", display: "grid", placeItems: "center" }}>
+          <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "20px", color: "#1a1a1a" }}>Loading products...</p>
+        </div>
+      )}
+      {!isLoading && loadError && (
+        <div style={{ textAlign: "center", height: "500px", display: "grid", placeItems: "center", padding: "0 20px" }}>
+          <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", color: "#991b1b" }}>{loadError}. Make sure the API is running on port 3001.</p>
+        </div>
+      )}
+      {!isLoading && !loadError && filtered.length === 0 && (
+        <div style={{ textAlign: "center", height: "500px", display: "grid", placeItems: "center" }}>
+          <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", color: "#1a1a1a" }}>No products in this category.</p>
+        </div>
+      )}
 
-        {!isLoading && loadError && (
-          <div style={{ textAlign: "center", minHeight: "220px", display: "grid", placeItems: "center", padding: "0 20px" }}>
-            <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", color: "#991b1b" }}>
-              {loadError}. Make sure the API is running on port 3001.
-            </p>
+      {/* ── Coverflow carousel ── */}
+      {!isLoading && !loadError && filtered.length > 0 && (
+        <>
+          <div
+            style={{ position: "relative", height: "560px", overflow: "hidden", marginTop: "8px" }}
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+          >
+            {SLOTS.map(slot => {
+              const productIdx = getIdxAtSlot(slot);
+              if (productIdx === -1) return null;
+              const product = filtered[productIdx];
+              const isCenter = slot === 0;
+              return (
+                <motion.div
+                  key={product.id + "_" + slot}
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    width: "380px",
+                    height: "510px",
+                    marginLeft: "-190px",
+                    marginTop: "-255px",
+                    transformOrigin: "center center",
+                    cursor: slot !== 0 ? "pointer" : "default",
+                  }}
+                  animate={{
+                    x: SLOT_X[slot.toString()],
+                    scale: SLOT_SCALE[slot.toString()],
+                    opacity: SLOT_OPACITY[slot.toString()],
+                    zIndex: SLOT_Z[slot.toString()],
+                  }}
+                  transition={{ type: "spring", stiffness: 220, damping: 26 }}
+                  onClick={slot !== 0 ? () => setActiveIdx(productIdx) : undefined}
+                >
+                  {isCenter ? (
+                    /* ── CENTER ── */
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", height: "100%" }}>
+                      <div style={{ position: "relative", width: "460px", height: "420px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        {/* Soft radial glow — no hard edge */}
+                        <div style={{ position: "absolute", inset: "-8%", background: "radial-gradient(ellipse at 50% 54%, rgba(0,178,169,0.48) 0%, rgba(0,178,169,0.22) 36%, transparent 62%)", borderRadius: "50%", filter: "blur(22px)", zIndex: 0, pointerEvents: "none" }} />
+                        {/* Dashed orbit ring */}
+                        <div style={{ position: "absolute", width: "360px", height: "360px", borderRadius: "50%", border: "1.5px dashed rgba(0,178,169,0.30)", zIndex: 0, pointerEvents: "none" }} />
+                        {/* Continuous float + entrance */}
+                        <motion.div animate={{ y: [0, -16, 0] }} transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }} style={{ position: "relative", zIndex: 1 }}>
+                          <AnimatePresence mode="wait">
+                            <motion.img key={product.id} src={product.img} alt={product.name}
+                              initial={{ opacity: 0, scale: 0.82, y: 28 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                              style={{ width: "400px", height: "400px", objectFit: "contain", filter: "drop-shadow(0 36px 52px rgba(0,0,0,0.28))" }}
+                            />
+                          </AnimatePresence>
+                        </motion.div>
+                        {product.weight && product.weight !== "-" && (
+                          <div style={{ position: "absolute", bottom: "8px", right: "8px", zIndex: 2, backgroundColor: "#231F20", color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: "11px", fontWeight: 700, padding: "4px 12px", borderRadius: "999px", letterSpacing: "0.5px" }}>
+                            {product.weight}
+                          </div>
+                        )}
+                      </div>
+                      <AnimatePresence mode="wait">
+                        <motion.h3 key={product.id + "_n"} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35, delay: 0.1 }}
+                          style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(38px, 4.8vw, 60px)", letterSpacing: "3px", color: "#1a1a1a", margin: "0 0 12px", textAlign: "center", lineHeight: 1.0, textTransform: "uppercase" }}
+                        >{product.name}</motion.h3>
+                      </AnimatePresence>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 18px", justifyContent: "center", marginBottom: "22px" }}>
+                        {product.dietary.map(d => <DietaryCheck key={d} label={d} />)}
+                      </div>
+                      <motion.button type="button" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
+                        onClick={() => void handleAddToCart(product)}
+                        disabled={!product.variantId || typeof product.price !== "number" || isAuthLoading}
+                        style={{ display: "inline-flex", alignItems: "center", gap: 0, borderRadius: "999px", border: "none", backgroundColor: "#231F20", color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px", fontWeight: 700, cursor: (product.variantId && !isAuthLoading) ? "pointer" : "not-allowed", opacity: (product.variantId && !isAuthLoading) ? 1 : 0.55, boxShadow: "0 8px 28px rgba(0,0,0,0.22)", overflow: "hidden" }}
+                      >
+                        <span style={{ padding: "13px 22px" }}>{isAuthLoading ? "Loading…" : !user ? "Sign In to Buy" : "Add to Cart"}</span>
+                        {product.price !== undefined && <span style={{ backgroundColor: "#00B2A9", padding: "13px 20px", fontSize: "14px", fontWeight: 800 }}>{product.currency} {product.price.toFixed(2)}</span>}
+                      </motion.button>
+                    </div>
+                  ) : Math.abs(slot) === 1 ? (
+                    /* ── ADJACENT: white card ── */
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", backgroundColor: "white", borderRadius: "28px", boxShadow: "0 8px 40px rgba(0,0,0,0.09)", padding: "28px 20px 24px" }}>
+                      <img src={product.img} alt={product.name} style={{ width: "230px", height: "230px", objectFit: "contain", filter: "drop-shadow(0 12px 22px rgba(0,0,0,0.15))", marginBottom: "16px" }} />
+                      <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "24px", letterSpacing: "2px", color: "#1a1a1a", textAlign: "center", margin: "0 0 10px", textTransform: "uppercase", lineHeight: 1.1 }}>{product.name}</p>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", justifyContent: "center" }}>
+                        {product.dietary.slice(0, 2).map(d => <DietaryCheck key={d} label={d} />)}
+                      </div>
+                    </div>
+                  ) : (
+                    /* ── FAR SIDES ── */
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+                      <img src={product.img} alt={product.name} style={{ width: "200px", height: "200px", objectFit: "contain", filter: "drop-shadow(0 6px 12px rgba(0,0,0,0.10))" }} />
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
-        )}
 
-        {!isLoading && !loadError && filtered.length === 0 && (
-          <div style={{ textAlign: "center", minHeight: "220px", display: "grid", placeItems: "center" }}>
-            <p style={{ fontFamily: "'Gagalin', sans-serif", fontSize: "18px", color: "#1a1a1a" }}>No products found in this category.</p>
-          </div>
-        )}
-
-        {!isLoading && !loadError && filtered.length > 0 && (
-          <>
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-              gap: "20px",
-            }}>
-              {filtered.map((product, i) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  index={i}
-                  catColor={activeCatColor}
-                  isAuthLoading={isAuthLoading}
-                  user={!!user}
-                  onAddToCart={() => void handleAddToCart(product)}
+          {/* ── Navigation ── */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "20px", paddingTop: "12px", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: "8px" }}>
+              {([{ fn: goPrev, lbl: "←" }, { fn: goNext, lbl: "→" }] as const).map(({ fn, lbl }) => (
+                <motion.button key={lbl} type="button" onClick={fn}
+                  whileHover={{ backgroundColor: "#00B2A9", borderColor: "#00B2A9", color: "white", scale: 1.1 }}
+                  whileTap={{ scale: 0.93 }}
+                  style={{ width: "44px", height: "44px", borderRadius: "50%", border: "2px solid #231F20", backgroundColor: "transparent", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "16px", color: "#231F20", fontWeight: 700 }}
+                >{lbl}</motion.button>
+              ))}
+            </div>
+            <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+              {filtered.map((_, i) => (
+                <button key={i} type="button" onClick={() => setActiveIdx(i)}
+                  style={{ width: i === activeIdx ? "24px" : "8px", height: "8px", borderRadius: "4px", backgroundColor: i === activeIdx ? "#00B2A9" : "rgba(0,0,0,0.15)", border: "none", cursor: "pointer", padding: 0, transition: "width 0.3s ease, background-color 0.3s ease" }}
                 />
               ))}
             </div>
-
-            {/* View All */}
-            <div style={{ display: "flex", justifyContent: "center", marginTop: "40px" }}>
-              <motion.button
-                onClick={() => navigateToRoute("/catalog")}
-                whileHover={{ scale: 1.04, backgroundColor: "#333" }}
-                whileTap={{ scale: 0.97 }}
-                style={{
-                  display: "flex", alignItems: "center", gap: "8px",
-                  padding: "14px 32px",
-                  borderRadius: "999px",
-                  backgroundColor: "#1a1a1a",
-                  color: "white",
-                  border: "none",
-                  fontFamily: "'Gagalin', sans-serif",
-                  fontSize: "16px",
-                  letterSpacing: "0.5px",
-                  cursor: "pointer",
-                  boxShadow: "0 6px 20px rgba(0,0,0,0.2)",
-                }}
-              >
-                View All Products
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </motion.button>
-            </div>
-          </>
-        )}
-      </div>
+            <motion.button onClick={() => navigateToRoute("/catalog")}
+              whileHover={{ scale: 1.04, backgroundColor: "#00B2A9" }} whileTap={{ scale: 0.97 }}
+              style={{ display: "flex", alignItems: "center", gap: "8px", padding: "11px 28px", borderRadius: "999px", backgroundColor: "#231F20", color: "white", border: "none", fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px", fontWeight: 700, cursor: "pointer", boxShadow: "0 6px 20px rgba(0,0,0,0.18)" }}
+            >
+              View All
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+            </motion.button>
+          </div>
+        </>
+      )}
     </section>
-  );
-}
-
-// Card background tints derived from category color (very light pastel)
-const CARD_BG_TINTS = [
-  "#faf0ff", "#fff7ed", "#f0fdf4", "#fdf2f8",
-  "#eff6ff", "#f0fdfa", "#fefce8", "#fff1f2",
-];
-
-function ProductCard({
-  product, index, catColor, isAuthLoading, user, onAddToCart,
-}: {
-  product: ProductCard;
-  index: number;
-  catColor: string;
-  isAuthLoading: boolean;
-  user: boolean;
-  onAddToCart: () => void;
-}) {
-  const [hovered, setHovered] = useState(false);
-  const tint = CARD_BG_TINTS[index % CARD_BG_TINTS.length];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.04, duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        borderRadius: "20px",
-        overflow: "hidden",
-        backgroundColor: "white",
-        boxShadow: hovered
-          ? "0 20px 48px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.06)"
-          : "0 4px 16px rgba(0,0,0,0.07)",
-        transition: "box-shadow 0.25s ease, transform 0.25s ease",
-        transform: hovered ? "translateY(-6px)" : "translateY(0)",
-        cursor: "pointer",
-      }}
-    >
-      {/* Image area with pastel tinted bg */}
-      <div style={{
-        backgroundColor: tint,
-        padding: "24px 16px 8px",
-        position: "relative",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "200px",
-      }}>
-        {/* Form factor badge top-left */}
-        {product.formFactor && (
-          <div style={{
-            position: "absolute", top: "12px", left: "12px",
-            backgroundColor: catColor, color: "white",
-            fontFamily: "'Space Grotesk', sans-serif", fontSize: "10px", fontWeight: 700,
-            letterSpacing: "1.5px", textTransform: "uppercase",
-            padding: "3px 8px", borderRadius: "6px",
-          }}>
-            {product.formFactor}
-          </div>
-        )}
-
-        {/* Weight badge top-right */}
-        {product.weight && product.weight !== "-" && (
-          <div style={{
-            position: "absolute", top: "12px", right: "12px",
-            backgroundColor: "white", color: "#555",
-            fontFamily: "'Space Grotesk', sans-serif", fontSize: "10px", fontWeight: 600,
-            letterSpacing: "0.5px",
-            padding: "3px 8px", borderRadius: "6px",
-            boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
-          }}>
-            {product.weight}
-          </div>
-        )}
-
-        <motion.img
-          src={product.img}
-          alt={product.name}
-          animate={{ scale: hovered ? 1.06 : 1 }}
-          transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-          style={{
-            width: "160px",
-            height: "160px",
-            objectFit: "contain",
-            display: "block",
-            filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.18))",
-          }}
-        />
-      </div>
-
-      {/* Info area */}
-      <div style={{ padding: "16px 16px 18px", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
-        <h3 style={{
-          fontFamily: "'Bebas Neue', sans-serif",
-          fontSize: "22px",
-          letterSpacing: "1.5px",
-          color: "#1a1a1a",
-          margin: 0,
-          lineHeight: 1.1,
-          textTransform: "uppercase",
-        }}>
-          {product.name}
-        </h3>
-
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 6px" }}>
-          {product.dietary.slice(0, 2).map(d => (
-            <span key={d} style={{
-              display: "inline-flex", alignItems: "center", gap: "4px",
-              fontFamily: "'Space Grotesk', sans-serif", fontSize: "10px", fontWeight: 600,
-              color: "#555", letterSpacing: "0.3px",
-            }}>
-              <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="8" fill={catColor} />
-                <path d="M4.5 8l2.5 2.5 4.5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              {d}
-            </span>
-          ))}
-        </div>
-
-        <div style={{ marginTop: "auto", paddingTop: "8px" }}>
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onAddToCart(); }}
-            disabled={!product.variantId || typeof product.price !== "number" || isAuthLoading}
-            style={{
-              width: "100%",
-              border: "none",
-              borderRadius: "12px",
-              backgroundColor: catColor,
-              color: "white",
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontSize: "13px",
-              fontWeight: 700,
-              padding: "10px 14px",
-              cursor: (product.variantId && !isAuthLoading) ? "pointer" : "not-allowed",
-              opacity: (product.variantId && !isAuthLoading) ? 1 : 0.55,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <span>{isAuthLoading ? "Loading..." : !user ? "Sign In to Add" : "Add to Cart"}</span>
-            {product.price && (
-              <span style={{ fontWeight: 800, opacity: 0.92 }}>
-                {product.currency} {product.price.toFixed(2)}
-              </span>
-            )}
-          </button>
-        </div>
-      </div>
-    </motion.div>
   );
 }

@@ -15,6 +15,8 @@ export type AuthenticatedCustomer = {
   id: string;
   email: string;
   phone?: string | null;
+  displayName?: string | null;
+  avatarUrl?: string | null;
   createdAt?: string;
   loyaltyAccount?: {
     customerId: string;

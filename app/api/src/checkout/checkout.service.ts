@@ -23,7 +23,7 @@ export class CheckoutService {
   async calculateQuote(dto: any) {
     const { promoCode } = dto;
     const items = await this.resolveItems(dto);
-    
+
     // Calculate subtotal
     let subtotal = 0;
     for (const item of items) {
@@ -150,11 +150,28 @@ export class CheckoutService {
       },
     });
 
+    // Create Stripe payment intent
+    const amountInCents = Math.round(total * 100);
+    const paymentIntent = await this.stripe.paymentIntents.create({
+      amount: amountInCents,
+      currency: 'sgd',
+      automatic_payment_methods: { enabled: true },
+    });
+
+    await this.prisma.payment.create({
+      data: {
+        orderId: order.id,
+        stripePaymentIntentId: paymentIntent.id,
+        amount: total,
+        currency: 'SGD',
+      },
+    });
+
     await this.cartService.clear(customerId);
 
     return {
-      ok: true,
-      order,
+      clientSecret: paymentIntent.client_secret,
+      orderId: order.id,
     };
   }
 
