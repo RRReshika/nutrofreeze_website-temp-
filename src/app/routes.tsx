@@ -6,6 +6,7 @@ import { ReviewsPage } from "./pages/ReviewsPage";
 import { LoginPage } from "./pages/LoginPage";
 import { SignupPage } from "./pages/SignupPage";
 import { AccountPage } from "./pages/AccountPage";
+import { CheckoutPage } from "./pages/CheckoutPage";
 import { AdminLoginPage } from "./pages/admin/AdminLoginPage";
 import { AdminDashboardPage } from "./pages/admin/AdminDashboardPage";
 
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
   {
     path: "/profile",
     Component: AccountPage,
+  },
+  {
+    path: "/checkout",
+    Component: CheckoutPage,
   },
   {
     path: "/admin",

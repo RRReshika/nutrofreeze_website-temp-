@@ -16,8 +16,9 @@ const articles = {
       id: 1,
       date: "March 1, 2026",
       headline: "NUTROFREEZE WINS BEST HEALTH FOOD BRAND 2026",
-      excerpt: 'The "Pure Nutrition For Every Family" campaign earned recognition across two categories at the Singapore Health and Wellness Awards.',
-      img: "https://images.unsplash.com/photo-1758523671087-b256bbbca475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMHdvbWFuJTIwbW92aW5nJTIwYm94ZXMlMjBob21lJTIwZmFtaWx5fGVufDF8fHx8MTc3MjQ5NzE4MXww&ixlib=rb-4.1.0&q=80&w=800",
+      excerpt:
+        'The "Pure Nutrition For Every Family" campaign earned recognition across two categories at the Singapore Health and Wellness Awards.',
+      img: "/images/other%20images/healthy%20bowl.png",
       tag: "Award",
       tagBg: "#0d9488",
     },
@@ -25,19 +26,22 @@ const articles = {
       id: 2,
       date: "February 18, 2026",
       headline: "NUTROFREEZE NOW AVAILABLE IN MORE STORES ACROSS SINGAPORE",
-      excerpt: "We are expanding our retail presence so more families can access pure, wholesome freeze-dried nutrition conveniently.",
-      img: "https://images.unsplash.com/photo-1649011401502-8b6125f33c3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb29kJTIwcHJvZHVjdCUyMGxhdW5jaCUyMGFubm91bmNlbWVudCUyMG5ld3N8ZW58MXx8fHwxNzcyNDk3MTg1fDA&ixlib=rb-4.1.0&q=80&w=800",
+      excerpt:
+        "We are expanding our retail presence so more families can access pure, wholesome freeze-dried nutrition conveniently.",
+      img: "/images/big%20packets%20no%20background/WB_Apple__front_png-removebg-preview.png",
       tag: "Growth",
       tagBg: "#7c3aed",
     },
   ],
+
   "Company Updates": [
     {
       id: 3,
       date: "January 30, 2026",
       headline: "A NEW CHAPTER FOR OUR BRAND",
-      excerpt: "We are sharing our sustainability roadmap and our commitment to providing pure, additive-free nutrition for every family in Singapore and beyond.",
-      img: "https://images.unsplash.com/photo-1758874960855-3f74e8704a1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXBweSUyMGZhbWlseSUyMGNvb2tpbmclMjB0b2dldGhlciUyMGtpdGNoZW58ZW58MXx8fHwxNzcyNDk3MTg1fDA&ixlib=rb-4.1.0&q=80&w=800",
+      excerpt:
+        "We are sharing our sustainability roadmap and our commitment to providing pure, additive-free nutrition for every family in Singapore and beyond.",
+      img: "/images/mom%27s%20touch%20pic.png",
       tag: "Company",
       tagBg: "#0d9488",
     },
@@ -45,28 +49,33 @@ const articles = {
       id: 4,
       date: "December 14, 2025",
       headline: "CERTIFIED: OUR COMMITMENT TO QUALITY AND PURITY",
-      excerpt: "NutroFreeze has achieved food safety and quality certifications, a testament to our values of people, planet, and food made the right way.",
-      img: "https://images.unsplash.com/photo-1649011401502-8b6125f33c3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb29kJTIwcHJvZHVjdCUyMGxhdW5jaCUyMGFubm91bmNlbWVudCUyMG5ld3N8ZW58MXx8fHwxNzcyNDk3MTg1fDA&ixlib=rb-4.1.0&q=80&w=800",
+      excerpt:
+        "NutroFreeze has achieved food safety and quality certifications, a testament to our values of people, planet, and food made the right way.",
+      img: "/images/big%20packets%20no%20background/WB_Mango_front-removebg-preview.png",
       tag: "Milestone",
       tagBg: "#7c3aed",
     },
   ],
+
   "Product News": [
     {
       id: 5,
       date: "February 28, 2026",
       headline: "INTRODUCING FREEZE DRIED TROPICAL FRUIT MIX",
-      excerpt: "Our newest product is finally here. Freeze dried mango, pineapple and papaya in one pack, no added sugar and packed with natural vitamins.",
-      img: "https://images.unsplash.com/photo-1694101493160-10f1257fe9fd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbG9vJTIwdGlra2klMjBwb3RhdG8lMjBwYXR0eSUyMHNuYWNrfGVufDF8fHx8MTc3MTk5MTE5Mnww&ixlib=rb-4.1.0&q=80&w=800",
+      excerpt:
+        "Our newest product is finally here. Freeze dried mango, pineapple and papaya in one pack, no added sugar and packed with natural vitamins.",
+      img: "/images/Mango/PC%20Mango.png",
       tag: "New Product",
       tagBg: "#0d9488",
     },
+
     {
       id: 6,
       date: "January 10, 2026",
       headline: "BABY FOOD BUNDLE PACKS NOW AVAILABLE ALL YEAR",
-      excerpt: "By popular demand, our baby food bundles are now a permanent part of our lineup, available all year so you never run out.",
-      img: "https://images.unsplash.com/photo-1615592602926-a3bfacbc1cbd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcm96ZW4lMjBmb29kJTIwc25hY2tzJTIwcGFja2FnaW5nJTIwcHJvZHVjdHxlbnwxfHx8fDE3NzE5OTExOTB8MA&ixlib=rb-4.1.0&q=80&w=800",
+      excerpt:
+        "By popular demand, our baby food bundles are now a permanent part of our lineup, available all year so you never run out.",
+      img: "/images/other%20images/puree.png",
       tag: "Product Update",
       tagBg: "#7c3aed",
     },
@@ -83,9 +92,12 @@ export function NewsSection() {
   const secondary = currentArticles[1];
 
   return (
-    <section id="news" ref={ref} style={{ backgroundColor: "#0f172a", padding: "80px 0 80px" }}>
+    <section
+      id="news"
+      ref={ref}
+      style={{ backgroundColor: "#0f172a", padding: "80px 0 80px" }}
+    >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-
         {/* ── CENTERED HEADER ── */}
         <motion.div
           className="text-center mb-12"
@@ -93,7 +105,6 @@ export function NewsSection() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          {/* "WHAT'S NEW" pill */}
           <div
             className="inline-block px-5 py-2 rounded-full mb-5"
             style={{
@@ -109,7 +120,6 @@ export function NewsSection() {
             What's New
           </div>
 
-          {/* Big title */}
           <h2
             style={{
               fontFamily: "'Bangers', cursive",
@@ -121,11 +131,11 @@ export function NewsSection() {
               marginBottom: "32px",
             }}
           >
-            THE WORLD OF<br />
+            THE WORLD OF
+            <br />
             <span style={{ color: "#5eead4" }}>NUTROFREEZE</span>
           </h2>
 
-          {/* View More button */}
           <motion.a
             href="#"
             style={{
@@ -164,7 +174,7 @@ export function NewsSection() {
               style={{
                 background: `linear-gradient(135deg, ${tabColors[activeTab]}22 0%, ${tabColors[activeTab]}44 100%)`,
                 border: `1px solid ${tabColors[activeTab]}55`,
-                minHeight: "400px",
+                minHeight: "560px",
               }}
               initial={{ opacity: 0, x: -24 }}
               animate={{ opacity: 1, x: 0 }}
@@ -172,18 +182,21 @@ export function NewsSection() {
               transition={{ duration: 0.45 }}
             >
               {/* Image */}
-              <div className="lg:w-[42%] relative overflow-hidden flex-shrink-0" style={{ minHeight: "280px" }}>
+              <div className="lg:w-[42%] h-[360px] lg:h-auto relative overflow-hidden flex-shrink-0">
                 <img
                   src={featured.img}
                   alt={featured.headline}
                   className="w-full h-full object-cover"
-                  style={{ minHeight: "280px" }}
                 />
+
                 <div
                   className="absolute inset-0"
-                  style={{ background: "linear-gradient(to right, transparent 60%, rgba(15,23,42,0.4))" }}
+                  style={{
+                    background:
+                      "linear-gradient(to right, transparent 60%, rgba(15,23,42,0.4))",
+                  }}
                 />
-                {/* Tag badge on image */}
+
                 <div
                   className="absolute top-4 left-4 px-3 py-1.5 rounded-full"
                   style={{
@@ -201,7 +214,7 @@ export function NewsSection() {
               </div>
 
               {/* Content */}
-              <div className="flex-1 p-8 lg:p-10 flex flex-col justify-center">
+              <div className="flex-1 p-8 lg:p-12 flex flex-col justify-center">
                 <div
                   style={{
                     fontFamily: "'Space Grotesk', sans-serif",
@@ -213,30 +226,34 @@ export function NewsSection() {
                 >
                   {featured.date}
                 </div>
+
                 <h3
                   style={{
                     fontFamily: "'Bangers', cursive",
-                    fontSize: "clamp(24px, 3.8vw, 44px)",
+                    fontSize: "clamp(28px, 3.8vw, 48px)",
                     color: "white",
                     textTransform: "uppercase",
-                    lineHeight: 1.0,
+                    lineHeight: 1.05,
                     letterSpacing: "0.03em",
-                    marginBottom: "16px",
+                    marginBottom: "20px",
                   }}
                 >
                   {featured.headline}
                 </h3>
+
                 <p
                   style={{
                     fontFamily: "'DM Sans', sans-serif",
-                    fontSize: "15px",
+                    fontSize: "16px",
                     color: "rgba(255,255,255,0.65)",
-                    lineHeight: 1.72,
-                    marginBottom: "24px",
+                    lineHeight: 1.75,
+                    marginBottom: "28px",
+                    maxWidth: "620px",
                   }}
                 >
                   {featured.excerpt}
                 </p>
+
                 <motion.a
                   href="#"
                   style={{
@@ -245,7 +262,7 @@ export function NewsSection() {
                     gap: "8px",
                     backgroundColor: "white",
                     color: "#1c1c1e",
-                    padding: "13px 26px",
+                    padding: "14px 30px",
                     borderRadius: "100px",
                     fontFamily: "'Space Grotesk', sans-serif",
                     fontSize: "14px",
@@ -263,10 +280,14 @@ export function NewsSection() {
           </AnimatePresence>
 
           {/* Right vertical tab strip */}
-          <div className="hidden lg:flex flex-col gap-2 flex-shrink-0" style={{ width: "180px" }}>
+          <div
+            className="hidden lg:flex flex-col gap-2 flex-shrink-0"
+            style={{ width: "180px" }}
+          >
             {tabs.map((tab) => {
               const isActive = activeTab === tab;
               const color = tabColors[tab];
+
               return (
                 <motion.button
                   key={tab}
@@ -274,12 +295,17 @@ export function NewsSection() {
                   className="flex-1 rounded-2xl flex items-center justify-center relative overflow-hidden cursor-pointer"
                   style={{
                     backgroundColor: isActive ? color : "#1c1c1e",
-                    border: isActive ? `2px solid ${color}` : "2px solid rgba(255,255,255,0.06)",
+                    border: isActive
+                      ? `2px solid ${color}`
+                      : "2px solid rgba(255,255,255,0.06)",
                     writingMode: "vertical-rl",
                     textOrientation: "mixed",
                     transition: "all 0.25s ease",
                   }}
-                  whileHover={{ scale: 1.03, backgroundColor: isActive ? color : "#252535" }}
+                  whileHover={{
+                    scale: 1.03,
+                    backgroundColor: isActive ? color : "#252535",
+                  }}
                   whileTap={{ scale: 0.97 }}
                 >
                   <span
@@ -297,11 +323,16 @@ export function NewsSection() {
                   >
                     {tab}
                   </span>
+
                   {isActive && (
                     <motion.div
                       className="absolute inset-0 bg-white/10"
                       layoutId="newsActiveTab"
-                      transition={{ type: "spring", stiffness: 320, damping: 28 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 320,
+                        damping: 28,
+                      }}
                     />
                   )}
                 </motion.button>
@@ -321,9 +352,14 @@ export function NewsSection() {
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: "12px",
                 fontWeight: 700,
-                backgroundColor: activeTab === tab ? tabColors[tab] : "#1c1c1e",
-                color: activeTab === tab ? "white" : "rgba(255,255,255,0.45)",
-                border: `2px solid ${activeTab === tab ? tabColors[tab] : "rgba(255,255,255,0.06)"}`,
+                backgroundColor:
+                  activeTab === tab ? tabColors[tab] : "#1c1c1e",
+                color:
+                  activeTab === tab ? "white" : "rgba(255,255,255,0.45)",
+                border: `2px solid ${activeTab === tab
+                    ? tabColors[tab]
+                    : "rgba(255,255,255,0.06)"
+                  }`,
               }}
             >
               {tab}
@@ -350,6 +386,7 @@ export function NewsSection() {
               alt={secondary.headline}
               className="w-24 h-20 object-cover rounded-xl flex-shrink-0"
             />
+
             <div className="flex-1 min-w-0">
               <div
                 style={{
@@ -361,6 +398,7 @@ export function NewsSection() {
               >
                 {secondary.date}
               </div>
+
               <h4
                 className="truncate"
                 style={{
@@ -373,6 +411,7 @@ export function NewsSection() {
               >
                 {secondary.headline}
               </h4>
+
               <p
                 className="mt-1 line-clamp-1"
                 style={{
@@ -384,6 +423,7 @@ export function NewsSection() {
                 {secondary.excerpt}
               </p>
             </div>
+
             <motion.a
               href="#"
               className="hidden sm:flex items-center gap-1 flex-shrink-0"

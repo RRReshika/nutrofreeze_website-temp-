@@ -1,28 +1,28 @@
-import { Injectable, UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
-import { RegisterDto, LoginDto, RefreshDto, LogoutDto } from './dto/auth.dto';
+import { RegisterDto, LoginDto, RefreshDto, LogoutDto, UpdateProfileDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(dto: RegisterDto) {
     const existing = await this.prisma.customer.findUnique({
       where: { email: dto.email },
     });
-    
+
     if (existing) {
       throw new ConflictException('Email already registered');
     }
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
-    
+
     const customer = await this.prisma.customer.create({
       data: {
         email: dto.email,
@@ -34,7 +34,7 @@ export class AuthService {
     });
 
     const tokens = await this.issueTokens(customer.id, customer.email);
-    
+
     return {
       customer: { id: customer.id, email: customer.email },
       ...tokens,
@@ -51,7 +51,7 @@ export class AuthService {
     }
 
     const valid = await bcrypt.compare(dto.password, customer.hashedPassword);
-    
+
     if (!valid) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -63,7 +63,7 @@ export class AuthService {
     });
 
     const tokens = await this.issueTokens(customer.id, customer.email);
-    
+
     return {
       customer: { id: customer.id, email: customer.email },
       ...tokens,
@@ -139,29 +139,50 @@ export class AuthService {
       id: customer.id,
       email: customer.email,
       phone: customer.phone,
+      displayName: customer.displayName,
+      avatarUrl: customer.avatarUrl,
       createdAt: customer.createdAt,
       loyaltyAccount: customer.loyaltyAccount,
       cart: customer.cart
         ? {
-            id: customer.cart.id,
-            itemCount: customer.cart.items.reduce((sum, item) => sum + item.quantity, 0),
-            subtotal: customer.cart.items.reduce((sum, item) => sum + Number(item.variant.price) * item.quantity, 0),
-            items: customer.cart.items.map((item) => ({
-              id: item.id,
-              variantId: item.variantId,
-              quantity: item.quantity,
-              unitPrice: Number(item.variant.price),
-              lineTotal: Number(item.variant.price) * item.quantity,
-              product: item.variant.product,
-              variant: item.variant,
-            })),
-          }
+          id: customer.cart.id,
+          itemCount: customer.cart.items.reduce((sum, item) => sum + item.quantity, 0),
+          subtotal: customer.cart.items.reduce((sum, item) => sum + Number(item.variant.price) * item.quantity, 0),
+          items: customer.cart.items.map((item) => ({
+            id: item.id,
+            variantId: item.variantId,
+            quantity: item.quantity,
+            unitPrice: Number(item.variant.price),
+            lineTotal: Number(item.variant.price) * item.quantity,
+            product: item.variant.product,
+            variant: item.variant,
+          })),
+        }
         : null,
       wishlist: customer.wishlistItems.map((item) => ({
         id: item.id,
         productId: item.productId,
         product: item.product,
       })),
+    };
+  }
+
+  async updateProfile(customerId: string, dto: UpdateProfileDto) {
+    const updated = await this.prisma.customer.update({
+      where: { id: customerId },
+      data: {
+        ...(dto.displayName !== undefined && { displayName: dto.displayName }),
+        ...(dto.avatarUrl !== undefined && { avatarUrl: dto.avatarUrl }),
+        ...(dto.phone !== undefined && { phone: dto.phone }),
+      },
+    });
+
+    return {
+      id: updated.id,
+      email: updated.email,
+      phone: updated.phone,
+      displayName: updated.displayName,
+      avatarUrl: updated.avatarUrl,
     };
   }
 
