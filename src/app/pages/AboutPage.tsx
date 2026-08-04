@@ -27,7 +27,7 @@ function SpinBadge({ text, color, size = 160, textColor = "white" }: {
 }) {
   const r = size * 0.36;
   const cx = size / 2;
-  const pathId = `badge-path-${text.replace(/[\s·]/g, "")}`;
+  const pathId = `badge-path-${text.replace(/[^a-zA-Z0-9]/g, "").toLowerCase()}`;
   return (
     <motion.div
       style={{ width: size, height: size, position: "relative", flexShrink: 0 }}
@@ -37,15 +37,15 @@ function SpinBadge({ text, color, size = 160, textColor = "white" }: {
       <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
         <circle cx={cx} cy={cx} r={cx - 4} fill={color} />
         <defs>
-          <path id={pathId} d={`M ${cx + r},${cx} a ${r},${r} 0 1,0 ${-r * 2},0`} />
+          <path id={pathId} d={`M ${cx},${cx} m 0,${-r} a ${r},${r} 0 1,1 0,${2 * r} a ${r},${r} 0 1,1 0,${-2 * r}`} />
         </defs>
         <motion.g
           animate={{ rotate: 360 }}
           transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
           style={{ transformOrigin: `${cx}px ${cx}px` }}
         >
-          <text fill={textColor} style={{ fontSize: size * 0.095, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, letterSpacing: size * 0.02 } as React.CSSProperties}>
-            <textPath href={`#${pathId}`} startOffset="0%">{text}&nbsp;·&nbsp;{text}&nbsp;·&nbsp;</textPath>
+          <text fill={textColor} style={{ fontSize: size * 0.072, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, letterSpacing: size * 0.012 } as React.CSSProperties}>
+            <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">{text} · {text} · {text}</textPath>
           </text>
         </motion.g>
         <g transform={`translate(${cx},${cx})`}>
@@ -79,15 +79,15 @@ function StickerBadge({ label, color, wobble = 0 }: { label: string; color: stri
       <svg viewBox="0 0 100 100" width={120} height={120}>
         <polygon points={pts.join(" ")} fill={color} />
         <defs>
-          <path id={`st-${label.replace(/\s/g, "")}`} d="M 85,50 a 35,35 0 1,0 -70,0" />
+          <path id={`st-${label.replace(/[^a-zA-Z0-9]/g, "").toLowerCase()}`} d="M 50,50 m 0,-35 a 35,35 0 1,1 0,70 a 35,35 0 1,1 0,-70" />
         </defs>
         <motion.text
           fill="white"
-          style={{ fontSize: "9.5px", fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, letterSpacing: "1.5px", transformOrigin: "50px 50px" } as React.CSSProperties}
+          style={{ fontSize: "8px", fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, letterSpacing: "1px", transformOrigin: "50px 50px" } as React.CSSProperties}
           animate={{ rotate: 360 }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         >
-          <textPath href={`#st-${label.replace(/\s/g, "")}`} startOffset="0%">{label} · {label} ·&nbsp;</textPath>
+          <textPath href={`#st-${label.replace(/[^a-zA-Z0-9]/g, "").toLowerCase()}`} startOffset="50%" textAnchor="middle">{label} · {label}</textPath>
         </motion.text>
         <circle cx="50" cy="50" r="16" fill="rgba(255,255,255,0.25)" />
         <text x="50" y="54" textAnchor="middle" fill="white" style={{ fontSize: "8px", fontFamily: "'Bangers',cursive", letterSpacing: "0.5px" } as React.CSSProperties}>NF</text>
