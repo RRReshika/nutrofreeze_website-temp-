@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "frontend": "vite --port 5173",
+    "backend": "cross-env PORT=3001 npm --prefix app/api run dev"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -68,6 +70,8 @@
   "devDependencies": {
     "@tailwindcss/vite": "4.1.12",
     "@vitejs/plugin-react": "4.7.0",
+    "concurrently": "^10.0.3",
+    "cross-env": "^10.1.0",
     "jimp": "^1.6.1",
     "tailwindcss": "4.1.12",
     "vite": "6.3.5"
