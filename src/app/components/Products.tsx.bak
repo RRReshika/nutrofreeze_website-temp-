@@ -268,17 +268,17 @@ export function Products() {
 
   const handleAddToCart = async (product: ProductCard) => {
     if (!user) { navigateToRoute("/signin"); return; }
-    if (!(product.variants?.[0]?.id ?? product.variantId) || typeof (product.variants?.[0]?.price ?? product.price) !== "number") return;
+    if (!product.variantId || typeof product.price !== "number") return;
     await addItem(
       {
         productId: product.id,
         productTitle: product.name,
         productSlug: product.slug,
-        variantId: (product.variants?.[0]?.id ?? product.variantId),
+        variantId: product.variantId,
         variantTitle: product.variantTitle || "Default",
-        variantSku: (product.variants?.[0]?.id ?? product.variantId),
-        unitPrice: (product.variants?.[0]?.price ?? product.price),
-        currency: (product.variants?.[0]?.currency ?? product.currency ?? 'SGD'),
+        variantSku: product.variantId,
+        unitPrice: product.price,
+        currency: product.currency,
         image: product.img,
       },
       1,
@@ -429,11 +429,11 @@ export function Products() {
                       </div>
                       <motion.button type="button" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
                         onClick={() => void handleAddToCart(product)}
-                        disabled={!(product.variants?.[0]?.id ?? product.variantId) || typeof (product.variants?.[0]?.price ?? product.price) !== "number" || isAuthLoading}
-                        style={{ display: "inline-flex", alignItems: "center", gap: 0, borderRadius: "999px", border: "none", backgroundColor: "#231F20", color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px", fontWeight: 700, cursor: ((product.variants?.[0]?.id ?? product.variantId) && !isAuthLoading) ? "pointer" : "not-allowed", opacity: ((product.variants?.[0]?.id ?? product.variantId) && !isAuthLoading) ? 1 : 0.55, boxShadow: "0 8px 28px rgba(0,0,0,0.22)", overflow: "hidden" }}
+                        disabled={!product.variantId || typeof product.price !== "number" || isAuthLoading}
+                        style={{ display: "inline-flex", alignItems: "center", gap: 0, borderRadius: "999px", border: "none", backgroundColor: "#231F20", color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px", fontWeight: 700, cursor: (product.variantId && !isAuthLoading) ? "pointer" : "not-allowed", opacity: (product.variantId && !isAuthLoading) ? 1 : 0.55, boxShadow: "0 8px 28px rgba(0,0,0,0.22)", overflow: "hidden" }}
                       >
                         <span style={{ padding: "13px 22px" }}>{isAuthLoading ? "Loading…" : !user ? "Sign In to Buy" : "Add to Cart"}</span>
-                        {(product.variants?.[0]?.price ?? product.price) !== undefined && <span style={{ backgroundColor: "#00B2A9", padding: "13px 20px", fontSize: "14px", fontWeight: 800 }}>{(product.variants?.[0]?.currency ?? product.currency ?? 'SGD')} {(product.variants?.[0]?.price ?? product.price).toFixed(2)}</span>}
+                        {product.price !== undefined && <span style={{ backgroundColor: "#00B2A9", padding: "13px 20px", fontSize: "14px", fontWeight: 800 }}>{product.currency} {product.price.toFixed(2)}</span>}
                       </motion.button>
                     </div>
                   ) : Math.abs(slot) === 1 ? (
