@@ -71,7 +71,7 @@ const productCategories = [
   { label: "Vegetables", img: "/images/other%20images/brocoli%20florets.png" },
   { label: "Baby Food", img: "/images/other%20images/puree.png" },
   { label: "Meals", img: "/images/other%20images/healthy%20bowl.png" },
-  
+
 ];
 
 const productTypes = [
