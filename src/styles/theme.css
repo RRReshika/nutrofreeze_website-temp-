@@ -5,6 +5,11 @@ body {
   background-color: #0f172a;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+}
+
+#root {
+  overflow-x: hidden;
 }
 
 :root {

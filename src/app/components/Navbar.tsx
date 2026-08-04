@@ -178,7 +178,7 @@ export function Navbar() {
       className="fixed top-0 left-0 right-0 z-50"
       style={{
         fontFamily: "'Space Grotesk'",
-        padding: "10px 16px 0",
+        padding: "8px 12px 0",
         background: "transparent",
         pointerEvents: "none",
       }}
@@ -189,11 +189,11 @@ export function Navbar() {
             maxWidth: "1340px",
             margin: "0 auto",
             background: "#1c1c1e",
-            borderRadius: "20px",
+            borderRadius: "16px",
             position: "relative",
           }}
         >
-          <div className="px-7 h-[86px] flex items-center justify-between relative">
+          <div className="px-4 sm:px-5 lg:px-7 h-[72px] sm:h-[78px] lg:h-[86px] flex items-center justify-between relative">
             <div className="hidden lg:flex items-center gap-8">
               {navLinks.map((link) => (
                 <div
@@ -321,8 +321,8 @@ export function Navbar() {
                 src={logoImage}
                 alt="NutroFreeze"
                 style={{
-                  width: "190px",
-                  height: "78px",
+                  width: "clamp(130px, 34vw, 190px)",
+                  height: "clamp(54px, 14vw, 78px)",
                   objectFit: "contain",
                   display: "block",
                 }}

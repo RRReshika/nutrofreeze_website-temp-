@@ -142,6 +142,7 @@ const slidePackets: [string, string, string, string][] = [
 export function Hero() {
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startTimer = () => {
@@ -155,6 +156,14 @@ export function Hero() {
   useEffect(() => {
     startTimer();
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    const updateMobile = () => setIsMobile(media.matches);
+    updateMobile();
+    media.addEventListener("change", updateMobile);
+    return () => media.removeEventListener("change", updateMobile);
   }, []);
 
   const goTo = (i: number) => {
@@ -172,7 +181,8 @@ export function Hero() {
     <section
       style={{
         position: "relative",
-        height: "100vh",
+        minHeight: "100svh",
+        height: "max(680px, 100svh)",
         overflow: "hidden",
         userSelect: "none",
       }}
@@ -269,9 +279,9 @@ export function Hero() {
             <p
               style={{
                 fontFamily: "'Space Grotesk', sans-serif",
-                fontSize: "11px",
+                fontSize: isMobile ? "10px" : "11px",
                 fontWeight: 700,
-                letterSpacing: "5px",
+                letterSpacing: isMobile ? "2.4px" : "5px",
                 textTransform: "uppercase",
                 color: slide.accentColor,
                 margin: "0 0 8px",
@@ -282,13 +292,14 @@ export function Hero() {
             <h1
               style={{
                 fontFamily: "'Bangers', cursive",
-                fontSize: "clamp(44px, 6vw, 96px)",
+                fontSize: "clamp(38px, 10vw, 96px)",
                 color: "white",
                 lineHeight: 0.92,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
                 margin: 0,
-                whiteSpace: "nowrap",
+                whiteSpace: isMobile ? "normal" : "nowrap",
+                maxWidth: isMobile ? "92vw" : "none",
               }}
             >
               {slide.productName}
@@ -305,7 +316,7 @@ export function Hero() {
               alignItems: "flex-end",
               justifyContent: "center",
               position: "relative",
-              paddingBottom: "44px",
+              paddingBottom: isMobile ? "72px" : "44px",
             }}
           >
             {/* PREV — left edge */}
@@ -392,7 +403,7 @@ export function Hero() {
               <motion.div
                 style={{
                   width: "clamp(260px, 28vw, 440px)",
-                  height: "clamp(380px, 58vh, 620px)",
+                  height: isMobile ? "clamp(300px, 50vh, 420px)" : "clamp(380px, 58vh, 620px)",
                   display: "flex",
                   alignItems: "flex-end",
                   justifyContent: "center",
@@ -488,7 +499,7 @@ export function Hero() {
               </motion.div>
 
               {/* Spin badge — bottom-right of product, not overlapping text */}
-              <div style={{ position: "absolute", bottom: "30px", right: "-44px", zIndex: 20 }}>
+              <div style={{ position: "absolute", bottom: "30px", right: "-44px", zIndex: 20, display: isMobile ? "none" : "block" }}>
                 <div style={{ position: "relative", width: "84px", height: "84px" }}>
                   <motion.svg
                     viewBox="0 0 100 100"
@@ -564,13 +575,16 @@ export function Hero() {
       <div
         style={{
           position: "absolute",
-          bottom: "20px",
+          bottom: isMobile ? "10px" : "20px",
           left: "50%",
           transform: "translateX(-50%)",
           zIndex: 50,
           display: "flex",
-          gap: "18px",
+          gap: isMobile ? "10px" : "18px",
           alignItems: "center",
+          width: "100%",
+          justifyContent: "center",
+          padding: isMobile ? "0 8px" : "0",
         }}
       >
         {slides.map((s, i) => (
@@ -614,9 +628,9 @@ export function Hero() {
             <span
               style={{
                 fontFamily: "'Space Grotesk', sans-serif",
-                fontSize: "8px",
+                fontSize: isMobile ? "7px" : "8px",
                 fontWeight: 700,
-                letterSpacing: "2.5px",
+                letterSpacing: isMobile ? "1.4px" : "2.5px",
                 textTransform: "uppercase",
                 color: i === current ? slides[i].accentColor : "rgba(255,255,255,0.25)",
                 transition: "color 0.4s",

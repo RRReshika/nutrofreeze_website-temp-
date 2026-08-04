@@ -150,7 +150,7 @@ const TICKER_ITEMS = [
 function Ticker() {
   const items = [...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS];
   return (
-    <div style={{ overflow: "hidden", backgroundColor: "#111111", padding: "11px 0", whiteSpace: "nowrap" }}>
+    <div style={{ overflow: "hidden", backgroundColor: "#111111", padding: "11px 0", whiteSpace: "nowrap", maxWidth: "100%" }}>
       <motion.div
         style={{ display: "inline-flex" }}
         animate={{ x: ["0%", `-${100 / 3}%`] }}
@@ -210,6 +210,15 @@ export function Products() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
     let isActive = true;
@@ -361,11 +370,11 @@ export function Products() {
       {!isLoading && !loadError && filtered.length > 0 && (
         <>
           <div
-            style={{ position: "relative", height: "560px", overflow: "hidden", marginTop: "8px" }}
+            style={{ position: "relative", height: isMobile ? "470px" : "560px", overflow: "hidden", marginTop: "8px" }}
             onMouseEnter={() => setPaused(true)}
             onMouseLeave={() => setPaused(false)}
           >
-            {SLOTS.map(slot => {
+            {(isMobile ? [0] : SLOTS).map(slot => {
               const productIdx = getIdxAtSlot(slot);
               if (productIdx === -1) return null;
               const product = filtered[productIdx];
@@ -377,18 +386,18 @@ export function Products() {
                     position: "absolute",
                     top: "50%",
                     left: "50%",
-                    width: "380px",
-                    height: "510px",
-                    marginLeft: "-190px",
-                    marginTop: "-255px",
+                    width: isMobile ? "min(92vw, 360px)" : "380px",
+                    height: isMobile ? "450px" : "510px",
+                    marginLeft: isMobile ? "calc(min(92vw, 360px) / -2)" : "-190px",
+                    marginTop: isMobile ? "-225px" : "-255px",
                     transformOrigin: "center center",
                     cursor: slot !== 0 ? "pointer" : "default",
                   }}
                   animate={{
-                    x: SLOT_X[slot.toString()],
-                    scale: SLOT_SCALE[slot.toString()],
-                    opacity: SLOT_OPACITY[slot.toString()],
-                    zIndex: SLOT_Z[slot.toString()],
+                    x: isMobile ? 0 : SLOT_X[slot.toString()],
+                    scale: isMobile ? 1 : SLOT_SCALE[slot.toString()],
+                    opacity: isMobile ? 1 : SLOT_OPACITY[slot.toString()],
+                    zIndex: isMobile ? 10 : SLOT_Z[slot.toString()],
                   }}
                   transition={{ type: "spring", stiffness: 220, damping: 26 }}
                   onClick={slot !== 0 ? () => setActiveIdx(productIdx) : undefined}
@@ -396,11 +405,11 @@ export function Products() {
                   {isCenter ? (
                     /* ── CENTER ── */
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", height: "100%" }}>
-                      <div style={{ position: "relative", width: "460px", height: "420px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <div style={{ position: "relative", width: isMobile ? "100%" : "460px", maxWidth: "460px", height: isMobile ? "300px" : "420px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                         {/* Soft radial glow — no hard edge */}
                         <div style={{ position: "absolute", inset: "-8%", background: "radial-gradient(ellipse at 50% 54%, rgba(0,178,169,0.48) 0%, rgba(0,178,169,0.22) 36%, transparent 62%)", borderRadius: "50%", filter: "blur(22px)", zIndex: 0, pointerEvents: "none" }} />
                         {/* Dashed orbit ring */}
-                        <div style={{ position: "absolute", width: "360px", height: "360px", borderRadius: "50%", border: "1.5px dashed rgba(0,178,169,0.30)", zIndex: 0, pointerEvents: "none" }} />
+                        <div style={{ position: "absolute", width: isMobile ? "260px" : "360px", height: isMobile ? "260px" : "360px", borderRadius: "50%", border: "1.5px dashed rgba(0,178,169,0.30)", zIndex: 0, pointerEvents: "none" }} />
                         {/* Continuous float + entrance */}
                         <motion.div animate={{ y: [0, -16, 0] }} transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }} style={{ position: "relative", zIndex: 1 }}>
                           <AnimatePresence mode="wait">
@@ -409,7 +418,7 @@ export function Products() {
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.9, y: -10 }}
                               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                              style={{ width: "400px", height: "400px", objectFit: "contain", filter: "drop-shadow(0 36px 52px rgba(0,0,0,0.28))" }}
+                              style={{ width: isMobile ? "min(80vw, 300px)" : "400px", height: isMobile ? "min(80vw, 300px)" : "400px", objectFit: "contain", filter: "drop-shadow(0 36px 52px rgba(0,0,0,0.28))" }}
                             />
                           </AnimatePresence>
                         </motion.div>
@@ -421,19 +430,19 @@ export function Products() {
                       </div>
                       <AnimatePresence mode="wait">
                         <motion.h3 key={product.id + "_n"} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35, delay: 0.1 }}
-                          style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(38px, 4.8vw, 60px)", letterSpacing: "3px", color: "#1a1a1a", margin: "0 0 12px", textAlign: "center", lineHeight: 1.0, textTransform: "uppercase" }}
+                          style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: isMobile ? "clamp(28px, 8vw, 40px)" : "clamp(38px, 4.8vw, 60px)", letterSpacing: isMobile ? "2px" : "3px", color: "#1a1a1a", margin: "0 0 12px", textAlign: "center", lineHeight: 1.0, textTransform: "uppercase", padding: isMobile ? "0 8px" : "0" }}
                         >{product.name}</motion.h3>
                       </AnimatePresence>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 18px", justifyContent: "center", marginBottom: "22px" }}>
-                        {product.dietary.map(d => <DietaryCheck key={d} label={d} />)}
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: isMobile ? "6px 12px" : "6px 18px", justifyContent: "center", marginBottom: "18px", padding: isMobile ? "0 8px" : "0" }}>
+                        {(isMobile ? product.dietary.slice(0, 2) : product.dietary).map(d => <DietaryCheck key={d} label={d} />)}
                       </div>
                       <motion.button type="button" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
                         onClick={() => void handleAddToCart(product)}
                         disabled={!(product.variants?.[0]?.id ?? product.variantId) || typeof (product.variants?.[0]?.price ?? product.price) !== "number" || isAuthLoading}
-                        style={{ display: "inline-flex", alignItems: "center", gap: 0, borderRadius: "999px", border: "none", backgroundColor: "#231F20", color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px", fontWeight: 700, cursor: ((product.variants?.[0]?.id ?? product.variantId) && !isAuthLoading) ? "pointer" : "not-allowed", opacity: ((product.variants?.[0]?.id ?? product.variantId) && !isAuthLoading) ? 1 : 0.55, boxShadow: "0 8px 28px rgba(0,0,0,0.22)", overflow: "hidden" }}
+                        style={{ display: "inline-flex", alignItems: "center", gap: 0, borderRadius: "999px", border: "none", backgroundColor: "#231F20", color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: isMobile ? "12px" : "14px", fontWeight: 700, cursor: ((product.variants?.[0]?.id ?? product.variantId) && !isAuthLoading) ? "pointer" : "not-allowed", opacity: ((product.variants?.[0]?.id ?? product.variantId) && !isAuthLoading) ? 1 : 0.55, boxShadow: "0 8px 28px rgba(0,0,0,0.22)", overflow: "hidden", maxWidth: "100%" }}
                       >
-                        <span style={{ padding: "13px 22px" }}>{isAuthLoading ? "Loading…" : !user ? "Sign In to Buy" : "Add to Cart"}</span>
-                        {(product.variants?.[0]?.price ?? product.price) !== undefined && <span style={{ backgroundColor: "#00B2A9", padding: "13px 20px", fontSize: "14px", fontWeight: 800 }}>{(product.variants?.[0]?.currency ?? product.currency ?? 'SGD')} {(product.variants?.[0]?.price ?? product.price).toFixed(2)}</span>}
+                        <span style={{ padding: isMobile ? "11px 14px" : "13px 22px" }}>{isAuthLoading ? "Loading…" : !user ? "Sign In to Buy" : "Add to Cart"}</span>
+                        {(product.variants?.[0]?.price ?? product.price) !== undefined && <span style={{ backgroundColor: "#00B2A9", padding: isMobile ? "11px 12px" : "13px 20px", fontSize: isMobile ? "12px" : "14px", fontWeight: 800 }}>{(product.variants?.[0]?.currency ?? product.currency ?? 'SGD')} {(product.variants?.[0]?.price ?? product.price).toFixed(2)}</span>}
                       </motion.button>
                     </div>
                   ) : Math.abs(slot) === 1 ? (
